@@ -75,16 +75,15 @@ const Dashboard = () => {
     console.log('=======================');
   }, [user, profile, isSuperAdmin, roleLoading]);
 
-  // Redirection vers Super Admin Dashboard - avec délai pour s'assurer que les données sont chargées
+  // Redirection vers Super Admin Dashboard - immédiate et robuste
   useEffect(() => {
-    if (!roleLoading && profile && isSuperAdmin) {
-      console.log('Super Admin detected, redirecting to Super Admin Dashboard');
-      // Délai court pour s'assurer que tout est prêt
-      setTimeout(() => {
-        navigate('/super-admin');
-      }, 100);
+    if (!roleLoading && profile?.role === 'super_admin') {
+      console.log('🚨 Super Admin detected - immediate redirect to /super-admin');
+      // Redirection immédiate sans délai
+      window.location.href = '/super-admin';
+      return; // Arrêter l'exécution
     }
-  }, [isSuperAdmin, roleLoading, navigate, profile]);
+  }, [profile, roleLoading]);
 
   useEffect(() => {
     if (user && !isSuperAdmin && !roleLoading) {
@@ -169,31 +168,11 @@ const Dashboard = () => {
     );
   }
 
-  // Si c'est un super admin mais qu'il n'a pas été redirigé, afficher un bouton manuel
-  if (isSuperAdmin) {
-    return (
-      <div className="min-h-screen">
-        <Header />
-        <div className="pt-20 flex items-center justify-center">
-          <Card className="w-full max-w-md">
-            <CardContent className="p-6 text-center">
-              <Crown className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold mb-2">Super Administrateur Détecté</h2>
-              <p className="text-gray-600 mb-4">
-                Vous êtes un Super Admin. Accédez à votre tableau de bord avancé.
-              </p>
-              <Button 
-                onClick={() => navigate('/super-admin')}
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
-              >
-                <Crown className="h-4 w-4 mr-2" />
-                Accéder au Super Admin Dashboard
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
+  // Si c'est un super admin et qu'on est encore ici, forcer la redirection
+  if (profile?.role === 'super_admin') {
+    console.log('🚨 Super Admin still on dashboard - forcing redirect');
+    window.location.href = '/super-admin';
+    return null;
   }
 
   return (
