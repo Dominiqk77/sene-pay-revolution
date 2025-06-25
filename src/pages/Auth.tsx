@@ -63,6 +63,7 @@ const Auth = () => {
   });
 
   const onSignIn = async (data: SignInFormData) => {
+    console.log('Tentative de connexion avec:', data.email);
     setLoading(true);
     try {
       const { error } = await signIn(data.email, data.password);
@@ -78,12 +79,14 @@ const Auth = () => {
           errorMessage = 'Trop de tentatives. Veuillez réessayer plus tard';
         }
         
+        console.log('Erreur de connexion:', error);
         toast({
           title: 'Erreur de connexion',
           description: errorMessage,
           variant: 'destructive',
         });
       } else {
+        console.log('Connexion réussie');
         toast({
           title: 'Connexion réussie',
           description: 'Redirection vers votre tableau de bord...',
@@ -91,6 +94,7 @@ const Auth = () => {
         navigate('/dashboard');
       }
     } catch (error) {
+      console.error('Erreur inattendue:', error);
       toast({
         title: 'Erreur',
         description: 'Une erreur inattendue est survenue',
@@ -102,6 +106,7 @@ const Auth = () => {
   };
 
   const onSignUp = async (data: SignUpFormData) => {
+    console.log('Tentative d\'inscription avec:', data.email, data.fullName);
     setLoading(true);
     try {
       const { error } = await signUp(data.email, data.password, data.fullName);
@@ -117,12 +122,14 @@ const Auth = () => {
           errorMessage = 'Veuillez saisir un email valide';
         }
         
+        console.log('Erreur d\'inscription:', error);
         toast({
           title: "Erreur d'inscription",
           description: errorMessage,
           variant: 'destructive',
         });
       } else {
+        console.log('Inscription réussie');
         toast({
           title: 'Inscription réussie',
           description: 'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.',
@@ -131,6 +138,7 @@ const Auth = () => {
         signUpForm.reset();
       }
     } catch (error) {
+      console.error('Erreur inattendue:', error);
       toast({
         title: 'Erreur',
         description: "Une erreur inattendue est survenue lors de l'inscription",
@@ -183,6 +191,10 @@ const Auth = () => {
                             placeholder="Votre nom complet" 
                             {...field}
                             disabled={loading}
+                            onChange={(e) => {
+                              console.log('Nom saisi:', e.target.value);
+                              field.onChange(e);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -201,6 +213,10 @@ const Auth = () => {
                             placeholder="votre@email.com" 
                             {...field}
                             disabled={loading}
+                            onChange={(e) => {
+                              console.log('Email saisi:', e.target.value);
+                              field.onChange(e);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -219,6 +235,10 @@ const Auth = () => {
                             placeholder="••••••••" 
                             {...field}
                             disabled={loading}
+                            onChange={(e) => {
+                              console.log('Mot de passe saisi, longueur:', e.target.value.length);
+                              field.onChange(e);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -237,6 +257,10 @@ const Auth = () => {
                             placeholder="••••••••" 
                             {...field}
                             disabled={loading}
+                            onChange={(e) => {
+                              console.log('Confirmation mot de passe, longueur:', e.target.value.length);
+                              field.onChange(e);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -264,6 +288,10 @@ const Auth = () => {
                             placeholder="votre@email.com" 
                             {...field}
                             disabled={loading}
+                            onChange={(e) => {
+                              console.log('Email connexion saisi:', e.target.value);
+                              field.onChange(e);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -282,6 +310,10 @@ const Auth = () => {
                             placeholder="••••••••" 
                             {...field}
                             disabled={loading}
+                            onChange={(e) => {
+                              console.log('Mot de passe connexion saisi, longueur:', e.target.value.length);
+                              field.onChange(e);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
