@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,15 +53,13 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				// SenePay brand colors
+				senepay: {
+					gold: '#F59E0B',
+					orange: '#EA580C',
+					green: '#059669',
+					dark: '#0F172A',
+					light: '#F8FAFC'
 				}
 			},
 			borderRadius: {
@@ -84,11 +83,30 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'slide-in': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(0)' }
+				},
+				'pulse-gold': {
+					'0%, 100%': { boxShadow: '0 0 0 0 rgba(245, 158, 11, 0.7)' },
+					'70%': { boxShadow: '0 0 0 10px rgba(245, 158, 11, 0)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.6s ease-out',
+				'slide-in': 'slide-in 0.5s ease-out',
+				'pulse-gold': 'pulse-gold 2s infinite'
+			},
+			backgroundImage: {
+				'gradient-senepay': 'linear-gradient(135deg, #F59E0B 0%, #EA580C 50%, #059669 100%)',
+				'gradient-hero': 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
 			}
 		}
 	},
