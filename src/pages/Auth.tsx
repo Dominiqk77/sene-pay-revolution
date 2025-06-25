@@ -1,33 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
-
-const signInSchema = z.object({
-  email: z.string().email('Veuillez saisir un email valide'),
-  password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
-});
-
-const signUpSchema = z.object({
-  fullName: z.string().min(2, 'Le nom complet doit contenir au moins 2 caractères'),
-  email: z.string().email('Veuillez saisir un email valide'),
-  password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
-  confirmPassword: z.string().min(6, 'Veuillez confirmer votre mot de passe'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Les mots de passe ne correspondent pas",
-  path: ["confirmPassword"],
-});
-
-type SignInFormData = z.infer<typeof signInSchema>;
-type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -38,6 +16,21 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // États pour les formulaires avec gestion manuelle
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const [signUpData, setSignUpData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   // Redirect if already authenticated
   useEffect(() => {
     if (user && !globalLoading) {
@@ -46,29 +39,55 @@ const Auth = () => {
     }
   }, [user, globalLoading, navigate]);
 
-  const signInForm = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  // Validation functions
+  const validateSignIn = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!signInData.email || !/\S+@\S+\.\S+/.test(signInData.email)) {
+      newErrors.email = 'Veuillez saisir un email valide';
+    }
+    
+    if (!signInData.password || signInData.password.length < 6) {
+      newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  const signUpForm = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      fullName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
-  });
+  const validateSignUp = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!signUpData.fullName || signUpData.fullName.length < 2) {
+      newErrors.fullName = 'Le nom complet doit contenir au moins 2 caractères';
+    }
+    
+    if (!signUpData.email || !/\S+@\S+\.\S+/.test(signUpData.email)) {
+      newErrors.email = 'Veuillez saisir un email valide';
+    }
+    
+    if (!signUpData.password || signUpData.password.length < 6) {
+      newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
+    }
+    
+    if (signUpData.password !== signUpData.confirmPassword) {
+      newErrors.confirmPassword = 'Les mots de passe ne correspondent pas';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  const onSignIn = async (data: SignInFormData) => {
+  const onSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('SignIn form submitted with data:', signInData);
+    
+    if (!validateSignIn()) return;
+
     setAuthLoading(true);
     try {
       console.log('Starting signIn process');
-      const { error } = await signIn(data.email, data.password);
+      const { error } = await signIn(signInData.email, signInData.password);
       
       if (error) {
         let errorMessage = 'Une erreur est survenue lors de la connexion';
@@ -91,7 +110,6 @@ const Auth = () => {
           title: 'Connexion réussie',
           description: 'Redirection vers votre tableau de bord...',
         });
-        // Navigation will be handled by useEffect when user state updates
       }
     } catch (error) {
       console.error('SignIn unexpected error:', error);
@@ -105,11 +123,16 @@ const Auth = () => {
     }
   };
 
-  const onSignUp = async (data: SignUpFormData) => {
+  const onSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('SignUp form submitted with data:', signUpData);
+    
+    if (!validateSignUp()) return;
+
     setAuthLoading(true);
     try {
       console.log('Starting signUp process');
-      const { error } = await signUp(data.email, data.password, data.fullName);
+      const { error } = await signUp(signUpData.email, signUpData.password, signUpData.fullName);
       
       if (error) {
         let errorMessage = "Une erreur est survenue lors de l'inscription";
@@ -133,7 +156,7 @@ const Auth = () => {
           description: 'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.',
         });
         setIsSignUp(false);
-        signUpForm.reset();
+        setSignUpData({ fullName: '', email: '', password: '', confirmPassword: '' });
       }
     } catch (error) {
       console.error('SignUp unexpected error:', error);
@@ -148,15 +171,37 @@ const Auth = () => {
   };
 
   const toggleAuthMode = () => {
+    console.log('Toggling auth mode from', isSignUp ? 'SignUp' : 'SignIn');
     setIsSignUp(!isSignUp);
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setErrors({});
     // Reset forms when switching modes
-    signInForm.reset();
-    signUpForm.reset();
+    setSignInData({ email: '', password: '' });
+    setSignUpData({ fullName: '', email: '', password: '', confirmPassword: '' });
   };
 
-  const inputClassName = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200";
+  // Styles forcés pour les inputs
+  const inputStyle = {
+    pointerEvents: 'auto' as const,
+    zIndex: 9999,
+    position: 'relative' as const,
+    width: '100%',
+    height: '40px',
+    padding: '8px 12px',
+    border: '1px solid #d1d5db',
+    borderRadius: '6px',
+    fontSize: '14px',
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    outline: 'none',
+    transition: 'all 0.2s'
+  };
+
+  const inputErrorStyle = {
+    ...inputStyle,
+    borderColor: '#ef4444'
+  };
 
   if (globalLoading) {
     return (
@@ -201,164 +246,193 @@ const Auth = () => {
           <CardContent>
             <div className="transition-all duration-500 ease-in-out">
               {isSignUp ? (
-                <Form {...signUpForm}>
-                  <form onSubmit={signUpForm.handleSubmit(onSignUp)} className="space-y-4">
-                    <FormField
-                      control={signUpForm.control}
-                      name="fullName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nom complet</FormLabel>
-                          <FormControl>
-                            <input
-                              type="text"
-                              placeholder="Votre nom complet"
-                              disabled={authLoading}
-                              className={inputClassName}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                <form onSubmit={onSignUp} className="space-y-4">
+                  <div>
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                      Nom complet
+                    </label>
+                    <input
+                      id="fullName"
+                      type="text"
+                      placeholder="Votre nom complet"
+                      disabled={authLoading}
+                      style={errors.fullName ? inputErrorStyle : inputStyle}
+                      value={signUpData.fullName}
+                      onClick={() => console.log('Full name input clicked')}
+                      onFocus={() => console.log('Full name input focused')}
+                      onChange={(e) => {
+                        console.log('Full name changed:', e.target.value);
+                        setSignUpData({ ...signUpData, fullName: e.target.value });
+                        if (errors.fullName) {
+                          setErrors({ ...errors, fullName: '' });
+                        }
+                      }}
                     />
-                    <FormField
-                      control={signUpForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <input
-                              type="email"
-                              placeholder="votre@email.com"
-                              disabled={authLoading}
-                              className={inputClassName}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
+                  </div>
+
+                  <div>
+                    <label htmlFor="email-signup" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      id="email-signup"
+                      type="email"
+                      placeholder="votre@email.com"
+                      disabled={authLoading}
+                      style={errors.email ? inputErrorStyle : inputStyle}
+                      value={signUpData.email}
+                      onClick={() => console.log('Email input clicked')}
+                      onFocus={() => console.log('Email input focused')}
+                      onChange={(e) => {
+                        console.log('Email changed:', e.target.value);
+                        setSignUpData({ ...signUpData, email: e.target.value });
+                        if (errors.email) {
+                          setErrors({ ...errors, email: '' });
+                        }
+                      }}
                     />
-                    <FormField
-                      control={signUpForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mot de passe</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <input 
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••" 
-                                disabled={authLoading}
-                                className={inputClassName + " pr-10"}
-                                {...field}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-                              >
-                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                              </button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signUpForm.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirmer le mot de passe</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <input 
-                                type={showConfirmPassword ? "text" : "password"}
-                                placeholder="••••••••" 
-                                disabled={authLoading}
-                                className={inputClassName + " pr-10"}
-                                {...field}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-                              >
-                                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                              </button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full btn-senepay" disabled={authLoading}>
-                      {authLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Créer mon compte
-                    </Button>
-                  </form>
-                </Form>
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  </div>
+
+                  <div>
+                    <label htmlFor="password-signup" className="block text-sm font-medium text-gray-700 mb-1">
+                      Mot de passe
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password-signup"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        disabled={authLoading}
+                        style={errors.password ? { ...inputErrorStyle, paddingRight: '40px' } : { ...inputStyle, paddingRight: '40px' }}
+                        value={signUpData.password}
+                        onClick={() => console.log('Password input clicked')}
+                        onFocus={() => console.log('Password input focused')}
+                        onChange={(e) => {
+                          console.log('Password changed:', e.target.value);
+                          setSignUpData({ ...signUpData, password: e.target.value });
+                          if (errors.password) {
+                            setErrors({ ...errors, password: '' });
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                        style={{ zIndex: 10000 }}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                  </div>
+
+                  <div>
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                      Confirmer le mot de passe
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        disabled={authLoading}
+                        style={errors.confirmPassword ? { ...inputErrorStyle, paddingRight: '40px' } : { ...inputStyle, paddingRight: '40px' }}
+                        value={signUpData.confirmPassword}
+                        onClick={() => console.log('Confirm password input clicked')}
+                        onFocus={() => console.log('Confirm password input focused')}
+                        onChange={(e) => {
+                          console.log('Confirm password changed:', e.target.value);
+                          setSignUpData({ ...signUpData, confirmPassword: e.target.value });
+                          if (errors.confirmPassword) {
+                            setErrors({ ...errors, confirmPassword: '' });
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                        style={{ zIndex: 10000 }}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+                  </div>
+
+                  <Button type="submit" className="w-full btn-senepay" disabled={authLoading}>
+                    {authLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Créer mon compte
+                  </Button>
+                </form>
               ) : (
-                <Form {...signInForm}>
-                  <form onSubmit={signInForm.handleSubmit(onSignIn)} className="space-y-4">
-                    <FormField
-                      control={signInForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <input 
-                              type="email" 
-                              placeholder="votre@email.com" 
-                              disabled={authLoading}
-                              className={inputClassName}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                <form onSubmit={onSignIn} className="space-y-4">
+                  <div>
+                    <label htmlFor="email-signin" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      id="email-signin"
+                      type="email"
+                      placeholder="votre@email.com"
+                      disabled={authLoading}
+                      style={errors.email ? inputErrorStyle : inputStyle}
+                      value={signInData.email}
+                      onClick={() => console.log('SignIn email input clicked')}
+                      onFocus={() => console.log('SignIn email input focused')}
+                      onChange={(e) => {
+                        console.log('SignIn email changed:', e.target.value);
+                        setSignInData({ ...signInData, email: e.target.value });
+                        if (errors.email) {
+                          setErrors({ ...errors, email: '' });
+                        }
+                      }}
                     />
-                    <FormField
-                      control={signInForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mot de passe</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <input 
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••" 
-                                disabled={authLoading}
-                                className={inputClassName + " pr-10"}
-                                {...field}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-                              >
-                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                              </button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="w-full btn-senepay" disabled={authLoading}>
-                      {authLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Se connecter
-                    </Button>
-                  </form>
-                </Form>
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  </div>
+
+                  <div>
+                    <label htmlFor="password-signin" className="block text-sm font-medium text-gray-700 mb-1">
+                      Mot de passe
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password-signin"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        disabled={authLoading}
+                        style={errors.password ? { ...inputErrorStyle, paddingRight: '40px' } : { ...inputStyle, paddingRight: '40px' }}
+                        value={signInData.password}
+                        onClick={() => console.log('SignIn password input clicked')}
+                        onFocus={() => console.log('SignIn password input focused')}
+                        onChange={(e) => {
+                          console.log('SignIn password changed:', e.target.value);
+                          setSignInData({ ...signInData, password: e.target.value });
+                          if (errors.password) {
+                            setErrors({ ...errors, password: '' });
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                        style={{ zIndex: 10000 }}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                  </div>
+
+                  <Button type="submit" className="w-full btn-senepay" disabled={authLoading}>
+                    {authLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Se connecter
+                  </Button>
+                </form>
               )}
             </div>
 
