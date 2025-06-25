@@ -10,7 +10,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Documentation from "./pages/Documentation";
 import Dashboard from "./pages/Dashboard";
-import AuthSimple from "./pages/AuthSimple";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -28,7 +28,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/documentation" element={<Documentation />} />
-            <Route path="/auth" element={<AuthSimple />} />
+            <Route path="/auth" element={<Auth />} />
             <Route 
               path="/dashboard" 
               element={
