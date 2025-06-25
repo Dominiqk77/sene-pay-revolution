@@ -125,7 +125,7 @@
     animation: gradient-flow 12s ease-in-out infinite, text-shimmer 6s ease-in-out infinite;
   }
 
-  /* Version plus lente pour le titre du logo navbar */
+  /* Version ultra-lente pour le titre du logo navbar */
   .navbar-gradient-text {
     background: linear-gradient(
       135deg, 
@@ -139,7 +139,7 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: navbar-gradient-flow 20s ease-in-out infinite, navbar-text-shimmer 10s ease-in-out infinite;
+    animation: navbar-gradient-flow 45s ease-in-out infinite, navbar-text-shimmer 25s ease-in-out infinite;
   }
 
   /* Hero section glassmorphism effect */
@@ -205,7 +205,7 @@
   }
 }
 
-/* Animations spéciales pour le logo navbar (plus lentes) */
+/* Animations spéciales pour le logo navbar (ultra-lentes et subtiles) */
 @keyframes navbar-gradient-flow {
   0% {
     background-position: 0% 50%;
@@ -226,16 +226,16 @@
 
 @keyframes navbar-text-shimmer {
   0% {
-    text-shadow: 0 0 3px rgba(245, 158, 11, 0.2);
+    text-shadow: 0 0 2px rgba(245, 158, 11, 0.1);
   }
   50% {
     text-shadow: 
-      0 0 6px rgba(245, 158, 11, 0.3),
-      0 0 12px rgba(234, 88, 12, 0.2),
-      0 0 18px rgba(5, 150, 105, 0.1);
+      0 0 4px rgba(245, 158, 11, 0.2),
+      0 0 8px rgba(234, 88, 12, 0.1),
+      0 0 12px rgba(5, 150, 105, 0.05);
   }
   100% {
-    text-shadow: 0 0 3px rgba(245, 158, 11, 0.2);
+    text-shadow: 0 0 2px rgba(245, 158, 11, 0.1);
   }
 }
 
