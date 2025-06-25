@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const navigation = [
     { name: "Accueil", href: "/" },
@@ -54,14 +56,35 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/dashboard">
-              <Button variant="outline" className="border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white">
-                Dashboard
-              </Button>
-            </Link>
-            <Button className="btn-senepay">
-              Commencer
-            </Button>
+            {user ? (
+              <>
+                <Link to="/dashboard">
+                  <Button variant="outline" className="border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button 
+                  onClick={signOut}
+                  variant="ghost"
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  Déconnexion
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="outline" className="border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white">
+                    Connexion
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button className="btn-senepay">
+                    Commencer
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -95,14 +118,35 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 px-4 pt-4">
-                <Link to="/dashboard">
-                  <Button variant="outline" className="w-full border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white">
-                    Dashboard
-                  </Button>
-                </Link>
-                <Button className="btn-senepay">
-                  Commencer
-                </Button>
+                {user ? (
+                  <>
+                    <Link to="/dashboard">
+                      <Button variant="outline" className="w-full border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white">
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Button 
+                      onClick={signOut}
+                      variant="ghost"
+                      className="w-full text-gray-600 hover:text-gray-800"
+                    >
+                      Déconnexion
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/auth">
+                      <Button variant="outline" className="w-full border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white">
+                        Connexion
+                      </Button>
+                    </Link>
+                    <Link to="/auth">
+                      <Button className="w-full btn-senepay">
+                        Commencer
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
           </div>

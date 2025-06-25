@@ -9,7 +9,96 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      merchant_accounts: {
+        Row: {
+          api_key: string | null
+          api_secret: string | null
+          business_address: string | null
+          business_email: string | null
+          business_name: string
+          business_phone: string | null
+          business_type: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          monthly_volume: number | null
+          total_transactions: number | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          api_secret?: string | null
+          business_address?: string | null
+          business_email?: string | null
+          business_name: string
+          business_phone?: string | null
+          business_type?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          monthly_volume?: number | null
+          total_transactions?: number | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          api_secret?: string | null
+          business_address?: string | null
+          business_email?: string | null
+          business_name?: string
+          business_phone?: string | null
+          business_type?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          monthly_volume?: number | null
+          total_transactions?: number | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          is_verified: boolean | null
+          phone: string | null
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          is_verified?: boolean | null
+          phone?: string | null
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_verified?: boolean | null
+          phone?: string | null
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

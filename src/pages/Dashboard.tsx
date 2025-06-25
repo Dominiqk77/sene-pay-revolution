@@ -1,290 +1,292 @@
 
-import Header from "@/components/Header";
-import { Card } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
   CreditCard, 
+  DollarSign, 
+  TrendingUp, 
   Users, 
-  Activity,
-  ArrowUpRight,
-  ArrowDownRight,
-  MoreVertical,
-  Download,
-  RefreshCw
+  Settings,
+  Key,
+  BarChart3,
+  Smartphone
 } from "lucide-react";
+import Header from "@/components/Header";
+
+interface Profile {
+  id: string;
+  email: string;
+  full_name: string;
+  company_name: string;
+  phone: string;
+  role: string;
+  is_verified: boolean;
+}
+
+interface MerchantAccount {
+  id: string;
+  business_name: string;
+  business_type: string;
+  api_key: string;
+  is_active: boolean;
+  monthly_volume: number;
+  total_transactions: number;
+}
 
 const Dashboard = () => {
-  const stats = [
-    {
-      title: "Revenus aujourd'hui",
-      value: "2,847,500 FCFA",
-      change: "+12.5%",
-      changeType: "positive",
-      icon: <DollarSign className="h-6 w-6" />
-    },
-    {
-      title: "Transactions",
-      value: "1,247",
-      change: "+8.2%", 
-      changeType: "positive",
-      icon: <CreditCard className="h-6 w-6" />
-    },
-    {
-      title: "Taux de succès",
-      value: "98.4%",
-      change: "-0.3%",
-      changeType: "negative", 
-      icon: <Activity className="h-6 w-6" />
-    },
-    {
-      title: "Clients uniques",
-      value: "892",
-      change: "+15.7%",
-      changeType: "positive",
-      icon: <Users className="h-6 w-6" />
-    }
-  ];
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [merchantAccount, setMerchantAccount] = useState<MerchantAccount | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const recentTransactions = [
-    {
-      id: "TXN-2024-001247",
-      amount: "25,000 FCFA",
-      method: "Orange Money",
-      customer: "+221 77 123 45 67",
-      status: "success",
-      time: "Il y a 2 min"
-    },
-    {
-      id: "TXN-2024-001246", 
-      amount: "15,500 FCFA",
-      method: "Wave",
-      customer: "wave-user-123",
-      status: "success",
-      time: "Il y a 5 min"
-    },
-    {
-      id: "TXN-2024-001245",
-      amount: "45,750 FCFA", 
-      method: "Visa",
-      customer: "****1234",
-      status: "pending",
-      time: "Il y a 8 min"
-    },
-    {
-      id: "TXN-2024-001244",
-      amount: "12,000 FCFA",
-      method: "Free Money",
-      customer: "+221 70 987 65 43",
-      status: "failed",
-      time: "Il y a 12 min"
+  useEffect(() => {
+    if (user) {
+      fetchUserData();
     }
-  ];
+  }, [user]);
 
-  const paymentMethods = [
-    { name: "Orange Money", percentage: 45, amount: "1,280,375 FCFA", color: "bg-orange-500" },
-    { name: "Wave", percentage: 28, amount: "797,300 FCFA", color: "bg-blue-600" },
-    { name: "Cartes", percentage: 18, amount: "512,550 FCFA", color: "bg-green-600" },
-    { name: "Free Money", percentage: 9, amount: "256,275 FCFA", color: "bg-purple-600" }
-  ];
+  const fetchUserData = async () => {
+    try {
+      // Fetch profile
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+
+      if (!profileError && profileData) {
+        setProfile(profileData);
+      }
+
+      // Fetch merchant account
+      const { data: merchantData, error: merchantError } = await supabase
+        .from('merchant_accounts')
+        .select('*')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (!merchantError && merchantData) {
+        setMerchantAccount(merchantData);
+      }
+
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="pt-20 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-senepay-orange mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement de votre tableau de bord...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Dashboard Header */}
-      <div className="pt-24 pb-8 bg-white border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                Dashboard <span className="gradient-text">Merchant</span>
-              </h1>
-              <p className="text-gray-600">Aperçu de vos performances en temps réel</p>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
-                <Download className="mr-2 h-4 w-4" />
-                Exporter
-              </Button>
-              <Button size="sm" className="btn-senepay">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Actualiser
-              </Button>
-            </div>
-          </div>
+      <main className="pt-20 container mx-auto px-4 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Bienvenue, {profile?.full_name || user?.email} 👋
+          </h1>
+          <p className="text-gray-600">
+            Gérez vos paiements et développez votre business avec SenePay
+          </p>
         </div>
-      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={stat.title} className="p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 bg-gradient-senepay rounded-lg text-white">
-                  {stat.icon}
-                </div>
-                <div className={`flex items-center text-sm font-medium ${
-                  stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {stat.changeType === 'positive' ? 
-                    <ArrowUpRight className="h-4 w-4 mr-1" /> : 
-                    <ArrowDownRight className="h-4 w-4 mr-1" />
-                  }
-                  {stat.change}
-                </div>
-              </div>
+        {/* Account Status */}
+        <Card className="mb-8">
+          <CardHeader>
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-1">{stat.value}</h3>
-                <p className="text-gray-600 text-sm">{stat.title}</p>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Statut du compte
+                </CardTitle>
+                <CardDescription>
+                  Informations sur votre compte marchand
+                </CardDescription>
               </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Transactions & Analytics */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Recent Transactions */}
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Transactions récentes</h2>
-                <Button variant="ghost" size="sm">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              <div className="space-y-4">
-                {recentTransactions.map((transaction) => (
-                  <div key={transaction.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold ${
-                        transaction.method === 'Orange Money' ? 'bg-orange-500' :
-                        transaction.method === 'Wave' ? 'bg-blue-600' :
-                        transaction.method === 'Visa' ? 'bg-blue-800' : 'bg-green-600'
-                      }`}>
-                        {transaction.method === 'Orange Money' ? 'OM' :
-                         transaction.method === 'Wave' ? 'W' :
-                         transaction.method === 'Visa' ? 'V' : 'FM'}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-800">{transaction.customer}</p>
-                        <p className="text-sm text-gray-600">{transaction.id}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <p className="font-bold text-gray-800">{transaction.amount}</p>
-                      <div className="flex items-center space-x-2">
-                        <Badge className={`${
-                          transaction.status === 'success' ? 'bg-green-500' :
-                          transaction.status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
-                        } text-white`}>
-                          {transaction.status === 'success' ? 'Succès' :
-                           transaction.status === 'pending' ? 'En cours' : 'Échec'}
-                        </Badge>
-                        <span className="text-xs text-gray-500">{transaction.time}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-6 text-center">
-                <Button variant="outline">Voir toutes les transactions</Button>
-              </div>
-            </Card>
-
-            {/* Analytics Chart Placeholder */}
-            <Card className="p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">Évolution des revenus</h2>
-              <div className="h-64 bg-gradient-to-br from-senepay-gold/10 to-senepay-orange/10 rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <TrendingUp className="h-12 w-12 text-senepay-gold mx-auto mb-4" />
-                  <p className="text-gray-600">Graphique des revenus</p>
-                  <p className="text-sm text-gray-500">Intégration Recharts en cours</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-8">
-            {/* Payment Methods Breakdown */}
-            <Card className="p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">Répartition des paiements</h2>
-              <div className="space-y-4">
-                {paymentMethods.map((method) => (
-                  <div key={method.name} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-700">{method.name}</span>
-                      <span className="text-sm font-bold text-gray-800">{method.percentage}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`${method.color} h-2 rounded-full transition-all duration-500`}
-                        style={{ width: `${method.percentage}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-sm text-gray-600">{method.amount}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card className="p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">Actions rapides</h2>
-              <div className="space-y-3">
-                <Button className="w-full btn-senepay">
-                  Créer un lien de paiement
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Exporter les données
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Configurer les webhooks
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Gérer les remboursements
-                </Button>
-              </div>
-            </Card>
-
-            {/* Account Status */}
-            <Card className="p-6 bg-gradient-to-br from-senepay-green/10 to-emerald-500/10 border-senepay-green/20">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-3 h-3 bg-senepay-green rounded-full animate-pulse"></div>
-                <h3 className="font-bold text-gray-800">Compte vérifié</h3>
-              </div>
-              <p className="text-sm text-gray-600 mb-4">
-                Votre compte est entièrement vérifié et opérationnel
-              </p>
+              <Badge variant={profile?.is_verified ? "default" : "secondary"}>
+                {profile?.is_verified ? "Vérifié" : "En attente"}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span>KYC</span>
-                  <Badge className="bg-green-500 text-white">Validé</Badge>
+                <p className="text-sm font-medium text-gray-500">Email</p>
+                <p className="font-medium">{profile?.email}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-500">Rôle</p>
+                <Badge variant="outline" className="capitalize">
+                  {profile?.role}
+                </Badge>
+              </div>
+              {profile?.company_name && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-500">Entreprise</p>
+                  <p className="font-medium">{profile.company_name}</p>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span>Limites</span>
-                  <Badge className="bg-blue-500 text-white">Premium</Badge>
+              )}
+              {profile?.phone && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-500">Téléphone</p>
+                  <p className="font-medium">{profile.phone}</p>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span>API Access</span>
-                  <Badge className="bg-senepay-gold text-white">Live</Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* API Credentials */}
+        {merchantAccount && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5" />
+                Clés API
+              </CardTitle>
+              <CardDescription>
+                Utilisez ces clés pour intégrer SenePay à votre application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm font-medium text-gray-500 mb-2">Clé API</p>
+                  <code className="text-sm bg-white px-3 py-2 rounded border break-all">
+                    {merchantAccount.api_key}
+                  </code>
+                </div>
+                <p className="text-sm text-gray-600">
+                  ⚠️ Gardez vos clés secrètes ! Ne les partagez jamais publiquement.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Stats Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-senepay-orange/10 rounded-lg">
+                  <DollarSign className="h-6 w-6 text-senepay-orange" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Volume mensuel</p>
+                  <p className="text-2xl font-bold">
+                    {merchantAccount?.monthly_volume?.toLocaleString('fr-FR')} FCFA
+                  </p>
                 </div>
               </div>
-            </Card>
-          </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-senepay-gold/10 rounded-lg">
+                  <CreditCard className="h-6 w-6 text-senepay-gold" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Transactions</p>
+                  <p className="text-2xl font-bold">
+                    {merchantAccount?.total_transactions || 0}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Taux de succès</p>
+                  <p className="text-2xl font-bold">98.5%</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Smartphone className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Mobile Money</p>
+                  <p className="text-2xl font-bold">75%</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Actions rapides
+            </CardTitle>
+            <CardDescription>
+              Commencez à utiliser SenePay dès maintenant
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
+                <BarChart3 className="h-8 w-8 text-senepay-orange" />
+                <span className="font-medium">Voir les Analytics</span>
+                <span className="text-sm text-gray-500 text-center">
+                  Analysez vos performances
+                </span>
+              </Button>
+              
+              <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
+                <Key className="h-8 w-8 text-senepay-gold" />
+                <span className="font-medium">Documentation API</span>
+                <span className="text-sm text-gray-500 text-center">
+                  Intégrez SenePay facilement
+                </span>
+              </Button>
+              
+              <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
+                <Settings className="h-8 w-8 text-gray-600" />
+                <span className="font-medium">Paramètres</span>
+                <span className="text-sm text-gray-500 text-center">
+                  Configurez votre compte
+                </span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
     </div>
   );
 };
