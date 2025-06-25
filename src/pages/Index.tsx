@@ -6,6 +6,7 @@ import FeaturesSection from "@/components/FeaturesSection";
 import PricingSection from "@/components/PricingSection";
 import DeveloperSection from "@/components/DeveloperSection";
 import Footer from "@/components/Footer";
+import PWAInstallButton from "@/components/PWAInstallButton";
 import { useEffect } from "react";
 
 const Index = () => {
@@ -33,6 +34,7 @@ const Index = () => {
       <PricingSection />
       <DeveloperSection />
       <Footer />
+      <PWAInstallButton />
     </div>
   );
 };
