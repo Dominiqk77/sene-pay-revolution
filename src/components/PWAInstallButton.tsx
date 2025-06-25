@@ -79,14 +79,18 @@ const PWAInstallButton = () => {
 
   return (
     <>
-      {/* Install Banner */}
+      {/* Install Banner avec nouveau logo premium */}
       {showInstallBanner && deferredPrompt && (
         <div className="fixed top-20 left-4 right-4 z-50 md:left-auto md:right-4 md:w-80">
           <div className="bg-gradient-senepay text-white p-4 rounded-lg shadow-2xl animate-slide-in">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">S</span>
+                <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+                  <img 
+                    src="/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png"
+                    alt="SenePay"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm">Installer SenePay</h3>

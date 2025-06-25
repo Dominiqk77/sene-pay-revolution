@@ -1,5 +1,6 @@
 
 import { Separator } from "@/components/ui/separator";
+import Logo from "@/components/Logo";
 
 const Footer = () => {
   const footerSections = [
@@ -59,13 +60,10 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-16">
         {/* Main Footer Content */}
         <div className="grid lg:grid-cols-5 gap-8 mb-12">
-          {/* Brand */}
+          {/* Brand avec nouveau logo premium */}
           <div className="lg:col-span-1">
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-senepay rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
-              <span className="text-2xl font-bold gradient-text">SenePay</span>
+            <div className="mb-6">
+              <Logo size="md" variant="white" interactive={true} />
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               La passerelle de paiement révolutionnaire qui connecte l'Afrique de l'Ouest 
