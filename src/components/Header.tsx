@@ -48,7 +48,7 @@ const Header = () => {
                     alt="SenePay Logo"
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                     loading="eager"
-                    fetchpriority="high"
+                    fetchPriority="high"
                     decoding="sync"
                     style={{ 
                       imageRendering: 'crisp-edges',
