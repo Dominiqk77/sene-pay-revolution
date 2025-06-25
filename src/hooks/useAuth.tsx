@@ -28,6 +28,50 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fonction pour vérifier le rôle et rediriger
+  const checkRoleAndRedirect = async (user: User) => {
+    try {
+      console.log('🔍 Checking user role for redirect...', user.email);
+      
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (!profileError && profileData) {
+        console.log('👑 User role detected:', profileData.role);
+        
+        if (profileData.role === 'super_admin') {
+          console.log('🚨 Super Admin detected - redirecting to /super-admin');
+          // Vérifier si on n'est pas déjà sur la bonne page
+          if (window.location.pathname !== '/super-admin') {
+            setTimeout(() => {
+              window.location.href = '/super-admin';
+            }, 100);
+          }
+          return;
+        }
+      }
+      
+      // Redirection vers dashboard seulement si on est sur auth ou root
+      if (window.location.pathname === '/auth' || window.location.pathname === '/') {
+        console.log('📊 Regular user - redirecting to /dashboard');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 100);
+      }
+    } catch (roleError) {
+      console.warn('Could not check user role:', roleError);
+      // Redirection par défaut vers dashboard
+      if (window.location.pathname === '/auth' || window.location.pathname === '/') {
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 100);
+      }
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -36,10 +80,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Différer le chargement des données utilisateur pour éviter les deadlocks
+        // Vérifier le rôle et rediriger pour les sessions existantes et nouvelles connexions
         if (event === 'SIGNED_IN' && session?.user) {
           setTimeout(() => {
-            console.log('User signed in, data loading deferred');
+            checkRoleAndRedirect(session.user);
           }, 0);
         }
         
@@ -53,12 +97,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
           console.error('Error getting session:', error);
-          // Nettoyer l'état en cas d'erreur de session
           cleanupAuthState();
         } else {
           console.log('Initial session:', session?.user?.email);
           setSession(session);
           setUser(session?.user ?? null);
+          
+          // Vérifier le rôle et rediriger pour la session initiale
+          if (session?.user) {
+            setTimeout(() => {
+              checkRoleAndRedirect(session.user);
+            }, 0);
+          }
         }
       } catch (error) {
         console.error('Error in getInitialSession:', error);
@@ -77,7 +127,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log('Attempting signUp for:', email);
       
-      // Nettoyer l'état d'authentification avant l'inscription
       cleanupAuthState();
       
       const redirectUrl = `${window.location.origin}/`;
@@ -105,10 +154,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log('Attempting signIn for:', email);
       
-      // Nettoyer l'état d'authentification avant la connexion
       cleanupAuthState();
       
-      // Tenter une déconnexion globale d'abord
       try {
         await supabase.auth.signOut({ scope: 'global' });
       } catch (signOutError) {
@@ -122,39 +169,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       console.log('SignIn result:', { data: data?.user?.email, error });
       
-      if (!error && data.user) {
-        // Vérifier le rôle utilisateur avant de rediriger
-        console.log('🔍 Checking user role before redirect...');
-        
-        try {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', data.user.id)
-            .single();
-
-          if (!profileError && profileData) {
-            console.log('👑 User role detected:', profileData.role);
-            
-            if (profileData.role === 'super_admin') {
-              console.log('🚨 Super Admin detected - redirecting to /super-admin');
-              setTimeout(() => {
-                window.location.href = '/super-admin';
-              }, 100);
-              return { error };
-            }
-          }
-        } catch (roleError) {
-          console.warn('Could not check user role, using default redirect:', roleError);
-        }
-        
-        // Redirection par défaut pour les autres utilisateurs
-        console.log('📊 Regular user - redirecting to /dashboard');
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 100);
-      }
-      
+      // La redirection sera gérée par onAuthStateChange et checkRoleAndRedirect
       return { error };
     } catch (error) {
       console.error('SignIn error:', error);
@@ -168,7 +183,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await forceSignOut(supabase);
     } catch (error) {
       console.error('SignOut error:', error);
-      // Forcer quand même la redirection
       window.location.href = '/auth';
     }
   };
