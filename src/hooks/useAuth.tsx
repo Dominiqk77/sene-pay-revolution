@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const checkRoleAndRedirect = async (user: User) => {
     try {
       console.log('🔍 Checking user role for redirect...', user.email);
+      console.log('🌍 Current pathname:', window.location.pathname);
       
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -43,31 +44,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('👑 User role detected:', profileData.role);
         
         if (profileData.role === 'super_admin') {
-          console.log('🚨 Super Admin detected - redirecting to /super-admin');
-          // Vérifier si on n'est pas déjà sur la bonne page
+          console.log('🚨 Super Admin detected - checking current path');
+          // Rediriger UNIQUEMENT si on n'est pas déjà sur /super-admin
           if (window.location.pathname !== '/super-admin') {
-            setTimeout(() => {
-              window.location.href = '/super-admin';
-            }, 100);
+            console.log('🔄 Redirecting to /super-admin');
+            window.location.href = '/super-admin';
+          } else {
+            console.log('✅ Already on /super-admin, no redirect needed');
           }
           return;
         }
       }
       
-      // Redirection vers dashboard seulement si on est sur auth ou root
-      if (window.location.pathname === '/auth' || window.location.pathname === '/') {
+      // Redirection vers dashboard seulement si on est sur auth ou root ET pas super admin
+      if ((window.location.pathname === '/auth' || window.location.pathname === '/') && profileData?.role !== 'super_admin') {
         console.log('📊 Regular user - redirecting to /dashboard');
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 100);
+        window.location.href = '/dashboard';
       }
     } catch (roleError) {
       console.warn('Could not check user role:', roleError);
-      // Redirection par défaut vers dashboard
+      // Redirection par défaut vers dashboard seulement si pas d'erreur de rôle
       if (window.location.pathname === '/auth' || window.location.pathname === '/') {
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 100);
+        window.location.href = '/dashboard';
       }
     }
   };
@@ -76,15 +74,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
+        console.log('🔄 Auth state changed:', event, session?.user?.email);
+        console.log('🌍 Current URL when auth changed:', window.location.href);
+        
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Vérifier le rôle et rediriger pour les sessions existantes et nouvelles connexions
-        if (event === 'SIGNED_IN' && session?.user) {
+        // Vérifier le rôle et rediriger pour TOUTES les sessions authentifiées
+        if (session?.user) {
+          console.log('👤 User found in session, checking role...');
           setTimeout(() => {
             checkRoleAndRedirect(session.user);
-          }, 0);
+          }, 100); // Petit délai pour s'assurer que l'état est mis à jour
         }
         
         setLoading(false);
@@ -99,15 +100,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.error('Error getting session:', error);
           cleanupAuthState();
         } else {
-          console.log('Initial session:', session?.user?.email);
+          console.log('📋 Initial session found:', session?.user?.email);
           setSession(session);
           setUser(session?.user ?? null);
           
           // Vérifier le rôle et rediriger pour la session initiale
           if (session?.user) {
+            console.log('🔍 Initial session has user, checking role for redirect...');
             setTimeout(() => {
               checkRoleAndRedirect(session.user);
-            }, 0);
+            }, 200); // Délai un peu plus long pour l'initialisation
           }
         }
       } catch (error) {
