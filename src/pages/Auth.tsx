@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -222,11 +222,8 @@ const Auth = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Retour à l'accueil
           </Link>
-          <div className="flex items-center justify-center space-x-2 mb-2">
-            <div className="w-12 h-12 bg-gradient-senepay rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">S</span>
-            </div>
-            <span className="text-3xl font-bold gradient-text">SenePay</span>  
+          <div className="flex items-center justify-center mb-2">
+            <Logo size="lg" variant="default" interactive={true} />
           </div>
           <p className="text-gray-600">Votre passerelle de paiement révolutionnaire</p>
         </div>
