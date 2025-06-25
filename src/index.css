@@ -108,9 +108,21 @@
 }
 
 @layer components {
-  /* SenePay gradient text effect */
+  /* SenePay gradient text effect with premium animations */
   .gradient-text {
-    @apply bg-gradient-to-r from-senepay-gold via-senepay-orange to-senepay-green bg-clip-text text-transparent;
+    background: linear-gradient(
+      135deg, 
+      #F59E0B 0%, 
+      #EA580C 25%, 
+      #059669 50%, 
+      #F59E0B 75%, 
+      #EA580C 100%
+    );
+    background-size: 300% 300%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flow 6s ease-in-out infinite, text-shimmer 3s ease-in-out infinite;
   }
 
   /* Hero section glassmorphism effect */
@@ -139,6 +151,45 @@
   .feature-card {
     @apply p-6 rounded-2xl bg-white shadow-lg border border-gray-100 
            transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+}
+
+/* Gradient animations */
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    background-position: 100% 50%;
+    filter: hue-rotate(5deg);
+  }
+  50% {
+    background-position: 100% 100%;
+    filter: hue-rotate(0deg);
+  }
+  75% {
+    background-position: 0% 100%;
+    filter: hue-rotate(-5deg);
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(0deg);
+  }
+}
+
+@keyframes text-shimmer {
+  0% {
+    text-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    text-shadow: 
+      0 0 10px rgba(245, 158, 11, 0.5),
+      0 0 20px rgba(234, 88, 12, 0.3),
+      0 0 30px rgba(5, 150, 105, 0.2);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
   }
 }
 
