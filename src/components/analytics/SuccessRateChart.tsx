@@ -1,5 +1,5 @@
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
 
@@ -8,6 +8,7 @@ interface SuccessRateData {
   successRate: number;
   totalTransactions: number;
   successfulTransactions: number;
+  color: string;
 }
 
 interface SuccessRateChartProps {
@@ -15,6 +16,12 @@ interface SuccessRateChartProps {
 }
 
 const SuccessRateChart = ({ data }: SuccessRateChartProps) => {
+  // Calculer les couleurs basées sur le taux de succès
+  const dataWithColors = data.map(item => ({
+    ...item,
+    color: item.successRate >= 90 ? '#10b981' : item.successRate >= 75 ? '#f59e0b' : '#ef4444'
+  }));
+
   return (
     <Card>
       <CardHeader>
@@ -29,7 +36,7 @@ const SuccessRateChart = ({ data }: SuccessRateChartProps) => {
       <CardContent>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} layout="horizontal">
+            <BarChart data={dataWithColors} layout="horizontal">
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis 
                 type="number" 
@@ -57,15 +64,11 @@ const SuccessRateChart = ({ data }: SuccessRateChartProps) => {
                   'Taux de succès'
                 ]}
               />
-              <Bar 
-                dataKey="successRate" 
-                fill={(entry: any) => {
-                  if (entry >= 90) return '#10b981'; // Green
-                  if (entry >= 75) return '#f59e0b'; // Yellow
-                  return '#ef4444'; // Red
-                }}
-                radius={[0, 4, 4, 0]}
-              />
+              <Bar dataKey="successRate" radius={[0, 4, 4, 0]}>
+                {dataWithColors.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -24,6 +23,7 @@ interface AnalyticsData {
     successRate: number;
     totalTransactions: number;
     successfulTransactions: number;
+    color: string;
   }>;
   businessMetrics: {
     mrr: number;
@@ -149,7 +149,7 @@ export const useAnalyticsData = (merchantId?: string) => {
       });
     }
 
-    // Taux de succès par méthode
+    // Taux de succès par méthode avec couleurs calculées
     const successRateData = Object.entries(
       transactions.reduce((acc: any, t) => {
         if (t.payment_method) {
@@ -163,12 +163,16 @@ export const useAnalyticsData = (merchantId?: string) => {
         }
         return acc;
       }, {})
-    ).map(([method, data]: any) => ({
-      method: method.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      successRate: data.total > 0 ? (data.successful / data.total) * 100 : 0,
-      totalTransactions: data.total,
-      successfulTransactions: data.successful
-    }));
+    ).map(([method, data]: any) => {
+      const successRate = data.total > 0 ? (data.successful / data.total) * 100 : 0;
+      return {
+        method: method.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        successRate,
+        totalTransactions: data.total,
+        successfulTransactions: data.successful,
+        color: successRate >= 90 ? '#10b981' : successRate >= 75 ? '#f59e0b' : '#ef4444'
+      };
+    });
 
     // Métriques business
     const completedTransactions = transactions.filter(t => t.status === 'completed');
