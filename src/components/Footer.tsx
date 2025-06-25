@@ -1,62 +1,99 @@
-
 import { Separator } from "@/components/ui/separator";
 import Logo from "@/components/Logo";
-
 const Footer = () => {
-  const footerSections = [
-    {
-      title: "Produit",
-      links: [
-        { name: "API Documentation", href: "#" },
-        { name: "SDKs", href: "#" },
-        { name: "Plugins", href: "#" },
-        { name: "Webhook", href: "#" },
-        { name: "Sandbox", href: "#" }
-      ]
-    },
-    {
-      title: "Solutions",
-      links: [
-        { name: "E-commerce", href: "#" },
-        { name: "Marketplaces", href: "#" },
-        { name: "SaaS", href: "#" },
-        { name: "Mobile Apps", href: "#" },
-        { name: "Subscriptions", href: "#" }
-      ]
-    },
-    {
-      title: "Ressources",
-      links: [
-        { name: "Documentation", href: "#" },
-        { name: "Guides", href: "#" },
-        { name: "Blog Tech", href: "#" },
-        { name: "Status Page", href: "#" },
-        { name: "Changelog", href: "#" }
-      ]
-    },
-    {
-      title: "Entreprise",
-      links: [
-        { name: "À propos", href: "#" },
-        { name: "Carrières", href: "#" },
-        { name: "Partenaires", href: "#" },
-        { name: "Presse", href: "#" },
-        { name: "Contact", href: "#" }
-      ]
-    }
-  ];
-
-  const paymentMethods = [
-    { name: "Orange Money", color: "bg-orange-500" },
-    { name: "Wave", color: "bg-blue-600" },
-    { name: "Free Money", color: "bg-green-600" },
-    { name: "Wizall", color: "bg-purple-600" },
-    { name: "Visa", color: "bg-blue-800" },
-    { name: "Mastercard", color: "bg-red-600" }
-  ];
-
-  return (
-    <footer className="bg-senepay-dark text-white">
+  const footerSections = [{
+    title: "Produit",
+    links: [{
+      name: "API Documentation",
+      href: "#"
+    }, {
+      name: "SDKs",
+      href: "#"
+    }, {
+      name: "Plugins",
+      href: "#"
+    }, {
+      name: "Webhook",
+      href: "#"
+    }, {
+      name: "Sandbox",
+      href: "#"
+    }]
+  }, {
+    title: "Solutions",
+    links: [{
+      name: "E-commerce",
+      href: "#"
+    }, {
+      name: "Marketplaces",
+      href: "#"
+    }, {
+      name: "SaaS",
+      href: "#"
+    }, {
+      name: "Mobile Apps",
+      href: "#"
+    }, {
+      name: "Subscriptions",
+      href: "#"
+    }]
+  }, {
+    title: "Ressources",
+    links: [{
+      name: "Documentation",
+      href: "#"
+    }, {
+      name: "Guides",
+      href: "#"
+    }, {
+      name: "Blog Tech",
+      href: "#"
+    }, {
+      name: "Status Page",
+      href: "#"
+    }, {
+      name: "Changelog",
+      href: "#"
+    }]
+  }, {
+    title: "Entreprise",
+    links: [{
+      name: "À propos",
+      href: "#"
+    }, {
+      name: "Carrières",
+      href: "#"
+    }, {
+      name: "Partenaires",
+      href: "#"
+    }, {
+      name: "Presse",
+      href: "#"
+    }, {
+      name: "Contact",
+      href: "#"
+    }]
+  }];
+  const paymentMethods = [{
+    name: "Orange Money",
+    color: "bg-orange-500"
+  }, {
+    name: "Wave",
+    color: "bg-blue-600"
+  }, {
+    name: "Free Money",
+    color: "bg-green-600"
+  }, {
+    name: "Wizall",
+    color: "bg-purple-600"
+  }, {
+    name: "Visa",
+    color: "bg-blue-800"
+  }, {
+    name: "Mastercard",
+    color: "bg-red-600"
+  }];
+  return <footer className="bg-senepay-dark text-white">
       <div className="container mx-auto px-4 py-16">
         {/* Main Footer Content */}
         <div className="grid lg:grid-cols-5 gap-8 mb-12">
@@ -74,35 +111,26 @@ const Footer = () => {
             <div className="space-y-3">
               <p className="text-sm font-semibold text-gray-300">Moyens de paiement intégrés</p>
               <div className="grid grid-cols-3 gap-2">
-                {paymentMethods.map((method) => (
-                  <div key={method.name} className={`${method.color} rounded p-2 text-center`}>
+                {paymentMethods.map(method => <div key={method.name} className={`${method.color} rounded p-2 text-center`}>
                     <span className="text-xs font-bold text-white">
                       {method.name.split(' ')[0]}
                     </span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
           </div>
 
           {/* Footer Links */}
-          {footerSections.map((section) => (
-            <div key={section.title}>
+          {footerSections.map(section => <div key={section.title}>
               <h3 className="font-bold text-lg mb-4 text-white">{section.title}</h3>
               <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <a 
-                      href={link.href} 
-                      className="text-gray-400 hover:text-senepay-gold transition-colors duration-200"
-                    >
+                {section.links.map(link => <li key={link.name}>
+                    <a href={link.href} className="text-gray-400 hover:text-senepay-gold transition-colors duration-200">
                       {link.name}
                     </a>
-                  </li>
-                ))}
+                  </li>)}
               </ul>
-            </div>
-          ))}
+            </div>)}
         </div>
 
         <Separator className="bg-gray-700 mb-8" />
@@ -132,7 +160,7 @@ const Footer = () => {
         {/* Bottom Footer */}
         <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
           <div className="flex items-center space-x-6 text-sm text-gray-400">
-            <span>© 2024 SenePay. Tous droits réservés.</span>
+            <span>© 2025 SenePay. Tous droits réservés. Powered by Millennium Capital Invest</span>
             <a href="#" className="hover:text-senepay-gold transition-colors">
               Politique de confidentialité
             </a>
@@ -182,8 +210,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
