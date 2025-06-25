@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,6 +46,9 @@ interface PaymentMethod {
     max_delay: number;
   };
 }
+
+const SUPABASE_URL = "https://jdbepvxzqqjnkgnojosh.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpkYmVwdnh6cXFqbmtnbm9qb3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4Njc3NTIsImV4cCI6MjA2NjQ0Mzc1Mn0.ehCIHBt7Ojyd8muKQ4xR-Qdiz9CKLoZdrqWbBIt7WJQ";
 
 const Checkout = () => {
   const { paymentId } = useParams();
@@ -133,7 +135,20 @@ const Checkout = () => {
         .order('name');
 
       if (error) throw error;
-      setPaymentMethods(data || []);
+      
+      // Transform the data to match PaymentMethod interface
+      const transformedMethods: PaymentMethod[] = (data || []).map(method => ({
+        code: method.code,
+        name: method.name,
+        description: method.description || '',
+        config: {
+          success_rate: (method.config as any)?.success_rate || 0.85,
+          min_delay: (method.config as any)?.min_delay || 5,
+          max_delay: (method.config as any)?.max_delay || 15,
+        }
+      }));
+      
+      setPaymentMethods(transformedMethods);
     } catch (error) {
       console.error('Error fetching payment methods:', error);
     }
@@ -147,11 +162,11 @@ const Checkout = () => {
 
     try {
       // Appel à l'edge function simulate-payment
-      const response = await fetch(`${supabase.supabaseUrl}/functions/v1/simulate-payment`, {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/simulate-payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabase.supabaseKey}`
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify({
           payment_id: paymentId,
