@@ -5,12 +5,10 @@ import { ArrowDown, Shield, Zap, Globe } from "lucide-react";
 const HeroSection = () => {
   return (
     <section id="home" className="min-h-screen bg-gradient-hero text-white relative overflow-hidden">
-      {/* Background decoration */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.05\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40"></div>
       
       <div className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
-          {/* Content */}
           <div className="space-y-8 animate-fade-in">
             <div className="space-y-4">
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-senepay text-sm font-medium">
@@ -33,7 +31,6 @@ const HeroSection = () => {
               </p>
             </div>
 
-            {/* Key stats */}
             <div className="grid grid-cols-3 gap-6 py-8">
               <div className="text-center">
                 <div className="stat-number">89%</div>
@@ -49,7 +46,6 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="btn-senepay text-lg px-8 py-4">
                 Démarrer gratuitement
@@ -64,7 +60,6 @@ const HeroSection = () => {
               </Button>
             </div>
 
-            {/* Trust indicators */}
             <div className="flex items-center space-x-6 pt-8">
               <div className="flex items-center space-x-2">
                 <Shield className="h-5 w-5 text-senepay-green" />
@@ -77,10 +72,8 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Visual */}
           <div className="relative animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <div className="relative">
-              {/* Main dashboard mockup */}
               <div className="glass-card p-6 transform rotate-2 hover:rotate-0 transition-transform duration-500">
                 <div className="bg-white rounded-lg p-6 shadow-2xl">
                   <div className="flex items-center justify-between mb-6">
@@ -139,7 +132,6 @@ const HeroSection = () => {
                 </div>
               </div>
 
-              {/* Floating payment methods */}
               <div className="absolute -top-4 -right-4 glass-card p-3 animate-pulse-gold">
                 <div className="flex space-x-2">
                   <div className="w-8 h-6 bg-orange-500 rounded flex items-center justify-center text-white text-xs font-bold">OM</div>
@@ -163,7 +155,6 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <ArrowDown className="h-6 w-6 text-white/60" />
         </div>
