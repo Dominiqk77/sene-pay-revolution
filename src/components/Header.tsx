@@ -41,12 +41,12 @@ const Header = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo avec chargement optimisé instantané */}
             <Link to="/" className="flex-shrink-0">
-              <div className="flex items-center space-x-2 transition-all duration-500 hover:scale-110 cursor-pointer group">
-                <div className="w-10 h-10 relative overflow-hidden rounded-xl transform transition-all duration-500 group-hover:rotate-12 group-hover:shadow-2xl">
+              <div className="flex items-center space-x-2 transition-all duration-700 hover:scale-105 cursor-pointer group">
+                <div className="w-10 h-10 relative overflow-hidden rounded-xl transform transition-all duration-700 group-hover:rotate-6 group-hover:shadow-xl">
                   <img 
                     src="/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png"
                     alt="SenePay Logo"
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                     loading="eager"
                     fetchPriority="high"
                     decoding="sync"
@@ -56,9 +56,9 @@ const Header = () => {
                       backfaceVisibility: 'hidden'
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </div>
-                <span className="text-2xl gradient-text font-bold tracking-tight transition-all duration-500 group-hover:tracking-wide">
+                <span className="text-2xl font-bold tracking-tight transition-all duration-700 group-hover:tracking-wide navbar-gradient-text">
                   SenePay
                 </span>
               </div>

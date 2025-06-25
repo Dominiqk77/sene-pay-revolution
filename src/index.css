@@ -125,6 +125,23 @@
     animation: gradient-flow 12s ease-in-out infinite, text-shimmer 6s ease-in-out infinite;
   }
 
+  /* Version plus lente pour le titre du logo navbar */
+  .navbar-gradient-text {
+    background: linear-gradient(
+      135deg, 
+      #F59E0B 0%, 
+      #EA580C 25%, 
+      #059669 50%, 
+      #F59E0B 75%, 
+      #EA580C 100%
+    );
+    background-size: 300% 300%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: navbar-gradient-flow 20s ease-in-out infinite, navbar-text-shimmer 10s ease-in-out infinite;
+  }
+
   /* Hero section glassmorphism effect */
   .glass-card {
     @apply backdrop-blur-sm bg-white/10 border border-white/20 rounded-xl;
@@ -154,7 +171,7 @@
   }
 }
 
-/* Gradient animations */
+/* Gradient animations standards */
 @keyframes gradient-flow {
   0% {
     background-position: 0% 50%;
@@ -185,6 +202,40 @@
   }
   100% {
     text-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+  }
+}
+
+/* Animations spéciales pour le logo navbar (plus lentes) */
+@keyframes navbar-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes navbar-text-shimmer {
+  0% {
+    text-shadow: 0 0 3px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 6px rgba(245, 158, 11, 0.3),
+      0 0 12px rgba(234, 88, 12, 0.2),
+      0 0 18px rgba(5, 150, 105, 0.1);
+  }
+  100% {
+    text-shadow: 0 0 3px rgba(245, 158, 11, 0.2);
   }
 }
 
