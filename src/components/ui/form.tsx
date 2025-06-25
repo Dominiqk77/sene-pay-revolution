@@ -129,7 +129,7 @@ const FormControl = React.forwardRef<
         (child as any).props.onFocus(e);
       }
     },
-    onChange: (e: React.ChangeEvent) => {
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log('FormControl onChange triggered:', e.target.value);
       if ((child as any).props.onChange) {
         (child as any).props.onChange(e);
