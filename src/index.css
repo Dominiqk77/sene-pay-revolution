@@ -45,6 +45,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* SenePay custom colors */
+    --senepay-orange: 37 93% 49%;
+    --senepay-gold: 43 96% 56%;
+    --senepay-green: 142 76% 36%;
   }
 
   .dark {
@@ -88,6 +93,17 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
+  /* Fix pour les inputs */
+  input, textarea, select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none !important;
+  }
+
   /* SenePay custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
@@ -108,9 +124,43 @@
 }
 
 @layer components {
+  /* SenePay custom colors */
+  .text-senepay-orange {
+    color: hsl(var(--senepay-orange));
+  }
+  
+  .bg-senepay-orange {
+    background-color: hsl(var(--senepay-orange));
+  }
+  
+  .text-senepay-gold {
+    color: hsl(var(--senepay-gold));
+  }
+  
+  .bg-senepay-gold {
+    background-color: hsl(var(--senepay-gold));
+  }
+  
+  .text-senepay-green {
+    color: hsl(var(--senepay-green));
+  }
+  
+  .bg-senepay-green {
+    background-color: hsl(var(--senepay-green));
+  }
+
+  /* SenePay gradient backgrounds */
+  .bg-gradient-senepay {
+    background: linear-gradient(135deg, hsl(var(--senepay-gold)), hsl(var(--senepay-orange)));
+  }
+
   /* SenePay gradient text effect */
   .gradient-text {
-    @apply bg-gradient-to-r from-senepay-gold via-senepay-orange to-senepay-green bg-clip-text text-transparent;
+    background: linear-gradient(135deg, hsl(var(--senepay-gold)), hsl(var(--senepay-orange)), hsl(var(--senepay-green)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   /* Hero section glassmorphism effect */
