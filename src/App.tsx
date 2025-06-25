@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import Documentation from "./pages/Documentation";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
+import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/checkout/:paymentId" element={<Checkout />} />
             <Route 
               path="/dashboard" 
               element={
