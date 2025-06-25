@@ -101,25 +101,41 @@ const FormLabel = React.forwardRef<
 })
 FormLabel.displayName = "FormLabel"
 
+// Correction critique : Simplifier FormControl pour éviter les conflits avec Slot
 const FormControl = React.forwardRef<
-  React.ElementRef<typeof Slot>,
-  React.ComponentPropsWithoutRef<typeof Slot>
->(({ ...props }, ref) => {
+  HTMLElement,
+  React.HTMLAttributes<HTMLElement>
+>(({ children, ...props }, ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
 
-  return (
-    <Slot
-      ref={ref}
-      id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
+  // Debug log
+  console.log('FormControl render:', { formItemId, error });
+
+  // Au lieu d'utiliser Slot qui peut causer des problèmes, on clone directement l'enfant
+  const child = React.Children.only(children);
+  
+  return React.cloneElement(child as React.ReactElement, {
+    ref,
+    id: formItemId,
+    'aria-describedby': !error
+      ? formDescriptionId
+      : `${formDescriptionId} ${formMessageId}`,
+    'aria-invalid': !!error,
+    ...props,
+    // S'assurer que les événements sont bien propagés
+    onFocus: (e: React.FocusEvent) => {
+      console.log('FormControl onFocus triggered');
+      if ((child as any).props.onFocus) {
+        (child as any).props.onFocus(e);
       }
-      aria-invalid={!!error}
-      {...props}
-    />
-  )
+    },
+    onChange: (e: React.ChangeEvent) => {
+      console.log('FormControl onChange triggered:', e.target.value);
+      if ((child as any).props.onChange) {
+        (child as any).props.onChange(e);
+      }
+    }
+  });
 })
 FormControl.displayName = "FormControl"
 
