@@ -123,7 +123,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('SignIn result:', { data: data?.user?.email, error });
       
       if (!error && data.user) {
-        // Forcer un rechargement de page pour un état propre
+        // Vérifier le rôle utilisateur avant de rediriger
+        console.log('🔍 Checking user role before redirect...');
+        
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', data.user.id)
+            .single();
+
+          if (!profileError && profileData) {
+            console.log('👑 User role detected:', profileData.role);
+            
+            if (profileData.role === 'super_admin') {
+              console.log('🚨 Super Admin detected - redirecting to /super-admin');
+              setTimeout(() => {
+                window.location.href = '/super-admin';
+              }, 100);
+              return { error };
+            }
+          }
+        } catch (roleError) {
+          console.warn('Could not check user role, using default redirect:', roleError);
+        }
+        
+        // Redirection par défaut pour les autres utilisateurs
+        console.log('📊 Regular user - redirecting to /dashboard');
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 100);
