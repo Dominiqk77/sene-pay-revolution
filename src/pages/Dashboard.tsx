@@ -64,19 +64,33 @@ const Dashboard = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Rediriger automatiquement vers Super Admin Dashboard si c'est un super admin
+  // Debug logging pour identifier le problème
   useEffect(() => {
-    if (!roleLoading && isSuperAdmin) {
+    console.log('=== DEBUG DASHBOARD ===');
+    console.log('User:', user?.email);
+    console.log('Profile:', profile);
+    console.log('Profile role:', profile?.role);
+    console.log('Is Super Admin:', isSuperAdmin);
+    console.log('Role loading:', roleLoading);
+    console.log('=======================');
+  }, [user, profile, isSuperAdmin, roleLoading]);
+
+  // Redirection vers Super Admin Dashboard - avec délai pour s'assurer que les données sont chargées
+  useEffect(() => {
+    if (!roleLoading && profile && isSuperAdmin) {
       console.log('Super Admin detected, redirecting to Super Admin Dashboard');
-      navigate('/super-admin');
+      // Délai court pour s'assurer que tout est prêt
+      setTimeout(() => {
+        navigate('/super-admin');
+      }, 100);
     }
-  }, [isSuperAdmin, roleLoading, navigate]);
+  }, [isSuperAdmin, roleLoading, navigate, profile]);
 
   useEffect(() => {
-    if (user && !isSuperAdmin) {
+    if (user && !isSuperAdmin && !roleLoading) {
       fetchDashboardStats();
     }
-  }, [user, isSuperAdmin]);
+  }, [user, isSuperAdmin, roleLoading]);
 
   const fetchDashboardStats = async () => {
     if (!merchantAccount) {
@@ -133,6 +147,7 @@ const Dashboard = () => {
     }
   };
 
+  // Affichage de chargement amélioré
   if (loading || roleLoading) {
     return (
       <div className="min-h-screen">
@@ -140,16 +155,45 @@ const Dashboard = () => {
         <div className="pt-20 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-senepay-orange mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement de votre tableau de bord...</p>
+            <p className="text-gray-600">
+              {roleLoading ? 'Vérification de vos permissions...' : 'Chargement de votre tableau de bord...'}
+            </p>
+            {profile?.role === 'super_admin' && (
+              <p className="text-sm text-senepay-orange mt-2">
+                Redirection vers le tableau de bord Super Admin...
+              </p>
+            )}
           </div>
         </div>
       </div>
     );
   }
 
-  // Si c'est un super admin, on ne devrait pas arriver ici car on redirige
+  // Si c'est un super admin mais qu'il n'a pas été redirigé, afficher un bouton manuel
   if (isSuperAdmin) {
-    return null;
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="pt-20 flex items-center justify-center">
+          <Card className="w-full max-w-md">
+            <CardContent className="p-6 text-center">
+              <Crown className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold mb-2">Super Administrateur Détecté</h2>
+              <p className="text-gray-600 mb-4">
+                Vous êtes un Super Admin. Accédez à votre tableau de bord avancé.
+              </p>
+              <Button 
+                onClick={() => navigate('/super-admin')}
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
+              >
+                <Crown className="h-4 w-4 mr-2" />
+                Accéder au Super Admin Dashboard
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -169,15 +213,22 @@ const Dashboard = () => {
               </p>
             </div>
             
-            {/* Bouton Super Admin Dashboard si applicable */}
+            {/* Debug info pour Super Admin (à supprimer plus tard) */}
             {profile?.role === 'super_admin' && (
-              <Button 
-                onClick={() => navigate('/super-admin')}
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
-              >
-                <Crown className="h-4 w-4 mr-2" />
-                Super Admin Dashboard
-              </Button>
+              <div className="text-right">
+                <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white mb-2">
+                  <Crown className="h-3 w-3 mr-1" />
+                  Super Admin Détecté
+                </Badge>
+                <Button 
+                  onClick={() => navigate('/super-admin')}
+                  size="sm"
+                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
+                >
+                  <Crown className="h-4 w-4 mr-2" />
+                  Accéder Super Admin
+                </Button>
+              </div>
             )}
           </div>
         </div>

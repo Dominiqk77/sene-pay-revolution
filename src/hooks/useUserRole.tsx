@@ -48,6 +48,7 @@ export const useUserRole = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) {
+        console.log('👤 useUserRole: No user found, clearing data');
         setProfile(null);
         setMerchantAccount(null);
         setLoading(false);
@@ -55,7 +56,8 @@ export const useUserRole = () => {
       }
 
       try {
-        console.log('Fetching user data for:', user.email);
+        console.log('🔍 useUserRole: Fetching user data for:', user.email);
+        console.log('🔍 useUserRole: User ID:', user.id);
         
         // Récupérer le profil utilisateur
         const { data: profileData, error: profileError } = await supabase
@@ -65,12 +67,13 @@ export const useUserRole = () => {
           .single();
 
         if (profileError) {
-          console.error('Error fetching profile:', profileError);
+          console.error('❌ useUserRole: Error fetching profile:', profileError);
           setError('Erreur lors du chargement du profil utilisateur');
           return;
         }
 
-        console.log('Profile data:', profileData);
+        console.log('✅ useUserRole: Profile data loaded:', profileData);
+        console.log('👑 useUserRole: User role detected:', profileData?.role);
         setProfile(profileData);
 
         // Récupérer le compte marchand si l'utilisateur en a un
@@ -81,18 +84,28 @@ export const useUserRole = () => {
           .maybeSingle();
 
         if (merchantError) {
-          console.error('Error fetching merchant account:', merchantError);
+          console.error('⚠️ useUserRole: Error fetching merchant account:', merchantError);
           // Ne pas considérer comme une erreur critique si pas de merchant account
         } else if (merchantData) {
-          console.log('Merchant account data:', merchantData);
+          console.log('🏪 useUserRole: Merchant account data loaded:', merchantData);
           setMerchantAccount(merchantData);
+        } else {
+          console.log('ℹ️ useUserRole: No merchant account found for user');
+        }
+
+        // Debug final pour le rôle Super Admin
+        if (profileData?.role === 'super_admin') {
+          console.log('🚨 SUPER ADMIN DETECTED! 🚨');
+          console.log('👑 Profile role:', profileData.role);
+          console.log('✅ isSuperAdmin will be:', profileData.role === 'super_admin');
         }
 
       } catch (err) {
-        console.error('Unexpected error fetching user data:', err);
+        console.error('💥 useUserRole: Unexpected error fetching user data:', err);
         setError('Erreur inattendue lors du chargement des données');
       } finally {
         setLoading(false);
+        console.log('🏁 useUserRole: Data fetching completed');
       }
     };
 
@@ -100,6 +113,7 @@ export const useUserRole = () => {
   }, [user]);
 
   const refreshUserData = async () => {
+    console.log('🔄 useUserRole: Refreshing user data...');
     setLoading(true);
     setError(null);
     
@@ -117,7 +131,7 @@ export const useUserRole = () => {
         .single();
 
       if (profileError) {
-        console.error('Error refreshing profile:', profileError);
+        console.error('❌ useUserRole: Error refreshing profile:', profileError);
         setError('Erreur lors du rechargement du profil');
         return;
       }
@@ -135,13 +149,25 @@ export const useUserRole = () => {
         setMerchantAccount(merchantData);
       }
 
+      console.log('✅ useUserRole: Data refresh completed');
+
     } catch (err) {
-      console.error('Error refreshing user data:', err);
+      console.error('💥 useUserRole: Error refreshing user data:', err);
       setError('Erreur lors du rechargement des données');
     } finally {
       setLoading(false);
     }
   };
+
+  // Debug logging pour les changements de rôle
+  useEffect(() => {
+    if (profile) {
+      console.log('🔄 useUserRole: Role state updated');
+      console.log('👤 Profile:', profile.email);
+      console.log('👑 Role:', profile.role);
+      console.log('🚨 Is Super Admin:', isSuperAdmin);
+    }
+  }, [profile, isSuperAdmin]);
 
   return {
     profile,
