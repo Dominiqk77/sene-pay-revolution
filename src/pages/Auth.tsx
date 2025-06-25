@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,15 +13,15 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, ArrowLeft } from 'lucide-react';
 
 const signInSchema = z.object({
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Veuillez saisir un email valide'),
   password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
 });
 
 const signUpSchema = z.object({
-  fullName: z.string().min(2, 'Le nom complet est requis'),
-  email: z.string().email('Email invalide'),
+  fullName: z.string().min(2, 'Le nom complet doit contenir au moins 2 caractères'),
+  email: z.string().email('Veuillez saisir un email valide'),
   password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
-  confirmPassword: z.string(),
+  confirmPassword: z.string().min(6, 'Veuillez confirmer votre mot de passe'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Les mots de passe ne correspondent pas",
   path: ["confirmPassword"],
@@ -33,9 +33,16 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const signInForm = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -61,29 +68,32 @@ const Auth = () => {
       const { error } = await signIn(data.email, data.password);
       
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          toast({
-            title: 'Erreur de connexion',
-            description: 'Email ou mot de passe incorrect',
-            variant: 'destructive',
-          });
-        } else {
-          toast({
-            title: 'Erreur',
-            description: error.message,
-            variant: 'destructive',
-          });
+        let errorMessage = 'Une erreur est survenue lors de la connexion';
+        
+        if (error.message?.includes('Invalid login credentials')) {
+          errorMessage = 'Email ou mot de passe incorrect';
+        } else if (error.message?.includes('Email not confirmed')) {
+          errorMessage = 'Veuillez confirmer votre email avant de vous connecter';
+        } else if (error.message?.includes('Too many requests')) {
+          errorMessage = 'Trop de tentatives. Veuillez réessayer plus tard';
         }
+        
+        toast({
+          title: 'Erreur de connexion',
+          description: errorMessage,
+          variant: 'destructive',
+        });
       } else {
         toast({
           title: 'Connexion réussie',
-          description: 'Bienvenue sur SenePay !',
+          description: 'Redirection vers votre tableau de bord...',
         });
+        navigate('/dashboard');
       }
     } catch (error) {
       toast({
         title: 'Erreur',
-        description: 'Une erreur est survenue lors de la connexion',
+        description: 'Une erreur inattendue est survenue',
         variant: 'destructive',
       });
     } finally {
@@ -97,30 +107,33 @@ const Auth = () => {
       const { error } = await signUp(data.email, data.password, data.fullName);
       
       if (error) {
-        if (error.message.includes('already registered')) {
-          toast({
-            title: 'Compte existant',
-            description: 'Un compte avec cet email existe déjà. Veuillez vous connecter.',
-            variant: 'destructive',
-          });
-        } else {
-          toast({
-            title: 'Erreur',
-            description: error.message,
-            variant: 'destructive',
-          });
+        let errorMessage = "Une erreur est survenue lors de l'inscription";
+        
+        if (error.message?.includes('already registered')) {
+          errorMessage = 'Un compte avec cet email existe déjà. Veuillez vous connecter.';
+        } else if (error.message?.includes('Password should be at least')) {
+          errorMessage = 'Le mot de passe doit contenir au moins 6 caractères';
+        } else if (error.message?.includes('Invalid email')) {
+          errorMessage = 'Veuillez saisir un email valide';
         }
+        
+        toast({
+          title: "Erreur d'inscription",
+          description: errorMessage,
+          variant: 'destructive',
+        });
       } else {
         toast({
           title: 'Inscription réussie',
-          description: 'Vérifiez votre email pour confirmer votre compte.',
+          description: 'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.',
         });
         setIsSignUp(false);
+        signUpForm.reset();
       }
     } catch (error) {
       toast({
         title: 'Erreur',
-        description: "Une erreur est survenue lors de l'inscription",
+        description: "Une erreur inattendue est survenue lors de l'inscription",
         variant: 'destructive',
       });
     } finally {
@@ -169,6 +182,7 @@ const Auth = () => {
                           <Input 
                             placeholder="Votre nom complet" 
                             {...field}
+                            disabled={loading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -186,6 +200,7 @@ const Auth = () => {
                             type="email" 
                             placeholder="votre@email.com" 
                             {...field}
+                            disabled={loading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -203,6 +218,7 @@ const Auth = () => {
                             type="password" 
                             placeholder="••••••••" 
                             {...field}
+                            disabled={loading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -220,6 +236,7 @@ const Auth = () => {
                             type="password" 
                             placeholder="••••••••" 
                             {...field}
+                            disabled={loading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -246,6 +263,7 @@ const Auth = () => {
                             type="email" 
                             placeholder="votre@email.com" 
                             {...field}
+                            disabled={loading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -263,6 +281,7 @@ const Auth = () => {
                             type="password" 
                             placeholder="••••••••" 
                             {...field}
+                            disabled={loading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -282,6 +301,7 @@ const Auth = () => {
                 type="button"
                 onClick={() => setIsSignUp(!isSignUp)}
                 className="text-senepay-orange hover:text-senepay-orange/80 font-medium"
+                disabled={loading}
               >
                 {isSignUp 
                   ? 'Déjà un compte ? Se connecter'

@@ -1,6 +1,6 @@
 
 import { useAuth } from '@/hooks/useAuth';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
 interface ProtectedRouteProps {
@@ -10,20 +10,22 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, redirectTo = '/auth' }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-6 w-6 animate-spin text-senepay-orange" />
-          <span className="text-gray-600">Chargement...</span>
+          <span className="text-gray-600">Vérification de l'authentification...</span>
         </div>
       </div>
     );
   }
 
   if (!user) {
-    return <Navigate to={redirectTo} replace />;
+    // Sauvegarder l'URL de destination pour redirection après connexion
+    return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
