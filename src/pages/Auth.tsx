@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -52,13 +53,6 @@ const Auth = () => {
       password: '',
       confirmPassword: '',
     },
-  });
-
-  // Debug log pour surveiller l'état du formulaire
-  console.log('Auth form states:', {
-    signInForm: signInForm.formState,
-    signUpForm: signUpForm.formState,
-    isSignUp
   });
 
   const onSignIn = async (data: SignInFormData) => {
@@ -168,43 +162,35 @@ const Auth = () => {
                   <FormField
                     control={signUpForm.control}
                     name="fullName"
-                    render={({ field }) => {
-                      console.log('FullName field render:', field);
-                      return (
-                        <FormItem>
-                          <FormLabel>Nom complet</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Votre nom complet" 
-                              {...field}
-                              onFocus={() => console.log('FullName input focused')}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      );
-                    }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nom complet</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Votre nom complet" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                   <FormField
                     control={signUpForm.control}
                     name="email"
-                    render={({ field }) => {
-                      console.log('Email field render:', field);
-                      return (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="email" 
-                              placeholder="votre@email.com" 
-                              {...field}
-                              onFocus={() => console.log('Email input focused')}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      );
-                    }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="email" 
+                            placeholder="votre@email.com" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                   <FormField
                     control={signUpForm.control}
@@ -217,7 +203,6 @@ const Auth = () => {
                             type="password" 
                             placeholder="••••••••" 
                             {...field}
-                            onFocus={() => console.log('Password input focused')}
                           />
                         </FormControl>
                         <FormMessage />
@@ -235,7 +220,6 @@ const Auth = () => {
                             type="password" 
                             placeholder="••••••••" 
                             {...field}
-                            onFocus={() => console.log('ConfirmPassword input focused')}
                           />
                         </FormControl>
                         <FormMessage />
@@ -254,44 +238,36 @@ const Auth = () => {
                   <FormField
                     control={signInForm.control}
                     name="email"
-                    render={({ field }) => {
-                      console.log('SignIn Email field render:', field);
-                      return (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="email" 
-                              placeholder="votre@email.com" 
-                              {...field}
-                              onFocus={() => console.log('SignIn Email input focused')}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      );
-                    }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="email" 
+                            placeholder="votre@email.com" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                   <FormField
                     control={signInForm.control}
                     name="password"
-                    render={({ field }) => {
-                      console.log('SignIn Password field render:', field);
-                      return (
-                        <FormItem>
-                          <FormLabel>Mot de passe</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="password" 
-                              placeholder="••••••••" 
-                              {...field}
-                              onFocus={() => console.log('SignIn Password input focused')}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      );
-                    }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mot de passe</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="password" 
+                            placeholder="••••••••" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                   <Button type="submit" className="w-full btn-senepay" disabled={loading}>
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
