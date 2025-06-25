@@ -1,28 +1,40 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
-
 const DeveloperSection = () => {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-
   const copyToClipboard = (code: string, id: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(id);
     setTimeout(() => setCopiedCode(null), 2000);
   };
-
-  const integrations = [
-    { name: "React/Next.js", logo: "⚛️", count: "2.1k+ téléchargements" },
-    { name: "PHP/Laravel", logo: "🐘", count: "1.8k+ téléchargements" },
-    { name: "Python/Django", logo: "🐍", count: "1.2k+ téléchargements" },
-    { name: "Node.js/Express", logo: "🟢", count: "3.4k+ téléchargements" },
-    { name: "WooCommerce", logo: "🛒", count: "850+ installations" },
-    { name: "Shopify", logo: "🛍️", count: "420+ installations" }
-  ];
-
+  const integrations = [{
+    name: "React/Next.js",
+    logo: "⚛️",
+    count: "2.1k+ téléchargements"
+  }, {
+    name: "PHP/Laravel",
+    logo: "🐘",
+    count: "1.8k+ téléchargements"
+  }, {
+    name: "Python/Django",
+    logo: "🐍",
+    count: "1.2k+ téléchargements"
+  }, {
+    name: "Node.js/Express",
+    logo: "🟢",
+    count: "3.4k+ téléchargements"
+  }, {
+    name: "WooCommerce",
+    logo: "🛒",
+    count: "850+ installations"
+  }, {
+    name: "Shopify",
+    logo: "🛍️",
+    count: "420+ installations"
+  }];
   const codeExamples = {
     javascript: `// Installation
 npm install senepay-sdk
@@ -51,7 +63,6 @@ const payment = await senepay.payments.create({
 });
 
 console.log('Payment URL:', payment.payment_url);`,
-
     php: `<?php
 // Installation via Composer
 // composer require senepay/senepay-php
@@ -80,7 +91,6 @@ $payment = $senepay->payments->create([
 ]);
 
 echo $payment->payment_url;`,
-
     python: `# Installation
 # pip install senepay-python
 
@@ -107,7 +117,6 @@ payment = senepay.payments.create({
 
 print(f"Payment URL: {payment.payment_url}")`
   };
-
   const webhookExample = `// Webhook handler sécurisé
 app.post('/webhooks/senepay', (req, res) => {
   const signature = req.headers['senepay-signature'];
@@ -134,9 +143,7 @@ app.post('/webhooks/senepay', (req, res) => {
   
   res.status(200).send('OK');
 });`;
-
-  return (
-    <section id="developers" className="py-20 bg-gradient-to-br from-senepay-dark to-gray-900 text-white">
+  return <section id="developers" className="py-20 bg-gradient-to-br from-senepay-dark to-gray-900 text-white">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
@@ -153,12 +160,9 @@ app.post('/webhooks/senepay', (req, res) => {
 
         {/* SDKs Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {integrations.map((integration, index) => (
-            <Card 
-              key={integration.name} 
-              className="bg-white/5 border-white/10 p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
+          {integrations.map((integration, index) => <Card key={integration.name} className="bg-white/5 border-white/10 p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 animate-fade-in" style={{
+          animationDelay: `${index * 0.1}s`
+        }}>
               <div className="flex items-center space-x-4">
                 <div className="text-4xl">{integration.logo}</div>
                 <div>
@@ -166,8 +170,7 @@ app.post('/webhooks/senepay', (req, res) => {
                   <p className="text-sm text-gray-400">{integration.count}</p>
                 </div>
               </div>
-            </Card>
-          ))}
+            </Card>)}
         </div>
 
         {/* Code Examples */}
@@ -189,25 +192,15 @@ app.post('/webhooks/senepay', (req, res) => {
               </TabsTrigger>
             </TabsList>
 
-            {Object.entries(codeExamples).map(([lang, code]) => (
-              <TabsContent key={lang} value={lang} className="mt-6">
+            {Object.entries(codeExamples).map(([lang, code]) => <TabsContent key={lang} value={lang} className="mt-6">
                 <div className="relative">
                   <div className="bg-gray-900 rounded-xl p-6 overflow-x-auto">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-gray-400 text-sm font-mono">
                         {lang}.{lang === 'javascript' ? 'js' : lang === 'php' ? 'php' : 'py'}
                       </span>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => copyToClipboard(code, lang)}
-                        className="text-gray-400 hover:text-white"
-                      >
-                        {copiedCode === lang ? (
-                          <Check className="h-4 w-4" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
+                      <Button size="sm" variant="ghost" onClick={() => copyToClipboard(code, lang)} className="text-gray-400 hover:text-white">
+                        {copiedCode === lang ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </div>
                     <pre className="text-sm text-gray-300 font-mono leading-relaxed">
@@ -215,8 +208,7 @@ app.post('/webhooks/senepay', (req, res) => {
                     </pre>
                   </div>
                 </div>
-              </TabsContent>
-            ))}
+              </TabsContent>)}
           </Tabs>
         </div>
 
@@ -230,17 +222,8 @@ app.post('/webhooks/senepay', (req, res) => {
           <div className="bg-gray-900 rounded-xl p-6 overflow-x-auto">
             <div className="flex items-center justify-between mb-4">
               <span className="text-gray-400 text-sm font-mono">webhook-handler.js</span>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => copyToClipboard(webhookExample, 'webhook')}
-                className="text-gray-400 hover:text-white"
-              >
-                {copiedCode === 'webhook' ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
+              <Button size="sm" variant="ghost" onClick={() => copyToClipboard(webhookExample, 'webhook')} className="text-gray-400 hover:text-white">
+                {copiedCode === 'webhook' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <pre className="text-sm text-gray-300 font-mono leading-relaxed">
@@ -307,15 +290,13 @@ app.post('/webhooks/senepay', (req, res) => {
               <Button className="bg-white text-senepay-dark hover:bg-gray-100 px-8 py-3 font-bold">
                 Accéder à la documentation →
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-senepay-dark px-8 py-3">
+              <Button variant="outline" className="border-white hover:bg-white px-8 py-3 text-gray-950">
                 Sandbox gratuit
               </Button>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default DeveloperSection;
