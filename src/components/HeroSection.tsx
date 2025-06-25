@@ -94,7 +94,7 @@ const HeroSection = () => {
                   
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="bg-gradient-to-r from-senepay-gold to-senepay-orange p-4 rounded-lg text-white">
-                      <p className="text-sm opacity-90">Revenus aujourd'hui</p>
+                      <p className="text-sm opacity-90">Revenus aujourd&apos;hui</p>
                       <p className="text-2xl font-bold">2.4M FCFA</p>
                     </div>
                     <div className="bg-gradient-to-r from-senepay-green to-blue-500 p-4 rounded-lg text-white">
