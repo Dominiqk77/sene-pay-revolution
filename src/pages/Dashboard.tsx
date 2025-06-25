@@ -178,9 +178,10 @@ const Dashboard = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
             <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics Pro</TabsTrigger>
             <TabsTrigger value="api">API & Développement</TabsTrigger>
             <TabsTrigger value="settings">Paramètres</TabsTrigger>
           </TabsList>
@@ -341,6 +342,39 @@ const Dashboard = () => {
 
           <TabsContent value="transactions">
             <TransactionsList merchantId={merchantAccount?.id} />
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Analytics Premium - Niveau Bloomberg
+                </CardTitle>
+                <CardDescription>
+                  Dashboard révolutionnaire avec intelligence artificielle
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <div className="mb-4">
+                    <BarChart3 className="h-16 w-16 text-senepay-orange mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Analytics Révolutionnaire</h3>
+                    <p className="text-gray-600 mb-6">
+                      Découvrez nos analytics premium avec prédictions IA, métriques business avancées,
+                      et recommandations intelligentes pour optimiser vos performances.
+                    </p>
+                  </div>
+                  <Button 
+                    className="bg-gradient-to-r from-senepay-orange to-senepay-gold text-white px-8 py-3"
+                    onClick={() => window.location.href = '/analytics'}
+                  >
+                    <BarChart3 className="h-5 w-5 mr-2" />
+                    Ouvrir Analytics Premium
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="api" className="space-y-6">
