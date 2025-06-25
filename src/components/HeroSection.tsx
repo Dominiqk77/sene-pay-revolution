@@ -1,14 +1,11 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Shield, Zap, Globe } from "lucide-react";
-
 const HeroSection = () => {
-  return (
-    <section id="home" className="min-h-screen bg-gradient-hero text-white relative overflow-hidden">
+  return <section id="home" className="min-h-screen bg-gradient-hero text-white relative overflow-hidden">
       <div className="absolute inset-0 opacity-40">
         <div className="absolute inset-0 bg-repeat" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+      }}></div>
       </div>
       
       <div className="container mx-auto px-4 pt-24 pb-16 relative z-10">
@@ -55,11 +52,7 @@ const HeroSection = () => {
                 Démarrer gratuitement
                 <Zap className="ml-2 h-5 w-5" />
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-white text-white hover:bg-white hover:text-senepay-dark text-lg px-8 py-4"
-              >
+              <Button size="lg" variant="outline" className="border-white hover:bg-white text-lg px-8 py-4 text-blue-950">
                 Voir la démo
               </Button>
             </div>
@@ -76,7 +69,9 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <div className="relative animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="relative animate-fade-in" style={{
+          animationDelay: '0.3s'
+        }}>
             <div className="relative">
               <div className="glass-card p-6 transform rotate-2 hover:rotate-0 transition-transform duration-500">
                 <div className="bg-white rounded-lg p-6 shadow-2xl">
@@ -163,8 +158,6 @@ const HeroSection = () => {
           <ArrowDown className="h-6 w-6 text-white/60" />
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
