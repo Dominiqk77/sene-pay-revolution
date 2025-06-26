@@ -280,10 +280,10 @@ const Dashboard = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                 Bienvenue, {profile?.full_name || user?.email} 👋
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 Gérez vos paiements et développez votre business avec SenePay
               </p>
             </div>
@@ -313,13 +313,51 @@ const Dashboard = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-            <TabsTrigger value="transactions">Transactions</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics Pro</TabsTrigger>
-            <TabsTrigger value="api">API & Développement</TabsTrigger>
-            <TabsTrigger value="settings">Paramètres</TabsTrigger>
-          </TabsList>
+          {/* Tabs optimisés mobile */}
+          <div className="w-full overflow-x-auto pb-2">
+            <TabsList className="grid grid-cols-5 lg:grid-cols-5 w-full min-w-max lg:min-w-0 gap-1 p-1 bg-muted rounded-lg">
+              <TabsTrigger 
+                value="overview" 
+                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Activity className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline">Vue d'ensemble</span>
+                <span className="xs:hidden">Vue</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="transactions"
+                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <CreditCard className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline">Transactions</span>
+                <span className="xs:hidden">Trans</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="analytics"
+                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline">Analytics Pro</span>
+                <span className="xs:hidden">Analytics</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="api"
+                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Key className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline">API & Dev</span>
+                <span className="xs:hidden">API</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="settings"
+                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline">Paramètres</span>
+                <span className="xs:hidden">Config</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="overview" className="space-y-6">
             {/* Statistiques Améliorées */}
