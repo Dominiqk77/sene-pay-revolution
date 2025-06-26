@@ -25,6 +25,10 @@ import {
 import Header from "@/components/Header";
 import TransactionsList from "@/components/TransactionsList";
 import SecurityAlert from '@/components/SecurityAlert';
+import NotificationCenter from '@/components/dashboard/NotificationCenter';
+import DataExport from '@/components/dashboard/DataExport';
+import QuickFilters from '@/components/dashboard/QuickFilters';
+import EnhancedStats from '@/components/dashboard/EnhancedStats';
 
 interface Profile {
   id: string;
@@ -64,6 +68,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState<any>({});
 
   // Debug logging pour identifier le problème
   useEffect(() => {
@@ -147,6 +152,12 @@ const Dashboard = () => {
     }
   };
 
+  const handleFiltersChange = (newFilters: any) => {
+    setFilters(newFilters);
+    // Ici on pourrait appliquer les filtres aux données
+    console.log('Filters applied:', newFilters);
+  };
+
   // Affichage de chargement amélioré
   if (loading || roleLoading) {
     return (
@@ -184,7 +195,7 @@ const Dashboard = () => {
         {/* Security Alert */}
         <SecurityAlert />
         
-        {/* Welcome Section */}
+        {/* Welcome Section avec Notifications */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
@@ -196,23 +207,27 @@ const Dashboard = () => {
               </p>
             </div>
             
-            {/* Debug info pour Super Admin (à supprimer plus tard) */}
-            {profile?.role === 'super_admin' && (
-              <div className="text-right">
-                <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white mb-2">
-                  <Crown className="h-3 w-3 mr-1" />
-                  Super Admin Détecté
-                </Badge>
-                <Button 
-                  onClick={() => navigate('/super-admin')}
-                  size="sm"
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
-                >
-                  <Crown className="h-4 w-4 mr-2" />
-                  Accéder Super Admin
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center gap-4">
+              <NotificationCenter merchantId={merchantAccount?.id} />
+              
+              {/* Debug info pour Super Admin (à supprimer plus tard) */}
+              {profile?.role === 'super_admin' && (
+                <div className="text-right">
+                  <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white mb-2">
+                    <Crown className="h-3 w-3 mr-1" />
+                    Super Admin Détecté
+                  </Badge>
+                  <Button 
+                    onClick={() => navigate('/super-admin')}
+                    size="sm"
+                    className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
+                  >
+                    <Crown className="h-4 w-4 mr-2" />
+                    Accéder Super Admin
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -226,72 +241,20 @@ const Dashboard = () => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            {/* Stats rapides */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-senepay-orange/10 rounded-lg">
-                      <DollarSign className="h-6 w-6 text-senepay-orange" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Revenus totaux</p>
-                      <p className="text-2xl font-bold">
-                        {stats?.completed_amount?.toLocaleString('fr-FR') || '0'} FCFA
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Statistiques Améliorées */}
+            <EnhancedStats stats={stats ? {
+              totalRevenue: stats.completed_amount,
+              totalTransactions: stats.total_transactions,
+              successRate: stats.success_rate,
+              averageOrderValue: stats.completed_amount / Math.max(1, stats.completed_count),
+              todayRevenue: stats.today_amount,
+              todayTransactions: stats.today_transactions,
+              activeCustomers: Math.floor(stats.total_transactions * 0.7), // Mock
+              responseTime: 145 // Mock
+            } : undefined} />
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-senepay-gold/10 rounded-lg">
-                      <CreditCard className="h-6 w-6 text-senepay-gold" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Transactions</p>
-                      <p className="text-2xl font-bold">
-                        {stats?.total_transactions || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <TrendingUp className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Taux de succès</p>
-                      <p className="text-2xl font-bold">
-                        {stats?.success_rate?.toFixed(1) || '0'}%
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Activity className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-600">Aujourd'hui</p>
-                      <p className="text-2xl font-bold">
-                        {stats?.today_transactions || 0}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Filtres rapides */}
+            <QuickFilters onFiltersChange={handleFiltersChange} />
 
             {/* Statuts des transactions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -331,6 +294,9 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Export de données */}
+            <DataExport merchantId={merchantAccount?.id} />
 
             {/* Account Status */}
             <Card>
