@@ -1,12 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Shield, Zap, Globe } from "lucide-react";
 import GlobeBackground from "./GlobeBackground";
+import ErrorBoundary from "./ErrorBoundary";
 
 const HeroSection = () => {
   return (
     <section id="home" className="min-h-screen bg-gradient-hero text-white relative overflow-hidden">
-      {/* Globe terrestre animé en arrière-plan */}
-      <GlobeBackground />
+      {/* Globe terrestre animé en arrière-plan avec Error Boundary */}
+      <ErrorBoundary
+        fallback={
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-transparent to-green-900/10">
+            <div className="absolute inset-0 opacity-20">
+              {[...Array(10)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`absolute w-1 h-1 rounded-full animate-pulse ${
+                    i % 2 === 0 ? 'bg-senepay-gold' : 'bg-senepay-green'
+                  }`}
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 2}s`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        }
+      >
+        <GlobeBackground />
+      </ErrorBoundary>
       
       {/* Pattern de points existant avec opacité réduite */}
       <div className="absolute inset-0 opacity-20 z-10">
