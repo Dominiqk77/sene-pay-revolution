@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
+import { useAnalyticsData } from "@/hooks/useAnalyticsData";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,14 @@ import NotificationCenter from '@/components/dashboard/NotificationCenter';
 import DataExport from '@/components/dashboard/DataExport';
 import QuickFilters from '@/components/dashboard/QuickFilters';
 import EnhancedStats from '@/components/dashboard/EnhancedStats';
+
+// Import des composants analytics
+import RevenueChart from '@/components/analytics/RevenueChart';
+import PaymentMethodsChart from '@/components/analytics/PaymentMethodsChart';
+import TransactionVolumeChart from '@/components/analytics/TransactionVolumeChart';
+import SuccessRateChart from '@/components/analytics/SuccessRateChart';
+import BusinessMetrics from '@/components/analytics/BusinessMetrics';
+import AIPredictions from '@/components/analytics/AIPredictions';
 
 interface Profile {
   id: string;
@@ -69,6 +78,9 @@ const Dashboard = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<any>({});
+
+  // Ajouter les données analytics
+  const { data: analyticsData, loading: analyticsLoading } = useAnalyticsData(merchantAccount?.id);
 
   // Debug logging pour identifier le problème
   useEffect(() => {
@@ -362,37 +374,138 @@ const Dashboard = () => {
             <TransactionsList merchantId={merchantAccount?.id} />
           </TabsContent>
 
-          <TabsContent value="analytics">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  Analytics Premium - Niveau Bloomberg
-                </CardTitle>
-                <CardDescription>
-                  Dashboard révolutionnaire avec intelligence artificielle
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <div className="mb-4">
-                    <BarChart3 className="h-16 w-16 text-senepay-orange mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">Analytics Révolutionnaire</h3>
-                    <p className="text-gray-600 mb-6">
-                      Découvrez nos analytics premium avec prédictions IA, métriques business avancées,
-                      et recommandations intelligentes pour optimiser vos performances.
-                    </p>
-                  </div>
-                  <Button 
-                    className="bg-gradient-to-r from-senepay-orange to-senepay-gold text-white px-8 py-3"
-                    onClick={() => window.location.href = '/analytics'}
-                  >
-                    <BarChart3 className="h-5 w-5 mr-2" />
-                    Ouvrir Analytics Premium
-                  </Button>
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="mb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                    <BarChart3 className="h-6 w-6 text-senepay-orange" />
+                    Analytics Premium
+                    <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                      <Crown className="h-3 w-3 mr-1" />
+                      Pro
+                    </Badge>
+                  </h2>
+                  <p className="text-gray-600">
+                    Dashboard avancé avec intelligence artificielle et prédictions business
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+                
+                <Button 
+                  className="bg-gradient-to-r from-senepay-orange to-senepay-gold text-white"
+                  onClick={() => navigate('/analytics')}
+                >
+                  <BarChart3 className="h-5 w-5 mr-2" />
+                  Version Complète
+                </Button>
+              </div>
+            </div>
+
+            {analyticsData ? (
+              <div className="space-y-6">
+                {/* Graphiques principaux */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <RevenueChart 
+                    data={analyticsData.revenueData}
+                    period="7d"
+                    totalRevenue={analyticsData.revenueData.reduce((sum, item) => sum + item.revenue, 0)}
+                    growth={15.2}
+                  />
+                  <PaymentMethodsChart data={analyticsData.paymentMethodsData} />
+                </div>
+
+                {/* Volume et taux de succès */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <TransactionVolumeChart 
+                    data={analyticsData.volumeData} 
+                    period="today"
+                  />
+                  <SuccessRateChart data={analyticsData.successRateData} />
+                </div>
+
+                {/* Business Metrics */}
+                <BusinessMetrics metrics={analyticsData.businessMetrics} />
+
+                {/* Prédictions IA */}
+                <AIPredictions predictions={analyticsData.predictions.slice(0, 2)} />
+              </div>
+            ) : analyticsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-senepay-orange"></div>
+                <span className="ml-3 text-gray-600">Chargement des analytics...</span>
+              </div>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-senepay-orange" />
+                    Analytics Premium - Aperçu
+                  </CardTitle>
+                  <CardDescription>
+                    Données de démonstration - Connectez vos vraies transactions pour voir vos analytics
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* Graphiques de démonstration */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      <RevenueChart 
+                        data={[
+                          { date: '20 Déc', revenue: 125000, transactions: 12 },
+                          { date: '21 Déc', revenue: 89000, transactions: 8 },
+                          { date: '22 Déc', revenue: 156000, transactions: 15 },
+                          { date: '23 Déc', revenue: 203000, transactions: 18 },
+                          { date: '24 Déc', revenue: 187000, transactions: 14 },
+                          { date: '25 Déc', revenue: 234000, transactions: 22 },
+                          { date: '26 Déc', revenue: 198000, transactions: 16 }
+                        ]}
+                        period="7d"
+                        totalRevenue={1192000}
+                        growth={15.2}
+                      />
+                      <PaymentMethodsChart data={[
+                        { name: 'Orange Money', value: 450000, count: 45, color: '#ff6b35' },
+                        { name: 'Wave', value: 320000, count: 32, color: '#00d4ff' },
+                        { name: 'Free Money', value: 280000, count: 28, color: '#8b5cf6' },
+                        { name: 'Visa Card', value: 142000, count: 14, color: '#1d4ed8' }
+                      ]} />
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <TransactionVolumeChart 
+                        data={[
+                          { time: '0h-3h', volume: 12000, count: 2 },
+                          { time: '3h-6h', volume: 8000, count: 1 },
+                          { time: '6h-9h', volume: 45000, count: 5 },
+                          { time: '9h-12h', volume: 89000, count: 12 },
+                          { time: '12h-15h', volume: 156000, count: 18 },
+                          { time: '15h-18h', volume: 134000, count: 16 },
+                          { time: '18h-21h', volume: 98000, count: 11 },
+                          { time: '21h-24h', volume: 67000, count: 8 }
+                        ]}
+                        period="today"
+                      />
+                      <SuccessRateChart data={[
+                        { method: 'Orange Money', successRate: 98.5, totalTransactions: 200, successfulTransactions: 197, color: '#10b981' },
+                        { method: 'Wave', successRate: 96.2, totalTransactions: 130, successfulTransactions: 125, color: '#10b981' },
+                        { method: 'Free Money', successRate: 94.8, totalTransactions: 115, successfulTransactions: 109, color: '#10b981' },
+                        { method: 'Visa Card', successRate: 89.3, totalTransactions: 75, successfulTransactions: 67, color: '#f59e0b' }
+                      ]} />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 text-center">
+                    <Button 
+                      className="bg-gradient-to-r from-senepay-orange to-senepay-gold"
+                      onClick={() => navigate('/analytics')}
+                    >
+                      <BarChart3 className="h-5 w-5 mr-2" />
+                      Voir la version complète avec toutes les fonctionnalités
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="api" className="space-y-6">
