@@ -58,9 +58,16 @@ const RevenueChart = ({ data, period, totalRevenue, growth }: RevenueChartProps)
                 stroke="#666"
               />
               <YAxis 
+                yAxisId="left"
                 tick={{ fontSize: 12 }}
                 stroke="#666"
                 tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+              />
+              <YAxis 
+                yAxisId="right"
+                orientation="right"
+                tick={{ fontSize: 12 }}
+                stroke="#666"
               />
               <Tooltip
                 contentStyle={{
@@ -83,6 +90,7 @@ const RevenueChart = ({ data, period, totalRevenue, growth }: RevenueChartProps)
                 strokeWidth={3}
                 dot={{ fill: '#ff6b35', strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6, stroke: '#ff6b35', strokeWidth: 2 }}
+                yAxisId="left"
               />
               <Line 
                 type="monotone" 

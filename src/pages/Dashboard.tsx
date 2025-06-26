@@ -82,6 +82,75 @@ const Dashboard = () => {
   // Ajouter les données analytics
   const { data: analyticsData, loading: analyticsLoading } = useAnalyticsData(merchantAccount?.id);
 
+  // Données mockées pour la démonstration analytics
+  const mockAnalyticsData = {
+    revenueData: [
+      { date: '20 Déc', revenue: 125000, transactions: 12 },
+      { date: '21 Déc', revenue: 89000, transactions: 8 },
+      { date: '22 Déc', revenue: 156000, transactions: 15 },
+      { date: '23 Déc', revenue: 203000, transactions: 18 },
+      { date: '24 Déc', revenue: 187000, transactions: 14 },
+      { date: '25 Déc', revenue: 234000, transactions: 22 },
+      { date: '26 Déc', revenue: 198000, transactions: 16 }
+    ],
+    paymentMethodsData: [
+      { name: 'Orange Money', value: 450000, count: 45, color: '#ff6b35' },
+      { name: 'Wave', value: 320000, count: 32, color: '#00d4ff' },
+      { name: 'Free Money', value: 280000, count: 28, color: '#8b5cf6' },
+      { name: 'Wizall', value: 180000, count: 18, color: '#10b981' },
+      { name: 'Visa Card', value: 142000, count: 14, color: '#1d4ed8' }
+    ],
+    volumeData: [
+      { time: '0h-3h', volume: 12000, count: 2 },
+      { time: '3h-6h', volume: 8000, count: 1 },
+      { time: '6h-9h', volume: 45000, count: 5 },
+      { time: '9h-12h', volume: 89000, count: 12 },
+      { time: '12h-15h', volume: 156000, count: 18 },
+      { time: '15h-18h', volume: 134000, count: 16 },
+      { time: '18h-21h', volume: 98000, count: 11 },
+      { time: '21h-24h', volume: 67000, count: 8 }
+    ],
+    successRateData: [
+      { method: 'Orange Money', successRate: 98.5, totalTransactions: 200, successfulTransactions: 197, color: '#10b981' },
+      { method: 'Wave', successRate: 96.2, totalTransactions: 130, successfulTransactions: 125, color: '#10b981' },
+      { method: 'Free Money', successRate: 94.8, totalTransactions: 115, successfulTransactions: 109, color: '#10b981' },
+      { method: 'Wizall', successRate: 92.1, totalTransactions: 95, successfulTransactions: 87, color: '#10b981' },
+      { method: 'Visa Card', successRate: 89.3, totalTransactions: 75, successfulTransactions: 67, color: '#f59e0b' }
+    ],
+    businessMetrics: {
+      mrr: 2850000,
+      arr: 34200000,
+      churnRate: 3.2,
+      customerLtv: 1250000,
+      averageOrderValue: 87500,
+      conversionRate: 94.8,
+      responseTime: 145,
+      uptime: 99.94,
+      mrrGrowth: 18.5,
+      customerGrowth: 12.3
+    },
+    predictions: [
+      {
+        type: 'revenue' as const,
+        title: 'Revenus Projetés (30j)',
+        value: '3.2M FCFA',
+        confidence: 87,
+        trend: 'up' as const,
+        description: 'Basé sur la croissance actuelle et les tendances saisonnières',
+        recommendation: 'Optimisez vos campagnes marketing en fin de mois pour maximiser la croissance'
+      },
+      {
+        type: 'opportunity' as const,
+        title: 'Opportunité Orange Money',
+        value: '+23% revenus potentiels',
+        confidence: 92,
+        trend: 'up' as const,
+        description: 'Orange Money montre le meilleur taux de conversion mais représente seulement 35% du volume',
+        recommendation: 'Augmentez la visibilité d\'Orange Money sur votre checkout pour optimiser les conversions'
+      }
+    ]
+  };
+
   // Debug logging pour identifier le problème
   useEffect(() => {
     console.log('=== DEBUG DASHBOARD ===');
@@ -401,111 +470,58 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {analyticsData ? (
-              <div className="space-y-6">
-                {/* Graphiques principaux */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <RevenueChart 
-                    data={analyticsData.revenueData}
-                    period="7d"
-                    totalRevenue={analyticsData.revenueData.reduce((sum, item) => sum + item.revenue, 0)}
-                    growth={15.2}
-                  />
-                  <PaymentMethodsChart data={analyticsData.paymentMethodsData} />
-                </div>
-
-                {/* Volume et taux de succès */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <TransactionVolumeChart 
-                    data={analyticsData.volumeData} 
-                    period="today"
-                  />
-                  <SuccessRateChart data={analyticsData.successRateData} />
-                </div>
-
-                {/* Business Metrics */}
-                <BusinessMetrics metrics={analyticsData.businessMetrics} />
-
-                {/* Prédictions IA */}
-                <AIPredictions predictions={analyticsData.predictions.slice(0, 2)} />
+            {/* Analytics Content - Toujours affiché */}
+            <div className="space-y-6">
+              {/* Graphiques principaux */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <RevenueChart 
+                  data={analyticsData?.revenueData || mockAnalyticsData.revenueData}
+                  period="7d"
+                  totalRevenue={(analyticsData?.revenueData || mockAnalyticsData.revenueData).reduce((sum, item) => sum + item.revenue, 0)}
+                  growth={15.2}
+                />
+                <PaymentMethodsChart data={analyticsData?.paymentMethodsData || mockAnalyticsData.paymentMethodsData} />
               </div>
-            ) : analyticsLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-senepay-orange"></div>
-                <span className="ml-3 text-gray-600">Chargement des analytics...</span>
-              </div>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-senepay-orange" />
-                    Analytics Premium - Aperçu
-                  </CardTitle>
-                  <CardDescription>
-                    Données de démonstration - Connectez vos vraies transactions pour voir vos analytics
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    {/* Graphiques de démonstration */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      <RevenueChart 
-                        data={[
-                          { date: '20 Déc', revenue: 125000, transactions: 12 },
-                          { date: '21 Déc', revenue: 89000, transactions: 8 },
-                          { date: '22 Déc', revenue: 156000, transactions: 15 },
-                          { date: '23 Déc', revenue: 203000, transactions: 18 },
-                          { date: '24 Déc', revenue: 187000, transactions: 14 },
-                          { date: '25 Déc', revenue: 234000, transactions: 22 },
-                          { date: '26 Déc', revenue: 198000, transactions: 16 }
-                        ]}
-                        period="7d"
-                        totalRevenue={1192000}
-                        growth={15.2}
-                      />
-                      <PaymentMethodsChart data={[
-                        { name: 'Orange Money', value: 450000, count: 45, color: '#ff6b35' },
-                        { name: 'Wave', value: 320000, count: 32, color: '#00d4ff' },
-                        { name: 'Free Money', value: 280000, count: 28, color: '#8b5cf6' },
-                        { name: 'Visa Card', value: 142000, count: 14, color: '#1d4ed8' }
-                      ]} />
-                    </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      <TransactionVolumeChart 
-                        data={[
-                          { time: '0h-3h', volume: 12000, count: 2 },
-                          { time: '3h-6h', volume: 8000, count: 1 },
-                          { time: '6h-9h', volume: 45000, count: 5 },
-                          { time: '9h-12h', volume: 89000, count: 12 },
-                          { time: '12h-15h', volume: 156000, count: 18 },
-                          { time: '15h-18h', volume: 134000, count: 16 },
-                          { time: '18h-21h', volume: 98000, count: 11 },
-                          { time: '21h-24h', volume: 67000, count: 8 }
-                        ]}
-                        period="today"
-                      />
-                      <SuccessRateChart data={[
-                        { method: 'Orange Money', successRate: 98.5, totalTransactions: 200, successfulTransactions: 197, color: '#10b981' },
-                        { method: 'Wave', successRate: 96.2, totalTransactions: 130, successfulTransactions: 125, color: '#10b981' },
-                        { method: 'Free Money', successRate: 94.8, totalTransactions: 115, successfulTransactions: 109, color: '#10b981' },
-                        { method: 'Visa Card', successRate: 89.3, totalTransactions: 75, successfulTransactions: 67, color: '#f59e0b' }
-                      ]} />
+              {/* Volume et taux de succès */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <TransactionVolumeChart 
+                  data={analyticsData?.volumeData || mockAnalyticsData.volumeData} 
+                  period="today"
+                />
+                <SuccessRateChart data={analyticsData?.successRateData || mockAnalyticsData.successRateData} />
+              </div>
+
+              {/* Business Metrics */}
+              <BusinessMetrics metrics={analyticsData?.businessMetrics || mockAnalyticsData.businessMetrics} />
+
+              {/* Prédictions IA */}
+              <AIPredictions predictions={analyticsData?.predictions?.slice(0, 2) || mockAnalyticsData.predictions} />
+
+              {/* Message pour les données de démonstration */}
+              {!analyticsData && (
+                <Card className="border-senepay-orange/20 bg-gradient-to-r from-orange-50 to-yellow-50">
+                  <CardContent className="p-6">
+                    <div className="text-center">
+                      <Crown className="h-8 w-8 text-senepay-orange mx-auto mb-3" />
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Données de démonstration
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        Ces graphiques montrent des données d'exemple. Connectez vos vraies transactions pour voir vos analytics personnalisées.
+                      </p>
+                      <Button 
+                        className="bg-gradient-to-r from-senepay-orange to-senepay-gold"
+                        onClick={() => navigate('/analytics')}
+                      >
+                        <BarChart3 className="h-5 w-5 mr-2" />
+                        Voir la version complète
+                      </Button>
                     </div>
-                  </div>
-                  
-                  <div className="mt-6 text-center">
-                    <Button 
-                      className="bg-gradient-to-r from-senepay-orange to-senepay-gold"
-                      onClick={() => navigate('/analytics')}
-                    >
-                      <BarChart3 className="h-5 w-5 mr-2" />
-                      Voir la version complète avec toutes les fonctionnalités
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="api" className="space-y-6">
