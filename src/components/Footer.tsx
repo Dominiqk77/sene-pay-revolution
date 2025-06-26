@@ -1,4 +1,3 @@
-
 import { Separator } from "@/components/ui/separator";
 import Logo from "@/components/Logo";
 
@@ -7,73 +6,73 @@ const Footer = () => {
     title: "Produit",
     links: [{
       name: "API Documentation",
-      href: "#"
+      href: "/api-documentation"
     }, {
       name: "SDKs",
-      href: "#"
+      href: "/sdks"
     }, {
       name: "Plugins",
-      href: "#"
+      href: "/plugins"
     }, {
       name: "Webhook",
-      href: "#"
+      href: "/webhook"
     }, {
       name: "Sandbox",
-      href: "#"
+      href: "/sandbox"
     }]
   }, {
     title: "Solutions",
     links: [{
       name: "E-commerce",
-      href: "#"
+      href: "/ecommerce-solution"
     }, {
       name: "Marketplaces",
-      href: "#"
+      href: "/marketplace-solution"
     }, {
       name: "SaaS",
-      href: "#"
+      href: "/saas-solution"
     }, {
       name: "Mobile Apps",
-      href: "#"
+      href: "/mobile-apps-solution"
     }, {
       name: "Subscriptions",
-      href: "#"
+      href: "/subscriptions-solution"
     }]
   }, {
     title: "Ressources",
     links: [{
       name: "Documentation",
-      href: "#"
+      href: "/documentation"
     }, {
       name: "Guides",
-      href: "#"
+      href: "/guides"
     }, {
       name: "Blog Tech",
-      href: "#"
+      href: "/blog-tech"
     }, {
       name: "Status Page",
-      href: "#"
+      href: "/status-page"
     }, {
       name: "Changelog",
-      href: "#"
+      href: "/changelog"
     }]
   }, {
     title: "Entreprise",
     links: [{
       name: "À propos",
-      href: "#"
+      href: "/about"
     }, {
       name: "Carrières",
-      href: "#"
+      href: "/careers"
     }, {
       name: "Partenaires",
-      href: "#"
+      href: "/partners"
     }, {
       name: "Presse",
-      href: "#"
+      href: "/press"
     }, {
       name: "Contact",
-      href: "#"
+      href: "/contact"
     }]
   }];
 
@@ -181,10 +180,10 @@ const Footer = () => {
             
             {/* Liens légaux - Mobile friendly */}
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 text-center lg:text-left">
-              <a href="#" className="text-sm text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation py-2 sm:py-0">
+              <a href="/privacy-policy" className="text-sm text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation py-2 sm:py-0">
                 Politique de confidentialité
               </a>
-              <a href="#" className="text-sm text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation py-2 sm:py-0">
+              <a href="/terms-of-service" className="text-sm text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation py-2 sm:py-0">
                 Conditions d'utilisation
               </a>
             </div>
