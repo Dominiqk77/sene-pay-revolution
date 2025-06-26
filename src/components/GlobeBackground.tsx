@@ -1,37 +1,37 @@
 
-import React, { useRef, useMemo, useEffect, useState } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Sphere } from '@react-three/drei';
+import { Sphere, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Composant Globe simplifié avec géométrie optimisée
+// Composant Globe 3D
 const Globe = () => {
   const globeRef = useRef<THREE.Mesh>(null);
   
-  // Rotation automatique optimisée
+  // Rotation automatique du globe
   useFrame((state) => {
     if (globeRef.current) {
-      globeRef.current.rotation.y += 0.001; // Rotation plus lente pour économiser les ressources
+      globeRef.current.rotation.y += 0.002; // Rotation lente
     }
   });
 
-  // Géométrie simplifiée pour de meilleures performances
-  const earthGeometry = useMemo(() => new THREE.SphereGeometry(2, 32, 32), []); // Réduit de 64x64 à 32x32
+  // Texture de la Terre (utilisation d'une texture simple pour éviter les problèmes de chargement)
+  const earthGeometry = useMemo(() => new THREE.SphereGeometry(2, 64, 64), []);
   const earthMaterial = useMemo(() => new THREE.MeshPhongMaterial({
     color: '#1a365d',
     transparent: true,
-    opacity: 0.7,
-    shininess: 80,
+    opacity: 0.8,
+    shininess: 100,
   }), []);
 
   return (
     <mesh ref={globeRef} geometry={earthGeometry} material={earthMaterial}>
-      {/* Atmosphère simplifiée */}
-      <Sphere args={[2.05, 16, 16]}>
+      {/* Atmosphère du globe */}
+      <Sphere args={[2.1, 32, 32]}>
         <meshBasicMaterial 
           color="#4a90e2" 
           transparent 
-          opacity={0.08} 
+          opacity={0.1} 
           side={THREE.BackSide} 
         />
       </Sphere>
@@ -39,28 +39,28 @@ const Globe = () => {
   );
 };
 
-// Composant pour les particules optimisé
+// Composant pour les particules de transaction
 const TransactionParticles = () => {
   const particlesRef = useRef<THREE.Points>(null);
   
-  // Réduction drastique du nombre de particules (25 au lieu de 100)
+  // Génération des positions des particules (concentrées sur l'Afrique/Sénégal)
   const particles = useMemo(() => {
-    const count = 25; // Réduit significativement
+    const count = 100;
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     
     for (let i = 0; i < count; i++) {
-      // Positions focalisées sur l'Afrique
-      const phi = Math.random() * Math.PI * 0.6 + Math.PI * 0.2;
-      const theta = Math.random() * Math.PI * 0.4 + Math.PI * 0.8;
-      const radius = 2.1 + Math.random() * 0.3;
+      // Répartition géographique focalisée sur l'Afrique
+      const phi = Math.random() * Math.PI; // 0 à π
+      const theta = (Math.random() * 0.8 + 0.1) * Math.PI; // Focalisé sur l'Afrique
+      const radius = 2.2 + Math.random() * 0.5;
       
       positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = radius * Math.cos(phi);
       positions[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
       
-      // Couleurs : plus de particules dorées pour le Sénégal
-      const isSenegal = Math.random() < 0.4;
+      // Couleurs : or pour le Sénégal, vert pour les autres
+      const isSenegal = Math.random() < 0.3; // 30% des particules représentent le Sénégal
       if (isSenegal) {
         colors[i * 3] = 0.96; // R - couleur or
         colors[i * 3 + 1] = 0.62; // G
@@ -75,14 +75,14 @@ const TransactionParticles = () => {
     return { positions, colors };
   }, []);
   
-  // Animation simplifiée
+  // Animation des particules
   useFrame((state) => {
     if (particlesRef.current) {
       const time = state.clock.getElapsedTime();
-      particlesRef.current.rotation.y = time * 0.05; // Plus lent
+      particlesRef.current.rotation.y = time * 0.1;
       
-      // Effet de pulsation réduit
-      const scale = 1 + Math.sin(time) * 0.05;
+      // Effet de pulsation
+      const scale = 1 + Math.sin(time * 2) * 0.1;
       particlesRef.current.scale.setScalar(scale);
     }
   });
@@ -104,80 +104,22 @@ const TransactionParticles = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.08}
+        size={0.05}
         vertexColors
         transparent
-        opacity={0.9}
+        opacity={0.8}
         sizeAttenuation
       />
     </points>
   );
 };
 
-// Composant de fallback CSS si WebGL échoue
-const FallbackBackground = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-green-900/20 animate-pulse"></div>
-      <div className="absolute inset-0">
-        {/* Particules CSS animées */}
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className={`absolute w-1 h-1 rounded-full animate-pulse ${
-              i % 3 === 0 ? 'bg-senepay-gold' : 'bg-senepay-green'
-            }`}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 2}s`,
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// Composant principal avec gestion d'erreurs
+// Composant principal GlobeBackground
 const GlobeBackground = () => {
-  const [hasWebGL, setHasWebGL] = useState(true);
-  const [shouldRender, setShouldRender] = useState(true);
-
-  // Détection WebGL et capacités de l'appareil
-  useEffect(() => {
-    try {
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      
-      if (!gl) {
-        setHasWebGL(false);
-        return;
-      }
-
-      // Détection d'appareil faible (mobile avec peu de mémoire)
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const hasLowMemory = (navigator as any).deviceMemory && (navigator as any).deviceMemory < 4;
-      
-      if (isMobile && hasLowMemory) {
-        setShouldRender(false);
-      }
-    } catch (error) {
-      console.warn('WebGL detection failed:', error);
-      setHasWebGL(false);
-    }
-  }, []);
-
-  // Si pas de WebGL ou appareil faible, utiliser le fallback
-  if (!hasWebGL || !shouldRender) {
-    return <FallbackBackground />;
-  }
-
   return (
     <div className="absolute inset-0 overflow-hidden">
       <Canvas
-        camera={{ position: [0, 0, 5], fov: 45 }}
+        camera={{ position: [0, 0, 6], fov: 45 }}
         style={{
           background: 'transparent',
           position: 'absolute',
@@ -187,29 +129,36 @@ const GlobeBackground = () => {
           height: '100%',
           zIndex: 1,
         }}
-        gl={{ 
-          antialias: false, // Désactivé pour de meilleures performances
-          alpha: true,
-          powerPreference: "high-performance"
-        }}
-        onCreated={({ gl }) => {
-          // Configuration WebGL optimisée
-          gl.setClearColor(0x000000, 0);
-        }}
       >
-        {/* Éclairage simplifié */}
-        <ambientLight intensity={0.4} />
+        {/* Éclairage */}
+        <ambientLight intensity={0.3} />
         <directionalLight 
-          position={[3, 3, 3]} 
-          intensity={0.8}
-          color="#F59E0B"
+          position={[5, 5, 5]} 
+          intensity={1}
+          color="#F59E0B" // Couleur or SenePay
+        />
+        <pointLight 
+          position={[-5, -5, -5]} 
+          intensity={0.5}
+          color="#059669" // Couleur verte SenePay
         />
         
-        {/* Globe terrestre optimisé */}
+        {/* Globe terrestre */}
         <Globe />
         
-        {/* Particules de transaction réduites */}
+        {/* Particules de transaction */}
         <TransactionParticles />
+        
+        {/* Étoiles d'arrière-plan */}
+        <mesh>
+          <sphereGeometry args={[50, 32, 32]} />
+          <meshBasicMaterial 
+            color="#0F172A" 
+            side={THREE.BackSide}
+            transparent
+            opacity={0.3}
+          />
+        </mesh>
       </Canvas>
     </div>
   );
