@@ -1,21 +1,17 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Shield, Zap, Globe } from "lucide-react";
-import GlobeBackground from "./GlobeBackground";
 
 const HeroSection = () => {
   return (
     <section id="home" className="min-h-screen bg-gradient-hero text-white relative overflow-hidden">
-      {/* Globe terrestre animé en arrière-plan */}
-      <GlobeBackground />
-      
-      {/* Pattern de points existant avec opacité réduite */}
-      <div className="absolute inset-0 opacity-20 z-10">
+      <div className="absolute inset-0 opacity-40">
         <div className="absolute inset-0 bg-repeat" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
         }}></div>
       </div>
       
-      <div className="container mx-auto px-4 pt-20 sm:pt-24 pb-12 sm:pb-16 relative z-20">
+      <div className="container mx-auto px-4 pt-20 sm:pt-24 pb-12 sm:pb-16 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[calc(100vh-5rem)] sm:min-h-[80vh]">
           <div className="space-y-6 sm:space-y-8 animate-fade-in text-center lg:text-left">
             <div className="space-y-4">
@@ -161,7 +157,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-30">
+        <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <ArrowDown className="h-5 w-5 sm:h-6 sm:w-6 text-white/60" />
         </div>
       </div>

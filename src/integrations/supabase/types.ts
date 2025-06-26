@@ -312,10 +312,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      setup_super_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
