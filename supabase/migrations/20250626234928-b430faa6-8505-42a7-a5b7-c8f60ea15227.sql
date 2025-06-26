@@ -1,4 +1,5 @@
 
+
 -- Créer une fonction de sécurité pour obtenir le rôle de l'utilisateur actuel
 CREATE OR REPLACE FUNCTION public.get_current_user_role()
 RETURNS TEXT AS $$
@@ -23,3 +24,4 @@ CREATE POLICY "Users can insert own profile" ON public.profiles
 
 -- Activer RLS si ce n'est pas déjà fait
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+

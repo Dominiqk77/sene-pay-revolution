@@ -59,22 +59,47 @@ export const useUserRole = () => {
         console.log('🔍 useUserRole: Fetching user data for:', user.email);
         console.log('🔍 useUserRole: User ID:', user.id);
         
-        // Récupérer le profil utilisateur
-        const { data: profileData, error: profileError } = await supabase
+        // Attendre un court délai pour éviter les problèmes de timing
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Essayer de créer le profil s'il n'existe pas
+        const { data: existingProfile, error: checkError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (profileError) {
-          console.error('❌ useUserRole: Error fetching profile:', profileError);
-          setError('Erreur lors du chargement du profil utilisateur');
-          return;
+        if (checkError && checkError.code !== 'PGRST116') {
+          console.error('❌ useUserRole: Error checking profile:', checkError);
+          throw checkError;
         }
 
-        console.log('✅ useUserRole: Profile data loaded:', profileData);
-        console.log('👑 useUserRole: User role detected:', profileData?.role);
-        setProfile(profileData);
+        // Si le profil n'existe pas, le créer
+        if (!existingProfile) {
+          console.log('📝 useUserRole: Creating new profile for user');
+          const { data: newProfile, error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              email: user.email,
+              full_name: user.user_metadata?.full_name || '',
+              role: 'merchant',
+              is_verified: false
+            })
+            .select()
+            .single();
+
+          if (insertError) {
+            console.error('❌ useUserRole: Error creating profile:', insertError);
+            throw insertError;
+          }
+
+          console.log('✅ useUserRole: New profile created:', newProfile);
+          setProfile(newProfile);
+        } else {
+          console.log('✅ useUserRole: Existing profile loaded:', existingProfile);
+          setProfile(existingProfile);
+        }
 
         // Récupérer le compte marchand si l'utilisateur en a un
         const { data: merchantData, error: merchantError } = await supabase
@@ -94,15 +119,31 @@ export const useUserRole = () => {
         }
 
         // Debug final pour le rôle Super Admin
-        if (profileData?.role === 'super_admin') {
+        const finalProfile = existingProfile || await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+          .then(({ data }) => data);
+
+        if (finalProfile?.role === 'super_admin') {
           console.log('🚨 SUPER ADMIN DETECTED! 🚨');
-          console.log('👑 Profile role:', profileData.role);
-          console.log('✅ isSuperAdmin will be:', profileData.role === 'super_admin');
+          console.log('👑 Profile role:', finalProfile.role);
+          console.log('✅ isSuperAdmin will be:', finalProfile.role === 'super_admin');
         }
 
-      } catch (err) {
+        setError(null);
+
+      } catch (err: any) {
         console.error('💥 useUserRole: Unexpected error fetching user data:', err);
-        setError('Erreur inattendue lors du chargement des données');
+        
+        // Si c'est une erreur de récursion, essayer une approche différente
+        if (err.code === '42P17') {
+          console.log('🔄 useUserRole: Recursion error detected, trying alternative approach');
+          setError('Erreur de configuration de sécurité. Veuillez contacter le support.');
+        } else {
+          setError('Erreur inattendue lors du chargement des données');
+        }
       } finally {
         setLoading(false);
         console.log('🏁 useUserRole: Data fetching completed');
