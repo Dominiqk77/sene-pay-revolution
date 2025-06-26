@@ -159,9 +159,9 @@ const QuickFilters = ({ onFiltersChange }: QuickFiltersProps) => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tous montants</SelectItem>
-              <SelectItem value="low">< 5,000 FCFA</SelectItem>
+              <SelectItem value="low">&lt; 5,000 FCFA</SelectItem>
               <SelectItem value="medium">5K - 50K FCFA</SelectItem>
-              <SelectItem value="high">> 50,000 FCFA</SelectItem>
+              <SelectItem value="high">&gt; 50,000 FCFA</SelectItem>
             </SelectContent>
           </Select>
         </div>
