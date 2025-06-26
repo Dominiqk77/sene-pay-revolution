@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-import { rateLimiter, validateAmount, validateEmail, sanitizeInput } from '../../../src/utils/securityUtils.ts';
+
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' 
@@ -8,6 +8,44 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-api-key',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Max-Age': '86400',
+};
+
+// Rate limiting basique côté serveur
+const rateLimiter = new Map<string, number[]>();
+
+const isRateAllowed = (clientIP: string, maxRequests: number = 30, windowMs: number = 60000): boolean => {
+  const now = Date.now();
+  const requests = rateLimiter.get(clientIP) || [];
+  
+  // Nettoyer les anciennes requêtes
+  const validRequests = requests.filter(time => now - time < windowMs);
+  
+  if (validRequests.length >= maxRequests) {
+    return false;
+  }
+  
+  validRequests.push(now);
+  rateLimiter.set(clientIP, validRequests);
+  return true;
+};
+
+// Validation des montants
+const validateAmount = (amount: number): boolean => {
+  return amount > 0 && amount <= 10000000 && Number.isFinite(amount);
+};
+
+// Validation des emails
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email) && email.length <= 254;
+};
+
+// Sanitisation des entrées
+const sanitizeInput = (input: string): string => {
+  return input
+    .trim()
+    .replace(/[<>]/g, '') // Remove basic HTML tags
+    .slice(0, 1000); // Limit length
 };
 
 Deno.serve(async (req) => {
@@ -19,7 +57,7 @@ Deno.serve(async (req) => {
   try {
     // Rate limiting par IP
     const clientIP = req.headers.get('x-forwarded-for') || 'unknown';
-    if (!rateLimiter.isAllowed(clientIP, 30, 60000)) { // 30 requêtes par minute
+    if (!isRateAllowed(clientIP, 30, 60000)) { // 30 requêtes par minute
       return new Response(
         JSON.stringify({ error: 'Rate limit exceeded' }),
         { 
@@ -157,7 +195,7 @@ Deno.serve(async (req) => {
           amount: transaction.amount,
           currency: transaction.currency,
           status: transaction.status,
-          checkout_url: `${process.env.SITE_URL || 'https://senepay.lovable.app'}/checkout/${transaction.id}`,
+          checkout_url: `${Deno.env.get('SITE_URL') || 'https://senepay.lovable.app'}/checkout/${transaction.id}`,
           created_at: transaction.created_at
         }
       }),

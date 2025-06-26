@@ -18,9 +18,8 @@ const SecurityAlert = () => {
 
   if (!showAlert) return null;
 
-  const getRiskColor = () => {
+  const getRiskColor = (): "default" | "destructive" => {
     if (isHighRisk) return 'destructive';
-    if (isMediumRisk) return 'warning';
     return 'default';
   };
 
