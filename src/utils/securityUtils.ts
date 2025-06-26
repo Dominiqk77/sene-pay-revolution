@@ -12,12 +12,13 @@ export interface SecurityEvent {
 // Fonction pour logger les événements de sécurité
 export const logSecurityEvent = async (event: SecurityEvent) => {
   try {
-    const { data, error } = await supabase.rpc('log_security_event', {
+    // Utilisation d'une assertion de type pour contourner les problèmes de génération automatique
+    const { data, error } = await (supabase as any).rpc('log_security_event', {
       p_action: event.action,
       p_resource_type: event.resourceType || null,
       p_resource_id: event.resourceId || null,
       p_ip_address: null, // Sera ajouté côté serveur si nécessaire
-      p_user_agent: navigator.userAgent,
+      p_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
       p_metadata: event.metadata || {}
     });
 
