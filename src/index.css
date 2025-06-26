@@ -88,9 +88,20 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* SenePay custom scrollbar */
+  /* Optimisation mobile : Suppression du scroll horizontal */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  /* SenePay custom scrollbar - Mobile optimized */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
+  }
+
+  @media (min-width: 768px) {
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
   }
 
   ::-webkit-scrollbar-track {
@@ -108,7 +119,7 @@
 }
 
 @layer components {
-  /* SenePay gradient text effect with premium animations */
+  /* SenePay gradient text effect avec animations optimisées mobile */
   .gradient-text {
     background: linear-gradient(
       135deg, 
@@ -142,36 +153,66 @@
     animation: navbar-gradient-flow 45s ease-in-out infinite, navbar-text-shimmer 25s ease-in-out infinite;
   }
 
-  /* Hero section glassmorphism effect */
+  /* Hero section glassmorphism effect - Mobile optimized */
   .glass-card {
     @apply backdrop-blur-sm bg-white/10 border border-white/20 rounded-xl;
   }
 
-  /* Payment method cards hover effect */
+  /* Payment method cards hover effect - Touch friendly */
   .payment-card {
-    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl;
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl touch-manipulation;
   }
 
-  /* CTA button with SenePay branding */
+  /* CTA button avec SenePay branding - Touch optimized */
   .btn-senepay {
-    @apply bg-gradient-senepay text-white px-8 py-4 rounded-xl font-semibold 
+    @apply bg-gradient-senepay text-white px-6 py-3 rounded-xl font-semibold 
            transition-all duration-300 hover:shadow-lg hover:scale-105 
-           transform active:scale-95;
+           transform active:scale-95 touch-manipulation;
+    min-height: 44px; /* Minimum touch target */
   }
 
-  /* Stats animation */
+  /* Stats animation - Responsive */
   .stat-number {
-    @apply text-4xl font-bold gradient-text;
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold gradient-text;
   }
 
-  /* Feature cards */
+  /* Feature cards - Mobile optimized */
   .feature-card {
-    @apply p-6 rounded-2xl bg-white shadow-lg border border-gray-100 
-           transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply p-4 sm:p-6 rounded-2xl bg-white shadow-lg border border-gray-100 
+           transition-all duration-300 hover:shadow-xl hover:-translate-y-1 touch-manipulation;
+  }
+
+  /* Touch-friendly interactions */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Mobile-first responsive grid */
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+
+  /* Mobile-friendly spacing */
+  .mobile-spacing {
+    @apply px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16;
+  }
+
+  /* Mobile text sizing */
+  .mobile-heading {
+    @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold;
+  }
+
+  .mobile-subheading {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .mobile-body {
+    @apply text-sm sm:text-base lg:text-lg;
   }
 }
 
-/* Gradient animations standards */
+/* Animations optimisées pour mobile */
 @keyframes gradient-flow {
   0% {
     background-position: 0% 50%;
@@ -248,4 +289,45 @@ html {
 ::selection {
   background: rgba(245, 158, 11, 0.3);
   color: #0F172A;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  /* Réduction des animations sur mobile pour performance */
+  @media (prefers-reduced-motion: reduce) {
+    .gradient-text,
+    .navbar-gradient-text {
+      animation: none;
+    }
+  }
+
+  /* Optimisation des transitions pour mobile */
+  * {
+    transition-duration: 200ms !important;
+  }
+
+  /* Amélioration des touch targets */
+  button, 
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Optimisations pour très petits écrans */
+@media (max-width: 480px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Réduction supplémentaire des tailles de police */
+  .mobile-heading {
+    @apply text-xl sm:text-2xl;
+  }
+  
+  .mobile-subheading {
+    @apply text-base sm:text-lg;
+  }
 }
