@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,13 +25,24 @@ const ProfileSettings = () => {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState: { errors, isDirty } } = useForm<ProfileFormData>({
+  const { register, handleSubmit, formState: { errors, isDirty }, reset } = useForm<ProfileFormData>({
     defaultValues: {
-      full_name: profile?.full_name || '',
-      company_name: profile?.company_name || '',
-      phone: profile?.phone || ''
+      full_name: '',
+      company_name: '',
+      phone: ''
     }
   });
+
+  // Mettre à jour les valeurs du formulaire quand le profil change
+  useEffect(() => {
+    if (profile) {
+      reset({
+        full_name: profile.full_name || '',
+        company_name: profile.company_name || '',
+        phone: profile.phone || ''
+      });
+    }
+  }, [profile, reset]);
 
   const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
