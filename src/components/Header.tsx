@@ -11,6 +11,27 @@ const Header = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/#")) {
+      const sectionId = href.substring(2); // Remove "/#"
+      if (location.pathname !== "/") {
+        // If not on home page, navigate to home first then scroll
+        window.location.href = href;
+      } else {
+        // If on home page, just scroll to section
+        scrollToSection(sectionId);
+      }
+    }
+    setIsMenuOpen(false);
+  };
+
   const navigation = [
     { name: "Accueil", href: "/" },
     { name: "Solutions", href: "/#solutions" },
@@ -48,8 +69,6 @@ const Header = () => {
                     alt="SenePay Logo"
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                     loading="eager"
-                    fetchPriority="high"
-                    decoding="sync"
                     style={{ 
                       imageRendering: 'crisp-edges',
                       transform: 'translateZ(0)',
@@ -67,17 +86,31 @@ const Header = () => {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
               {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`transition-colors duration-200 font-medium text-sm xl:text-base ${
-                    isActive(item.href) 
-                      ? 'text-senepay-orange border-b-2 border-senepay-orange pb-1' 
-                      : 'text-gray-700 hover:text-senepay-orange'
-                  }`}
-                >
-                  {item.name}
-                </Link>
+                item.href.startsWith("/#") ? (
+                  <button
+                    key={item.name}
+                    onClick={() => handleNavClick(item.href)}
+                    className={`transition-colors duration-200 font-medium text-sm xl:text-base ${
+                      isActive(item.href) 
+                        ? 'text-senepay-orange border-b-2 border-senepay-orange pb-1' 
+                        : 'text-gray-700 hover:text-senepay-orange'
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                ) : (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`transition-colors duration-200 font-medium text-sm xl:text-base ${
+                      isActive(item.href) 
+                        ? 'text-senepay-orange border-b-2 border-senepay-orange pb-1' 
+                        : 'text-gray-700 hover:text-senepay-orange'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
             </nav>
 
@@ -144,18 +177,32 @@ const Header = () => {
             <div className="md:hidden py-4 animate-fade-in bg-white/95 backdrop-blur-sm border-t border-gray-100">
               <nav className="flex flex-col space-y-1">
                 {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`transition-colors duration-200 font-medium px-4 py-3 rounded-lg touch-manipulation ${
-                      isActive(item.href) 
-                        ? 'text-senepay-orange bg-senepay-orange/10' 
-                        : 'text-gray-700 hover:text-senepay-orange hover:bg-gray-50'
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
+                  item.href.startsWith("/#") ? (
+                    <button
+                      key={item.name}
+                      onClick={() => handleNavClick(item.href)}
+                      className={`transition-colors duration-200 font-medium px-4 py-3 rounded-lg touch-manipulation text-left ${
+                        isActive(item.href) 
+                          ? 'text-senepay-orange bg-senepay-orange/10' 
+                          : 'text-gray-700 hover:text-senepay-orange hover:bg-gray-50'
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  ) : (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`transition-colors duration-200 font-medium px-4 py-3 rounded-lg touch-manipulation ${
+                        isActive(item.href) 
+                          ? 'text-senepay-orange bg-senepay-orange/10' 
+                          : 'text-gray-700 hover:text-senepay-orange hover:bg-gray-50'
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  )
                 ))}
                 <div className="flex flex-col space-y-3 px-4 pt-4 border-t border-gray-200 mt-4">
                   {user ? (
