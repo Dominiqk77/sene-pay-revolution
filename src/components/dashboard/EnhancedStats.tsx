@@ -19,6 +19,8 @@ interface StatItem {
   trend: 'up' | 'down' | 'stable';
   icon: React.ReactNode;
   color: string;
+  bgColor: string;
+  cardBg: string;
   subtitle?: string;
 }
 
@@ -57,7 +59,9 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       change: 15.3,
       trend: 'up',
       icon: <DollarSign className="h-5 w-5" />,
-      color: 'text-green-600',
+      color: 'text-emerald-600',
+      bgColor: 'bg-gradient-to-br from-emerald-500 to-teal-600',
+      cardBg: 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200',
       subtitle: 'Ce mois'
     },
     {
@@ -67,6 +71,8 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       trend: 'up',
       icon: <Activity className="h-5 w-5" />,
       color: 'text-blue-600',
+      bgColor: 'bg-gradient-to-br from-blue-500 to-indigo-600',
+      cardBg: 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200',
       subtitle: 'Total'
     },
     {
@@ -76,6 +82,8 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       trend: 'up',
       icon: <CheckCircle className="h-5 w-5" />,
       color: 'text-green-600',
+      bgColor: 'bg-gradient-to-br from-green-500 to-emerald-600',
+      cardBg: 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200',
       subtitle: 'Performance'
     },
     {
@@ -85,6 +93,8 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       trend: 'down',
       icon: <TrendingUp className="h-5 w-5" />,
       color: 'text-orange-600',
+      bgColor: 'bg-gradient-to-br from-orange-500 to-red-500',
+      cardBg: 'bg-gradient-to-br from-orange-50 to-red-50 border-orange-200',
       subtitle: 'Par transaction'
     },
     {
@@ -93,7 +103,9 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       change: 22.4,
       trend: 'up',
       icon: <DollarSign className="h-5 w-5" />,
-      color: 'text-green-600',
+      color: 'text-senepay-orange',
+      bgColor: 'bg-gradient-to-br from-senepay-orange to-senepay-gold',
+      cardBg: 'bg-gradient-to-br from-orange-50 to-yellow-50 border-orange-300',
       subtitle: `${currentStats.todayTransactions} transactions`
     },
     {
@@ -103,6 +115,8 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       trend: 'up',
       icon: <Users className="h-5 w-5" />,
       color: 'text-purple-600',
+      bgColor: 'bg-gradient-to-br from-purple-500 to-pink-600',
+      cardBg: 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200',
       subtitle: 'Ce mois'
     },
     {
@@ -111,7 +125,9 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       change: -8.5,
       trend: 'up',
       icon: <Clock className="h-5 w-5" />,
-      color: 'text-blue-600',
+      color: 'text-cyan-600',
+      bgColor: 'bg-gradient-to-br from-cyan-500 to-blue-600',
+      cardBg: 'bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200',
       subtitle: 'API moyenne'
     },
     {
@@ -120,32 +136,34 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
       change: 0.1,
       trend: 'stable',
       icon: <AlertTriangle className="h-5 w-5" />,
-      color: 'text-green-600',
+      color: 'text-teal-600',
+      bgColor: 'bg-gradient-to-br from-teal-500 to-green-600',
+      cardBg: 'bg-gradient-to-br from-teal-50 to-green-50 border-teal-200',
       subtitle: 'Uptime'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       {statItems.map((stat, index) => (
-        <Card key={index} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
+        <Card key={index} className={`hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 ${stat.cardBg}`}>
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className={`p-2 rounded-lg bg-gray-100 ${stat.color}`}>
+              <div className="flex items-center space-x-4">
+                <div className={`p-3 rounded-xl shadow-lg ${stat.bgColor} text-white`}>
                   {stat.icon}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
+                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                   {stat.subtitle && (
-                    <p className="text-xs text-gray-500">{stat.subtitle}</p>
+                    <p className="text-xs text-gray-500 mt-1">{stat.subtitle}</p>
                   )}
                 </div>
               </div>
               
               <div className="text-right">
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 mb-2">
                   {stat.trend === 'up' ? (
                     <TrendingUp className="h-4 w-4 text-green-600" />
                   ) : stat.trend === 'down' ? (
@@ -153,7 +171,7 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
                   ) : (
                     <div className="h-4 w-4" />
                   )}
-                  <span className={`text-sm font-medium ${
+                  <span className={`text-sm font-bold ${
                     stat.trend === 'up' ? 'text-green-600' : 
                     stat.trend === 'down' ? 'text-red-600' : 
                     'text-gray-600'
@@ -163,9 +181,13 @@ const EnhancedStats = ({ stats }: EnhancedStatsProps) => {
                 </div>
                 <Badge 
                   variant={stat.trend === 'up' ? 'default' : stat.trend === 'down' ? 'destructive' : 'secondary'}
-                  className="text-xs mt-1"
+                  className={`text-xs font-semibold ${
+                    stat.trend === 'up' ? 'bg-green-100 text-green-800 hover:bg-green-200' :
+                    stat.trend === 'down' ? 'bg-red-100 text-red-800 hover:bg-red-200' :
+                    'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                  }`}
                 >
-                  {stat.trend === 'up' ? 'Hausse' : stat.trend === 'down' ? 'Baisse' : 'Stable'}
+                  {stat.trend === 'up' ? '📈 Hausse' : stat.trend === 'down' ? '📉 Baisse' : '➖ Stable'}
                 </Badge>
               </div>
             </div>
