@@ -1,139 +1,180 @@
-
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from '@supabase/supabase-js';
+import { rateLimiter, validateAmount, validateEmail, sanitizeInput } from '../../../src/utils/securityUtils.ts';
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' 
+    ? 'https://senepay.lovable.app' 
+    : 'http://localhost:5173',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-api-key',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-}
+  'Access-Control-Max-Age': '86400',
+};
 
-interface CreatePaymentRequest {
-  amount: number;
-  currency?: string;
-  payment_method?: string;
-  customer_email?: string;
-  customer_phone?: string;
-  customer_name?: string;
-  description?: string;
-  callback_url?: string;
-  success_url?: string;
-  cancel_url?: string;
-  metadata?: Record<string, any>;
-}
-
-serve(async (req) => {
+Deno.serve(async (req) => {
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
-
-    // Validation API Key
-    const apiKey = req.headers.get('x-api-key')
-    if (!apiKey) {
+    // Rate limiting par IP
+    const clientIP = req.headers.get('x-forwarded-for') || 'unknown';
+    if (!rateLimiter.isAllowed(clientIP, 30, 60000)) { // 30 requêtes par minute
       return new Response(
-        JSON.stringify({ error: 'API key required' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify({ error: 'Rate limit exceeded' }),
+        { 
+          status: 429, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
 
-    // Récupérer merchant via API key
-    const { data: merchant, error: merchantError } = await supabase
-      .from('merchant_accounts')
-      .select('id, user_id, business_name, is_active')
-      .eq('api_key', apiKey)
-      .eq('is_active', true)
-      .single()
+    // Validation de l'API key
+    const apiKey = req.headers.get('x-api-key');
+    if (!apiKey || !apiKey.startsWith('sk_live_')) {
+      // Logger la tentative d'accès non autorisée sans révéler d'informations sensibles
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
 
-    if (merchantError || !merchant) {
+    const requestBody = await req.json();
+    
+    // Validation et sanitisation des entrées
+    if (!requestBody.amount || !validateAmount(requestBody.amount)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid amount' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    if (requestBody.customer_email && !validateEmail(requestBody.customer_email)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid email format' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Sanitiser les entrées texte
+    const sanitizedData = {
+      ...requestBody,
+      customer_name: requestBody.customer_name ? sanitizeInput(requestBody.customer_name) : null,
+      description: requestBody.description ? sanitizeInput(requestBody.description) : null,
+      amount: Number(requestBody.amount),
+      currency: requestBody.currency || 'XOF'
+    };
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: {
+            Authorization: req.headers.get('Authorization')!,
+          },
+        },
+      }
+    );
+
+    // Vérifier l'existence du merchant
+    const { data: merchant, error: merchantError } = await supabaseClient
+      .from('merchant_accounts')
+      .select('*')
+      .eq('api_key', apiKey)
+      .single();
+
+    if (merchantError) {
+      console.error('Merchant account error:', merchantError);
       return new Response(
         JSON.stringify({ error: 'Invalid API key' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
 
-    // Validation des données de paiement
-    const paymentData: CreatePaymentRequest = await req.json()
-    
-    if (!paymentData.amount || paymentData.amount <= 0) {
-      return new Response(
-        JSON.stringify({ error: 'Amount must be greater than 0' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    // Créer la transaction
-    const { data: transaction, error: transactionError } = await supabase
+    // Créer la transaction avec données sanitisées
+    const { data: transaction, error: transactionError } = await supabaseClient
       .from('transactions')
       .insert({
         merchant_id: merchant.id,
-        amount: paymentData.amount,
-        currency: paymentData.currency || 'XOF',
-        payment_method: paymentData.payment_method,
-        customer_email: paymentData.customer_email,
-        customer_phone: paymentData.customer_phone,
-        customer_name: paymentData.customer_name,
-        description: paymentData.description,
-        callback_url: paymentData.callback_url,
-        success_url: paymentData.success_url,
-        cancel_url: paymentData.cancel_url,
-        metadata: paymentData.metadata || {},
-        status: 'pending'
+        amount: sanitizedData.amount,
+        currency: sanitizedData.currency,
+        customer_name: sanitizedData.customer_name,
+        customer_email: sanitizedData.customer_email,
+        customer_phone: sanitizedData.customer_phone,
+        description: sanitizedData.description,
+        payment_method: sanitizedData.payment_method,
+        callback_url: sanitizedData.callback_url,
+        success_url: sanitizedData.success_url,
+        cancel_url: sanitizedData.cancel_url,
+        metadata: sanitizedData.metadata || {}
       })
       .select()
-      .single()
+      .single();
 
-    if (transactionError || !transaction) {
-      console.error('Transaction creation error:', transactionError)
+    if (transactionError) {
+      console.error('Transaction creation error:', transactionError);
       return new Response(
         JSON.stringify({ error: 'Failed to create transaction' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
 
-    // Audit log
-    await supabase.from('audit_logs').insert({
-      merchant_id: merchant.id,
-      action: 'create_payment',
-      resource_type: 'transaction',
-      resource_id: transaction.id,
-      user_agent: req.headers.get('user-agent'),
-      metadata: {
-        amount: paymentData.amount,
-        currency: paymentData.currency || 'XOF',
-        payment_method: paymentData.payment_method
-      }
-    })
-
-    const siteUrl = Deno.env.get('SUPABASE_URL')?.replace('supabase.co', 'lovable.app') || 'https://sene-pay-revolution.lovable.app'
-    
-    return new Response(
-      JSON.stringify({
-        payment_id: transaction.id,
-        reference: transaction.reference_id,
-        checkout_url: `${siteUrl}/checkout/${transaction.id}`,
+    // Logger l'événement de création de transaction
+    await supabaseClient.rpc('log_security_event', {
+      p_action: 'TRANSACTION_CREATED',
+      p_resource_type: 'transaction',
+      p_resource_id: transaction.id,
+      p_metadata: {
         amount: transaction.amount,
         currency: transaction.currency,
-        expires_at: transaction.expires_at,
-        status: transaction.status,
-        created_at: transaction.created_at
+        payment_method: transaction.payment_method,
+        merchant_id: merchant.id
+      }
+    });
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        transaction: {
+          id: transaction.id,
+          reference_id: transaction.reference_id,
+          amount: transaction.amount,
+          currency: transaction.currency,
+          status: transaction.status,
+          checkout_url: `${process.env.SITE_URL || 'https://senepay.lovable.app'}/checkout/${transaction.id}`,
+          created_at: transaction.created_at
+        }
       }),
       { 
-        status: 201,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 200, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
-    )
+    );
 
   } catch (error) {
-    console.error('Create payment error:', error)
+    console.error('Create payment error:', error);
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
   }
-})
+});

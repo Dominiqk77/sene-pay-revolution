@@ -1,8 +1,8 @@
-
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { cleanupAuthState, forceSignOut } from '@/utils/authCleanup';
+import { logSecurityEvent } from '@/utils/securityUtils';
 
 interface AuthContextType {
   user: User | null;
@@ -34,6 +34,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (event, session) => {
         console.log('🔄 Auth state changed:', event, session?.user?.email);
         console.log('🌍 Current URL when auth changed:', window.location.href);
+        
+        // Logger les événements d'authentification
+        if (event === 'SIGNED_IN' && session?.user) {
+          await logSecurityEvent({
+            action: 'USER_SIGNED_IN',
+            resourceType: 'authentication',
+            metadata: {
+              userId: session.user.id,
+              email: session.user.email,
+              timestamp: new Date().toISOString()
+            }
+          });
+        } else if (event === 'SIGNED_OUT') {
+          await logSecurityEvent({
+            action: 'USER_SIGNED_OUT',
+            resourceType: 'authentication',
+            metadata: {
+              timestamp: new Date().toISOString()
+            }
+          });
+        }
         
         setSession(session);
         setUser(session?.user ?? null);
@@ -70,6 +91,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log('Attempting signUp for:', email);
       
+      // Logger la tentative d'inscription
+      await logSecurityEvent({
+        action: 'USER_SIGNUP_ATTEMPT',
+        resourceType: 'authentication',
+        metadata: {
+          email,
+          timestamp: new Date().toISOString()
+        }
+      });
+      
       cleanupAuthState();
       
       const redirectUrl = `${window.location.origin}/`;
@@ -86,9 +117,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       console.log('SignUp result:', { data: data?.user?.email, error });
+      
+      if (data?.user && !error) {
+        await logSecurityEvent({
+          action: 'USER_SIGNUP_SUCCESS',
+          resourceType: 'authentication',
+          metadata: {
+            userId: data.user.id,
+            email: data.user.email,
+            timestamp: new Date().toISOString()
+          }
+        });
+      } else if (error) {
+        await logSecurityEvent({
+          action: 'USER_SIGNUP_FAILED',
+          resourceType: 'authentication',
+          metadata: {
+            email,
+            error: error.message,
+            timestamp: new Date().toISOString()
+          }
+        });
+      }
+      
       return { error };
     } catch (error) {
       console.error('SignUp error:', error);
+      await logSecurityEvent({
+        action: 'USER_SIGNUP_ERROR',
+        resourceType: 'authentication',
+        metadata: {
+          email,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString()
+        }
+      });
       return { error };
     }
   };
@@ -96,6 +159,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       console.log('Attempting signIn for:', email);
+      
+      // Logger la tentative de connexion
+      await logSecurityEvent({
+        action: 'USER_SIGNIN_ATTEMPT',
+        resourceType: 'authentication',
+        metadata: {
+          email,
+          timestamp: new Date().toISOString()
+        }
+      });
       
       cleanupAuthState();
       
@@ -113,9 +186,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('SignIn result:', { data: data?.user?.email, error });
       
       // Pas de redirection automatique ici - laissons les composants gérer ça
+      if (data?.user && !error) {
+        await logSecurityEvent({
+          action: 'USER_SIGNIN_SUCCESS',
+          resourceType: 'authentication',
+          metadata: {
+            userId: data.user.id,
+            email: data.user.email,
+            timestamp: new Date().toISOString()
+          }
+        });
+      } else if (error) {
+        await logSecurityEvent({
+          action: 'USER_SIGNIN_FAILED',
+          resourceType: 'authentication',
+          metadata: {
+            email,
+            error: error.message,
+            timestamp: new Date().toISOString()
+          }
+        });
+      }
+      
       return { error };
     } catch (error) {
       console.error('SignIn error:', error);
+      await logSecurityEvent({
+        action: 'USER_SIGNIN_ERROR',
+        resourceType: 'authentication',
+        metadata: {
+          email,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString()
+        }
+      });
       return { error };
     }
   };

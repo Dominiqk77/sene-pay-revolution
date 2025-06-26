@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import TransactionsList from "@/components/TransactionsList";
+import SecurityAlert from '@/components/SecurityAlert';
 
 interface Profile {
   id: string;
@@ -180,6 +181,9 @@ const Dashboard = () => {
       <Header />
       
       <main className="pt-20 container mx-auto px-4 py-8">
+        {/* Security Alert */}
+        <SecurityAlert />
+        
         {/* Welcome Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
