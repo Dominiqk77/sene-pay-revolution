@@ -1,9 +1,11 @@
-
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import { logSecurityEvent, detectAnomalousActivity } from '@/utils/securityUtils';
 import { supabase } from '@/integrations/supabase/client';
+
+// Flag temporaire pour désactiver le monitoring actif
+const SECURITY_MONITORING_ENABLED = false;
 
 interface SecurityMetrics {
   failedLoginAttempts: number;
@@ -24,6 +26,11 @@ export const useSecurityMonitoring = () => {
 
   // Surveiller les tentatives de connexion échouées
   useEffect(() => {
+    if (!SECURITY_MONITORING_ENABLED) {
+      console.log('Security monitoring disabled');
+      return;
+    }
+
     const monitorAuthFailures = () => {
       const originalError = console.error;
       console.error = (...args) => {
@@ -59,7 +66,7 @@ export const useSecurityMonitoring = () => {
 
   // Scanner périodique de sécurité pour les super admins
   useEffect(() => {
-    if (!isSuperAdmin) return;
+    if (!isSuperAdmin || !SECURITY_MONITORING_ENABLED) return;
 
     const performSecurityScan = async () => {
       try {
@@ -131,7 +138,7 @@ export const useSecurityMonitoring = () => {
 
   // Logger l'activité utilisateur normale
   useEffect(() => {
-    if (user) {
+    if (user && SECURITY_MONITORING_ENABLED) {
       logSecurityEvent({
         action: 'USER_SESSION_ACTIVE',
         resourceType: 'authentication',

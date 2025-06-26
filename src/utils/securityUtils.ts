@@ -2,6 +2,9 @@
 // Utilitaires de sécurité pour SenePay
 import { supabase } from '@/integrations/supabase/client';
 
+// Flag temporaire pour désactiver le logging de sécurité
+const SECURITY_LOGGING_ENABLED = false;
+
 export interface SecurityEvent {
   action: string;
   resourceType?: string;
@@ -11,6 +14,12 @@ export interface SecurityEvent {
 
 // Fonction pour logger les événements de sécurité
 export const logSecurityEvent = async (event: SecurityEvent) => {
+  // Désactivation temporaire du logging de sécurité
+  if (!SECURITY_LOGGING_ENABLED) {
+    console.log('Security logging disabled - Event would be:', event);
+    return;
+  }
+
   try {
     // Utilisation d'une assertion de type pour contourner les problèmes de génération automatique
     const { data, error } = await (supabase as any).rpc('log_security_event', {
