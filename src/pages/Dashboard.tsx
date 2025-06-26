@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -31,6 +30,7 @@ import NotificationCenter from '@/components/dashboard/NotificationCenter';
 import DataExport from '@/components/dashboard/DataExport';
 import QuickFilters from '@/components/dashboard/QuickFilters';
 import EnhancedStats from '@/components/dashboard/EnhancedStats';
+import ProfileSettings from '@/components/ProfileSettings';
 
 // Import des composants analytics
 import RevenueChart from '@/components/analytics/RevenueChart';
@@ -628,23 +628,40 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="settings">
-            {/* Quick Actions */}
+          <TabsContent value="settings" className="space-y-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                <Settings className="h-6 w-6 text-senepay-orange" />
+                Paramètres du compte
+              </h2>
+              <p className="text-gray-600">
+                Gérez votre profil, vos préférences et la configuration de votre compte
+              </p>
+            </div>
+
+            {/* Composant ProfileSettings */}
+            <ProfileSettings />
+
+            {/* Actions rapides */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  Paramètres du compte
+                  Actions rapides
                 </CardTitle>
                 <CardDescription>
-                  Gérez votre compte et vos préférences
+                  Accès rapide aux fonctionnalités principales
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
+                  <Button 
+                    className="h-auto p-6 flex flex-col items-center gap-2" 
+                    variant="outline"
+                    onClick={() => navigate('/analytics')}
+                  >
                     <BarChart3 className="h-8 w-8 text-senepay-orange" />
-                    <span className="font-medium">Voir les Analytics</span>
+                    <span className="font-medium">Analytics</span>
                     <span className="text-sm text-gray-500 text-center">
                       Analysez vos performances
                     </span>
@@ -652,7 +669,7 @@ const Dashboard = () => {
                   
                   <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
                     <Key className="h-8 w-8 text-senepay-gold" />
-                    <span className="font-medium">Documentation API</span>
+                    <span className="font-medium">API Documentation</span>
                     <span className="text-sm text-gray-500 text-center">
                       Intégrez SenePay facilement
                     </span>
@@ -660,9 +677,9 @@ const Dashboard = () => {
                   
                   <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
                     <Settings className="h-8 w-8 text-gray-600" />
-                    <span className="font-medium">Paramètres</span>
+                    <span className="font-medium">Support</span>
                     <span className="text-sm text-gray-500 text-center">
-                      Configurez votre compte
+                      Contactez notre équipe
                     </span>
                   </Button>
                 </div>
