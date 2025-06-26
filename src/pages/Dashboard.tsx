@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -281,7 +282,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                Bienvenue, {profile?.full_name || user?.email} 👋
+                Bienvenue, {profile?.full_name || 'Utilisateur'} 👋
               </h1>
               <p className="text-gray-600 text-sm md:text-base">
                 Gérez vos paiements et développez votre business avec SenePay
