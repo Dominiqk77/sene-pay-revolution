@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +19,7 @@ const MobileAppsSolution = () => {
       description: "Génération et scan de QR codes pour paiements instantanés"
     },
     {
-      icon: <NFC className="h-8 w-8" />,
+      icon: <Nfc className="h-8 w-8" />,
       title: "Paiements Contactless",
       description: "Paiements NFC et proximité pour commerce physique"
     },
@@ -131,7 +130,7 @@ const MobileAppsSolution = () => {
               
               <div className="text-center">
                 <div className="w-16 h-16 bg-senepay-gold rounded-full flex items-center justify-center mx-auto mb-4">
-                  <NFC className="h-8 w-8 text-white" />
+                  <Nfc className="h-8 w-8 text-white" />
                 </div>
                 <h4 className="text-lg font-semibold mb-2">Contactless</h4>
                 <p className="text-gray-600">Paiements NFC pour commerce physique</p>
