@@ -218,7 +218,7 @@ const PricingSection = () => {
             </div>
           </div>
 
-          <Button className="bg-white text-senepay-dark hover:bg-gray-100 px-8 py-4 text-lg font-bold mt-8">
+          <Button className="bg-white text-senepay-dark hover:bg-gray-100 px-4 sm:px-6 py-3 text-base sm:text-lg font-bold mt-8 w-full sm:w-auto max-w-md mx-auto">
             Calculer mes économies personnalisées →
           </Button>
         </div>
