@@ -2,14 +2,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
+  DollarSign, 
   TrendingUp, 
+  TrendingDown, 
   Users, 
-  Target, 
-  Zap,
-  DollarSign,
   Clock,
-  Globe,
-  Award
+  Zap,
+  Target,
+  ArrowUpRight
 } from 'lucide-react';
 
 interface BusinessMetricsProps {
@@ -28,155 +28,121 @@ interface BusinessMetricsProps {
 }
 
 const BusinessMetrics = ({ metrics }: BusinessMetricsProps) => {
-  const formatCurrency = (value: number) => `${value.toLocaleString()} FCFA`;
-  const formatPercentage = (value: number) => `${value.toFixed(1)}%`;
+  const metricCards = [
+    {
+      title: 'MRR (Monthly Recurring Revenue)',
+      value: `${metrics.mrr.toLocaleString()} FCFA`,
+      change: metrics.mrrGrowth,
+      icon: <DollarSign className="h-5 w-5" />,
+      color: 'text-green-600',
+      description: 'Revenus récurrents mensuels'
+    },
+    {
+      title: 'ARR (Annual Recurring Revenue)',
+      value: `${metrics.arr.toLocaleString()} FCFA`,
+      change: metrics.mrrGrowth * 0.8,
+      icon: <TrendingUp className="h-5 w-5" />,
+      color: 'text-blue-600',
+      description: 'Revenus récurrents annuels'
+    },
+    {
+      title: 'Customer LTV',
+      value: `${metrics.customerLtv.toLocaleString()} FCFA`,
+      change: 12.5,
+      icon: <Users className="h-5 w-5" />,
+      color: 'text-purple-600',
+      description: 'Valeur vie client moyenne'
+    },
+    {
+      title: 'Taux de Conversion',
+      value: `${metrics.conversionRate.toFixed(1)}%`,
+      change: 5.2,
+      icon: <Target className="h-5 w-5" />,
+      color: 'text-orange-600',
+      description: 'Transactions réussies / totales'
+    },
+    {
+      title: 'Panier Moyen',
+      value: `${metrics.averageOrderValue.toLocaleString()} FCFA`,
+      change: -2.1,
+      icon: <DollarSign className="h-5 w-5" />,
+      color: 'text-green-600',
+      description: 'Montant moyen par transaction'
+    },
+    {
+      title: 'Temps de Réponse API',
+      value: `${Math.round(metrics.responseTime)}ms`,
+      change: -8.5,
+      trend: 'down',
+      icon: <Zap className="h-5 w-5" />,
+      color: 'text-blue-600',
+      description: 'Performance système moyenne'
+    },
+    {
+      title: 'Uptime',
+      value: `${metrics.uptime.toFixed(2)}%`,
+      change: 0.1,
+      icon: <Clock className="h-5 w-5" />,
+      color: 'text-green-600',
+      description: 'Disponibilité du service'
+    },
+    {
+      title: 'Churn Rate',
+      value: `${metrics.churnRate.toFixed(1)}%`,
+      change: -1.2,
+      trend: 'down',
+      icon: <TrendingDown className="h-5 w-5" />,
+      color: 'text-red-600',
+      description: 'Taux de désabonnement mensuel'
+    }
+  ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* MRR */}
-      <Card className="border-l-4 border-l-senepay-orange">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">MRR</p>
-              <p className="text-xl font-bold">{formatCurrency(metrics.mrr)}</p>
-              <div className="flex items-center text-sm">
-                <TrendingUp className="h-3 w-3 text-green-600 mr-1" />
-                <span className="text-green-600">+{formatPercentage(metrics.mrrGrowth)}</span>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Métriques Business</h3>
+          <p className="text-sm text-gray-600">Indicateurs clés de performance de votre business</p>
+        </div>
+        <Badge className="bg-gradient-to-r from-senepay-orange to-senepay-gold text-white">
+          Niveau Premium
+        </Badge>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {metricCards.map((metric, index) => (
+          <Card key={index} className="hover:shadow-md transition-shadow">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className={`p-2 rounded-lg bg-gray-100 ${metric.color}`}>
+                  {metric.icon}
+                </div>
+                <div className="flex items-center space-x-1">
+                  {metric.change > 0 || metric.trend === 'down' ? (
+                    <ArrowUpRight className={`h-4 w-4 ${
+                      metric.trend === 'down' ? 'text-green-600 rotate-180' : 
+                      metric.change > 0 ? 'text-green-600' : 'text-red-600'
+                    }`} />
+                  ) : (
+                    <TrendingDown className="h-4 w-4 text-red-600" />
+                  )}
+                  <span className={`text-sm font-medium ${
+                    metric.change > 0 || metric.trend === 'down' ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {metric.change > 0 ? '+' : ''}{Math.abs(metric.change).toFixed(1)}%
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className="p-2 bg-senepay-orange/10 rounded-lg">
-              <DollarSign className="h-6 w-6 text-senepay-orange" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* ARR */}
-      <Card className="border-l-4 border-l-senepay-gold">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">ARR</p>
-              <p className="text-xl font-bold">{formatCurrency(metrics.arr)}</p>
-              <Badge variant="outline" className="text-xs mt-1">
-                x12 MRR
-              </Badge>
-            </div>
-            <div className="p-2 bg-senepay-gold/10 rounded-lg">
-              <Target className="h-6 w-6 text-senepay-gold" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Customer LTV */}
-      <Card className="border-l-4 border-l-blue-500">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Customer LTV</p>
-              <p className="text-xl font-bold">{formatCurrency(metrics.customerLtv)}</p>
-              <div className="flex items-center text-sm">
-                <Users className="h-3 w-3 text-blue-600 mr-1" />
-                <span className="text-blue-600">+{formatPercentage(metrics.customerGrowth)}</span>
+              
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-1">{metric.title}</p>
+                <p className="text-2xl font-bold mb-1">{metric.value}</p>
+                <p className="text-xs text-gray-500">{metric.description}</p>
               </div>
-            </div>
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Churn Rate */}
-      <Card className="border-l-4 border-l-red-500">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Churn Rate</p>
-              <p className="text-xl font-bold">{formatPercentage(metrics.churnRate)}</p>
-              <Badge variant={metrics.churnRate < 5 ? "default" : "destructive"} className="text-xs mt-1">
-                {metrics.churnRate < 5 ? "Excellent" : "À surveiller"}
-              </Badge>
-            </div>
-            <div className="p-2 bg-red-100 rounded-lg">
-              <TrendingUp className="h-6 w-6 text-red-600 rotate-180" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* AOV */}
-      <Card className="border-l-4 border-l-green-500">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Panier Moyen</p>
-              <p className="text-xl font-bold">{formatCurrency(metrics.averageOrderValue)}</p>
-              <p className="text-xs text-gray-500 mt-1">Par transaction</p>
-            </div>
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Award className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Conversion Rate */}
-      <Card className="border-l-4 border-l-purple-500">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Taux Conversion</p>
-              <p className="text-xl font-bold">{formatPercentage(metrics.conversionRate)}</p>
-              <Badge variant="outline" className="text-xs mt-1">
-                Industrie: 2.3%
-              </Badge>
-            </div>
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Target className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Response Time */}
-      <Card className="border-l-4 border-l-orange-500">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Temps Réponse</p>
-              <p className="text-xl font-bold">{metrics.responseTime}ms</p>
-              <Badge variant="default" className="text-xs mt-1">
-                <Zap className="h-3 w-3 mr-1" />
-                Rapide
-              </Badge>
-            </div>
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <Clock className="h-6 w-6 text-orange-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Uptime */}
-      <Card className="border-l-4 border-l-emerald-500">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Disponibilité</p>
-              <p className="text-xl font-bold">{formatPercentage(metrics.uptime)}</p>
-              <Badge variant="default" className="text-xs mt-1 bg-green-100 text-green-800">
-                SLA 99.9%
-              </Badge>
-            </div>
-            <div className="p-2 bg-emerald-100 rounded-lg">
-              <Globe className="h-6 w-6 text-emerald-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
