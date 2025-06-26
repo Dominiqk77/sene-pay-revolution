@@ -1,5 +1,7 @@
+
 import { Separator } from "@/components/ui/separator";
 import Logo from "@/components/Logo";
+
 const Footer = () => {
   const footerSections = [{
     title: "Produit",
@@ -74,6 +76,7 @@ const Footer = () => {
       href: "#"
     }]
   }];
+
   const paymentMethods = [{
     name: "Orange Money",
     color: "bg-orange-500"
@@ -93,7 +96,9 @@ const Footer = () => {
     name: "Mastercard",
     color: "bg-red-600"
   }];
-  return <footer className="bg-senepay-dark text-white">
+
+  return (
+    <footer className="bg-senepay-dark text-white">
       <div className="container mx-auto px-4 py-16">
         {/* Main Footer Content */}
         <div className="grid lg:grid-cols-5 gap-8 mb-12">
@@ -111,26 +116,32 @@ const Footer = () => {
             <div className="space-y-3">
               <p className="text-sm font-semibold text-gray-300">Moyens de paiement intégrés</p>
               <div className="grid grid-cols-3 gap-2">
-                {paymentMethods.map(method => <div key={method.name} className={`${method.color} rounded p-2 text-center`}>
+                {paymentMethods.map(method => (
+                  <div key={method.name} className={`${method.color} rounded p-2 text-center`}>
                     <span className="text-xs font-bold text-white">
                       {method.name.split(' ')[0]}
                     </span>
-                  </div>)}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
           {/* Footer Links */}
-          {footerSections.map(section => <div key={section.title}>
+          {footerSections.map(section => (
+            <div key={section.title}>
               <h3 className="font-bold text-lg mb-4 text-white">{section.title}</h3>
               <ul className="space-y-3">
-                {section.links.map(link => <li key={link.name}>
+                {section.links.map(link => (
+                  <li key={link.name}>
                     <a href={link.href} className="text-gray-400 hover:text-senepay-gold transition-colors duration-200">
                       {link.name}
                     </a>
-                  </li>)}
+                  </li>
+                ))}
               </ul>
-            </div>)}
+            </div>
+          ))}
         </div>
 
         <Separator className="bg-gray-700 mb-8" />
@@ -157,41 +168,52 @@ const Footer = () => {
 
         <Separator className="bg-gray-700 mb-8" />
 
-        {/* Bottom Footer */}
-        <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
-          <div className="flex items-center space-x-6 text-sm text-gray-400">
-            <span>© 2025 SenePay. Tous droits réservés. Powered by Millennium Capital Invest</span>
-            <a href="#" className="hover:text-senepay-gold transition-colors">
-              Politique de confidentialité
-            </a>
-            <a href="#" className="hover:text-senepay-gold transition-colors">
-              Conditions d'utilisation
-            </a>
+        {/* Bottom Footer - Optimisé mobile */}
+        <div className="flex flex-col space-y-6 lg:space-y-0 lg:flex-row lg:justify-between lg:items-center">
+          {/* Copyright et liens légaux - Version mobile optimisée */}
+          <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-6">
+            <span className="text-sm text-gray-400 text-center lg:text-left">
+              © 2025 SenePay. Tous droits réservés.
+              <br className="sm:hidden" />
+              <span className="hidden sm:inline"> Powered by </span>
+              <span className="block sm:inline text-xs sm:text-sm">Millennium Capital Invest</span>
+            </span>
+            
+            {/* Liens légaux - Mobile friendly */}
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 text-center lg:text-left">
+              <a href="#" className="text-sm text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation py-2 sm:py-0">
+                Politique de confidentialité
+              </a>
+              <a href="#" className="text-sm text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation py-2 sm:py-0">
+                Conditions d'utilisation
+              </a>
+            </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm text-gray-400">
+          {/* Status et réseaux sociaux */}
+          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
               <div className="w-2 h-2 bg-senepay-green rounded-full animate-pulse"></div>
               <span>Tous les systèmes opérationnels</span>
             </div>
             
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-senepay-gold transition-colors">
+              <a href="#" className="text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation">
                 <span className="sr-only">Twitter</span>
-                <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center hover:bg-senepay-gold transition-colors">
-                  <span className="text-xs">T</span>
+                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-senepay-gold transition-colors">
+                  <span className="text-xs font-bold">T</span>
                 </div>
               </a>
-              <a href="#" className="text-gray-400 hover:text-senepay-gold transition-colors">
+              <a href="#" className="text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation">
                 <span className="sr-only">LinkedIn</span>
-                <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center hover:bg-senepay-gold transition-colors">
-                  <span className="text-xs">L</span>
+                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-senepay-gold transition-colors">
+                  <span className="text-xs font-bold">L</span>
                 </div>
               </a>
-              <a href="#" className="text-gray-400 hover:text-senepay-gold transition-colors">
+              <a href="#" className="text-gray-400 hover:text-senepay-gold transition-colors touch-manipulation">
                 <span className="sr-only">GitHub</span>
-                <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center hover:bg-senepay-gold transition-colors">
-                  <span className="text-xs">G</span>
+                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center hover:bg-senepay-gold transition-colors">
+                  <span className="text-xs font-bold">G</span>
                 </div>
               </a>
             </div>
@@ -210,6 +232,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;
