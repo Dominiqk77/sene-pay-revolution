@@ -1,76 +1,54 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, Star } from "lucide-react";
-
 const PricingSection = () => {
-  const plans = [
-    {
-      name: "Starter",
-      price: "Gratuit",
-      period: "0-100 transactions/mois",
-      description: "Parfait pour tester et débuter",
-      features: [
-        "API complète",
-        "Tous moyens de paiement",
-        "Dashboard basique",
-        "Support communauté",
-        "Sandbox illimité",
-        "Documentation complète"
-      ],
-      buttonText: "Commencer gratuitement",
-      highlight: false,
-      commission: "2.1% par transaction"
-    },
-    {
-      name: "Business",
-      price: "15,000 FCFA",
-      period: "/mois",
-      description: "Pour les businesses en croissance",
-      features: [
-        "Tout du plan Starter",
-        "Analytics avancé",
-        "Webhooks premium",
-        "Support prioritaire",
-        "Custom branding",
-        "Rapports comptables",
-        "A/B testing",
-        "Multi-utilisateurs"
-      ],
-      buttonText: "Démarrer Business",
-      highlight: true,
-      commission: "1.9% par transaction",
-      badge: "Populaire"
-    },
-    {
-      name: "Enterprise",
-      price: "50,000 FCFA",
-      period: "/mois",
-      description: "Pour les gros volumes",
-      features: [
-        "Tout du plan Business",
-        "SLA 99.99% garanti",
-        "Account manager dédié",
-        "API priority lane",
-        "Custom integrations",
-        "Fraud protection IA+",
-        "White-label option",
-        "Onboarding personnalisé"
-      ],
-      buttonText: "Contacter l'équipe",
-      highlight: false,
-      commission: "1.7% par transaction"
-    }
-  ];
-
-  const comparisonData = [
-    { competitor: "CinetPay", commission: "3.5%", setup: "2 semaines", support: "Email seulement" },
-    { competitor: "PayPal", commission: "4.2%", setup: "Complex KYC", support: "International" },
-    { competitor: "SenePay", commission: "1.9%", setup: "5 minutes", support: "Local 24/7", highlight: true }
-  ];
-
-  return (
-    <section id="pricing" className="py-20 bg-gradient-to-br from-gray-50 to-white">
+  const plans = [{
+    name: "Starter",
+    price: "Gratuit",
+    period: "0-100 transactions/mois",
+    description: "Parfait pour tester et débuter",
+    features: ["API complète", "Tous moyens de paiement", "Dashboard basique", "Support communauté", "Sandbox illimité", "Documentation complète"],
+    buttonText: "Commencer gratuitement",
+    highlight: false,
+    commission: "2.1% par transaction"
+  }, {
+    name: "Business",
+    price: "15,000 FCFA",
+    period: "/mois",
+    description: "Pour les businesses en croissance",
+    features: ["Tout du plan Starter", "Analytics avancé", "Webhooks premium", "Support prioritaire", "Custom branding", "Rapports comptables", "A/B testing", "Multi-utilisateurs"],
+    buttonText: "Démarrer Business",
+    highlight: true,
+    commission: "1.9% par transaction",
+    badge: "Populaire"
+  }, {
+    name: "Enterprise",
+    price: "50,000 FCFA",
+    period: "/mois",
+    description: "Pour les gros volumes",
+    features: ["Tout du plan Business", "SLA 99.99% garanti", "Account manager dédié", "API priority lane", "Custom integrations", "Fraud protection IA+", "White-label option", "Onboarding personnalisé"],
+    buttonText: "Contacter l'équipe",
+    highlight: false,
+    commission: "1.7% par transaction"
+  }];
+  const comparisonData = [{
+    competitor: "CinetPay",
+    commission: "3.5%",
+    setup: "2 semaines",
+    support: "Email seulement"
+  }, {
+    competitor: "PayPal",
+    commission: "4.2%",
+    setup: "Complex KYC",
+    support: "International"
+  }, {
+    competitor: "SenePay",
+    commission: "1.9%",
+    setup: "5 minutes",
+    support: "Local 24/7",
+    highlight: true
+  }];
+  return <section id="pricing" className="py-20 bg-gradient-to-br from-gray-50 to-white">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
@@ -90,24 +68,15 @@ const PricingSection = () => {
 
         {/* Pricing Cards */}
         <div className="grid lg:grid-cols-3 gap-8 mb-16">
-          {plans.map((plan, index) => (
-            <Card 
-              key={plan.name} 
-              className={`relative p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
-                plan.highlight 
-                  ? 'border-2 border-senepay-gold ring-4 ring-senepay-gold/20 scale-105' 
-                  : 'border border-gray-200'
-              } animate-fade-in`}
-              style={{ animationDelay: `${index * 0.2}s` }}
-            >
-              {plan.badge && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          {plans.map((plan, index) => <Card key={plan.name} className={`relative p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${plan.highlight ? 'border-2 border-senepay-gold ring-4 ring-senepay-gold/20 scale-105' : 'border border-gray-200'} animate-fade-in`} style={{
+          animationDelay: `${index * 0.2}s`
+        }}>
+              {plan.badge && <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <div className="bg-gradient-senepay text-white px-4 py-2 rounded-full text-sm font-bold flex items-center space-x-1">
                     <Star className="h-4 w-4" />
                     <span>{plan.badge}</span>
                   </div>
-                </div>
-              )}
+                </div>}
 
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">{plan.name}</h3>
@@ -124,26 +93,16 @@ const PricingSection = () => {
               </div>
 
               <div className="space-y-4 mb-8">
-                {plan.features.map((feature) => (
-                  <div key={feature} className="flex items-center space-x-3">
+                {plan.features.map(feature => <div key={feature} className="flex items-center space-x-3">
                     <Check className="h-5 w-5 text-senepay-green flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
 
-              <Button 
-                className={`w-full ${
-                  plan.highlight 
-                    ? 'btn-senepay' 
-                    : 'border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white'
-                }`}
-                variant={plan.highlight ? 'default' : 'outline'}
-              >
+              <Button className={`w-full ${plan.highlight ? 'btn-senepay' : 'border-senepay-gold text-senepay-gold hover:bg-senepay-gold hover:text-white'}`} variant={plan.highlight ? 'default' : 'outline'}>
                 {plan.buttonText}
               </Button>
-            </Card>
-          ))}
+            </Card>)}
         </div>
 
         {/* Comparison Table */}
@@ -163,28 +122,17 @@ const PricingSection = () => {
                 </tr>
               </thead>
               <tbody>
-                {comparisonData.map((row, index) => (
-                  <tr 
-                    key={row.competitor} 
-                    className={`border-b border-gray-100 ${
-                      row.highlight ? 'bg-gradient-to-r from-senepay-gold/10 to-senepay-orange/10' : ''
-                    }`}
-                  >
-                    <td className={`py-4 px-4 font-semibold ${
-                      row.highlight ? 'text-senepay-orange' : 'text-gray-700'
-                    }`}>
+                {comparisonData.map((row, index) => <tr key={row.competitor} className={`border-b border-gray-100 ${row.highlight ? 'bg-gradient-to-r from-senepay-gold/10 to-senepay-orange/10' : ''}`}>
+                    <td className={`py-4 px-4 font-semibold ${row.highlight ? 'text-senepay-orange' : 'text-gray-700'}`}>
                       {row.competitor}
                       {row.highlight && <span className="text-xs bg-senepay-gold text-white px-2 py-1 rounded-full ml-2">NOUS</span>}
                     </td>
-                    <td className={`text-center py-4 px-4 font-bold ${
-                      row.highlight ? 'text-senepay-green' : 'text-red-500'
-                    }`}>
+                    <td className={`text-center py-4 px-4 font-bold ${row.highlight ? 'text-senepay-green' : 'text-red-500'}`}>
                       {row.commission}
                     </td>
                     <td className="text-center py-4 px-4 text-gray-700">{row.setup}</td>
                     <td className="text-center py-4 px-4 text-gray-700">{row.support}</td>
-                  </tr>
-                ))}
+                  </tr>)}
               </tbody>
             </table>
           </div>
@@ -218,13 +166,11 @@ const PricingSection = () => {
             </div>
           </div>
 
-          <Button className="bg-white text-senepay-dark hover:bg-gray-100 px-4 sm:px-6 py-3 text-base sm:text-lg font-bold mt-8 w-full sm:w-auto max-w-md mx-auto">
+          <Button className="bg-white text-senepay-dark hover:bg-gray-100 px-4 sm:px-6 py-3 sm:text-lg font-bold mt-8 w-full sm:w-auto max-w-md mx-auto text-xs">
             Calculer mes économies personnalisées →
           </Button>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingSection;
