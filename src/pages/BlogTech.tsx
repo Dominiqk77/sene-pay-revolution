@@ -1,7 +1,8 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Code, Calendar, User, ArrowRight, BookOpen, Trending } from "lucide-react";
+import { Code, Calendar, User, ArrowRight, BookOpen, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -119,21 +120,21 @@ const BlogTech = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <Trending className="h-5 w-5 text-gray-500" />
+                    <TrendingUp className="h-5 w-5 text-gray-500" />
                     <span className="font-semibold">Paiements instantanés</span>
                   </div>
                   <Badge variant="outline">12 articles</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <Trending className="h-5 w-5 text-gray-500" />
+                    <TrendingUp className="h-5 w-5 text-gray-500" />
                     <span className="font-semibold">Sécurité des transactions</span>
                   </div>
                   <Badge variant="outline">8 articles</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <Trending className="h-5 w-5 text-gray-500" />
+                    <TrendingUp className="h-5 w-5 text-gray-500" />
                     <span className="font-semibold">Mobile commerce</span>
                   </div>
                   <Badge variant="outline">6 articles</Badge>

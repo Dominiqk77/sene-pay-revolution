@@ -1,7 +1,8 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Handshake, Users, Globe, ArrowRight, Star, Zap } from "lucide-react";
+import { Handshake, Users, Globe, ArrowRight, Star, Zap, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";

@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Newspaper, Calendar, Download, ArrowRight, Users, Zap } from "lucide-react";
+import { Newspaper, Calendar, Download, ArrowRight, Users, Zap, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -132,8 +132,8 @@ const Press = () => {
 
   const getFileIcon = (type: string) => {
     switch (type) {
-      case "image": return <Image className="h-6 w-6" />;
-      case "video": return <Video className="h-6 w-6" />;
+      case "image": return <FileText className="h-6 w-6" />;
+      case "video": return <FileText className="h-6 w-6" />;
       case "document": return <FileText className="h-6 w-6" />;
       default: return <Download className="h-6 w-6" />;
     }
