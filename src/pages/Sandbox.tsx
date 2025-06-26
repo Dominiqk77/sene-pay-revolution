@@ -1,333 +1,244 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Play, TestTube, Code, Settings, CheckCircle, XCircle } from "lucide-react";
-import { useState } from "react";
+import { Play, Code, Zap, Shield, ArrowRight, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const Sandbox = () => {
   const navigate = useNavigate();
-  const [testResult, setTestResult] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleTest = async () => {
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setTestResult("success");
-      setIsLoading(false);
-    }, 2000);
-  };
-
-  const testCases = [
+  const features = [
     {
-      name: "Paiement Orange Money",
-      amount: "10000",
-      method: "orange_money",
-      status: "success"
+      icon: <Code className="h-8 w-8" />,
+      title: "Environnement de Test",
+      description: "Simulez des paiements et des transferts dans un environnement isolé"
     },
     {
-      name: "Paiement Wave",
-      amount: "25000", 
-      method: "wave",
-      status: "success"
+      icon: <Zap className="h-8 w-8" />,
+      title: "Données de Test",
+      description: "Accédez à des cartes bancaires et numéros de téléphone de test"
     },
     {
-      name: "Paiement Carte",
-      amount: "50000",
-      method: "card",
-      status: "pending"
+      icon: <Shield className="h-8 w-8" />,
+      title: "Webhooks de Simulation",
+      description: "Recevez des webhooks simulés pour tester votre intégration"
+    },
+    {
+      icon: <Play className="h-8 w-8" />,
+      title: "Scénarios Préconfigurés",
+      description: "Testez des cas d'usage courants avec des scénarios prêts à l'emploi"
+    }
+  ];
+
+  const useCases = [
+    {
+      title: "Intégration API",
+      description: "Validez votre intégration de l'API de paiement",
+      icon: <Code className="h-12 w-12" />
+    },
+    {
+      title: "Tests de Webhooks",
+      description: "Simulez et validez la réception de webhooks",
+      icon: <Zap className="h-12 w-12" />
+    },
+    {
+      title: "Flux de Remboursement",
+      description: "Testez les flux de remboursement et d'annulation",
+      icon: <Shield className="h-12 w-12" />
     }
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-senepay-dark text-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <TestTube className="h-16 w-16 mx-auto mb-6 text-senepay-gold" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Environnement de Test
-            </h1>
-            <p className="text-xl text-gray-300">
-              Testez votre intégration SenePay en toute sécurité
-            </p>
-            <div className="flex justify-center gap-4 mt-6">
-              <Badge variant="outline" className="bg-senepay-green text-white border-senepay-green">
-                Gratuit
-              </Badge>
-              <Badge variant="outline" className="bg-senepay-gold text-black border-senepay-gold">
-                Sans Limite
-              </Badge>
+      <Header />
+      <div className="pt-16">
+        {/* Header */}
+        <div className="bg-senepay-dark text-white py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <Play className="h-16 w-16 mx-auto mb-6 text-senepay-gold" />
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                Bac à Sable Développeur
+              </h1>
+              <p className="text-xl text-gray-300 mb-6">
+                Testez notre API de paiement dans un environnement sécurisé
+              </p>
+              <div className="flex justify-center gap-4">
+                <Badge variant="outline" className="bg-senepay-gold text-black border-senepay-gold">
+                  API REST
+                </Badge>
+                <Badge variant="outline" className="bg-senepay-green text-white border-senepay-green">
+                  Webhooks
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto">
-          {/* Test Environment */}
-          <Tabs defaultValue="api-tester" className="mb-12">
-            <TabsList className="grid w-full grid-cols-3 bg-white shadow-sm">
-              <TabsTrigger value="api-tester" className="data-[state=active]:bg-senepay-gold data-[state=active]:text-black">
-                Testeur API
-              </TabsTrigger>
-              <TabsTrigger value="scenarios" className="data-[state=active]:bg-senepay-gold data-[state=active]:text-black">
-                Scénarios
-              </TabsTrigger>
-              <TabsTrigger value="webhooks" className="data-[state=active]:bg-senepay-gold data-[state=active]:text-black">
-                Test Webhooks
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="api-tester" className="mt-6">
-              <div className="grid lg:grid-cols-2 gap-8">
-                {/* Request Form */}
-                <Card className="p-6">
-                  <div className="flex items-center mb-6">
-                    <Settings className="h-6 w-6 text-senepay-gold mr-2" />
-                    <h3 className="text-xl font-bold">Paramètres de Test</h3>
+        {/* Content */}
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-6xl mx-auto">
+            {/* Features */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {features.map((feature, index) => (
+                <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
+                  <div className="p-3 bg-senepay-gold/10 rounded-lg inline-block mb-4">
+                    {feature.icon}
                   </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="amount">Montant (XOF)</Label>
-                      <Input id="amount" placeholder="10000" />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="method">Méthode de Paiement</Label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choisir une méthode" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="orange_money">Orange Money</SelectItem>
-                          <SelectItem value="wave">Wave</SelectItem>
-                          <SelectItem value="free_money">Free Money</SelectItem>
-                          <SelectItem value="card">Carte Bancaire</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="email">Email Client</Label>
-                      <Input id="email" placeholder="test@example.com" />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="phone">Téléphone</Label>
-                      <Input id="phone" placeholder="+221771234567" />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="metadata">Métadonnées (JSON)</Label>
-                      <Textarea 
-                        id="metadata" 
-                        placeholder='{"order_id": "TEST-001"}'
-                        rows={3}
-                      />
-                    </div>
-                    
-                    <Button 
-                      onClick={handleTest}
-                      disabled={isLoading}
-                      className="w-full bg-senepay-gold hover:bg-senepay-orange"
-                    >
-                      {isLoading ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Test en cours...
-                        </>
-                      ) : (
-                        <>
-                          <Play className="h-4 w-4 mr-2" />
-                          Lancer le Test
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                  <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+                  <p className="text-gray-600 text-sm">{feature.description}</p>
                 </Card>
+              ))}
+            </div>
 
-                {/* Response */}
-                <Card className="p-6">
-                  <div className="flex items-center mb-6">
-                    <Code className="h-6 w-6 text-senepay-gold mr-2" />
-                    <h3 className="text-xl font-bold">Réponse API</h3>
-                  </div>
-                  
-                  {testResult ? (
-                    <div className="bg-gray-900 rounded-xl p-6">
-                      <div className="flex items-center mb-4">
-                        {testResult === 'success' ? (
-                          <CheckCircle className="h-5 w-5 text-green-400 mr-2" />
-                        ) : (
-                          <XCircle className="h-5 w-5 text-red-400 mr-2" />
-                        )}
-                        <span className="text-sm text-gray-400">
-                          {testResult === 'success' ? '200 OK' : '400 Bad Request'}
-                        </span>
-                      </div>
-                      <pre className="text-sm text-gray-300 font-mono leading-relaxed overflow-x-auto">
-                        {testResult === 'success' ? 
-                          `{
-  "id": "pay_test_123456",
-  "status": "succeeded",
-  "amount": 10000,
-  "currency": "XOF",
-  "method": "orange_money",
-  "created": ${Date.now()},
-  "customer": {
-    "email": "test@example.com",
-    "phone": "+221771234567"
-  },
-  "metadata": {
-    "order_id": "TEST-001"
-  }
-}` : 
-                          `{
-  "error": "invalid_request",
-  "message": "Le montant doit être supérieur à 0"
-}`
-                        }
-                      </pre>
-                    </div>
-                  ) : (
-                    <div className="bg-gray-100 rounded-xl p-6 text-center">
-                      <p className="text-gray-500">Lancez un test pour voir la réponse API</p>
-                    </div>
-                  )}
-                </Card>
+            {/* Quick Start */}
+            <Card className="p-8 mb-12 bg-gradient-to-br from-senepay-gold/10 to-senepay-orange/10 border-senepay-gold/20">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4 text-senepay-dark">
+                  Démarrage Rapide
+                </h2>
+                <p className="text-lg text-gray-700">
+                  Suivez ces étapes pour commencer à tester notre API
+                </p>
               </div>
-            </TabsContent>
 
-            <TabsContent value="scenarios" className="mt-6">
-              <div className="grid gap-4">
-                <h3 className="text-xl font-bold mb-4">Scénarios de Test Prédéfinis</h3>
-                {testCases.map((test, index) => (
-                  <Card key={index} className="p-4 hover:shadow-lg transition-shadow">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-semibold">{test.name}</h4>
-                        <p className="text-sm text-gray-600">
-                          {test.amount} XOF via {test.method}
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge 
-                          variant={test.status === 'success' ? 'default' : 'secondary'}
-                          className={test.status === 'success' ? 'bg-senepay-green' : 'bg-yellow-500'}
-                        >
-                          {test.status}
-                        </Badge>
-                        <Button size="sm" variant="outline">
-                          <Play className="h-4 w-4 mr-1" />
-                          Tester
-                        </Button>
-                      </div>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-senepay-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl font-bold text-white">1</span>
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2">Créer un Compte</h4>
+                  <p className="text-gray-600">Inscrivez-vous gratuitement sur notre plateforme</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-senepay-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl font-bold text-white">2</span>
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2">Obtenir les Clés</h4>
+                  <p className="text-gray-600">Récupérez vos clés API dans votre tableau de bord</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-senepay-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl font-bold text-white">3</span>
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2">Tester l'API</h4>
+                  <p className="text-gray-600">Utilisez nos données de test pour simuler des paiements</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Use Cases */}
+            <Card className="p-8 mb-12">
+              <h2 className="text-2xl font-bold mb-6 text-center text-senepay-dark">
+                Cas d'Usage
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {useCases.map((useCase, index) => (
+                  <div key={index} className="text-center">
+                    <div className="p-4 bg-senepay-gold/10 rounded-lg mb-4">
+                      {useCase.icon}
                     </div>
-                  </Card>
+                    <h4 className="font-semibold mb-2">{useCase.title}</h4>
+                    <p className="text-sm text-gray-600">{useCase.description}</p>
+                  </div>
                 ))}
               </div>
-            </TabsContent>
+            </Card>
 
-            <TabsContent value="webhooks" className="mt-6">
-              <Card className="p-6">
-                <h3 className="text-xl font-bold mb-4">Testeur de Webhooks</h3>
-                <p className="text-gray-600 mb-6">
-                  Testez vos endpoints de webhook avec des événements simulés.
-                </p>
-                
+            {/* Test Data */}
+            <div className="grid lg:grid-cols-2 gap-12 mb-12">
+              <div>
+                <h2 className="text-3xl font-bold mb-6 text-senepay-dark">
+                  Données de Test
+                </h2>
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="webhook-url">URL du Webhook</Label>
-                    <Input id="webhook-url" placeholder="https://votre-site.com/webhook" />
+                  <p className="text-gray-700">
+                    Utilisez ces données pour simuler des paiements réussis ou échoués.
+                  </p>
+                  <div className="bg-gray-100 rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">Cartes Bancaires</h4>
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600">
+                        Visa: 4111111111111111, Exp: 12/24, CVV: 123
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Mastercard: 5222222222222222, Exp: 12/24, CVV: 123
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="event-type">Type d'Événement</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner un événement" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="payment.succeeded">payment.succeeded</SelectItem>
-                        <SelectItem value="payment.failed">payment.failed</SelectItem>
-                        <SelectItem value="payment.pending">payment.pending</SelectItem>
-                        <SelectItem value="refund.succeeded">refund.succeeded</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="bg-gray-100 rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">Numéros de Téléphone</h4>
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600">
+                        Numéro Succès: +221770000000
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Numéro Échec: +221779999999
+                      </p>
+                    </div>
                   </div>
-                  
-                  <Button className="bg-senepay-gold hover:bg-senepay-orange">
-                    <Play className="h-4 w-4 mr-2" />
-                    Envoyer Test Webhook
-                  </Button>
+                </div>
+              </div>
+
+              <Card className="p-6">
+                <h3 className="text-xl font-bold mb-4">Webhooks de Test</h3>
+                <div className="space-y-4">
+                  <p className="text-gray-700">
+                    Configurez votre URL de webhook pour recevoir des notifications en temps réel.
+                  </p>
+                  <div className="bg-gray-900 rounded-lg p-4">
+                    <pre className="text-sm text-gray-300 font-mono overflow-x-auto">
+                      <code>{`// Exemple de Webhook
+{
+  "type": "payment.succeeded",
+  "data": {
+    "id": "PAY_123",
+    "amount": 25000,
+    "currency": "XOF",
+    "status": "succeeded"
+  }
+}`}</code>
+                    </pre>
+                  </div>
                 </div>
               </Card>
-            </TabsContent>
-          </Tabs>
-
-          {/* Quick Start */}
-          <Card className="p-8 mb-8 bg-gradient-to-br from-senepay-gold/10 to-senepay-orange/10 border-senepay-gold/20">
-            <h2 className="text-2xl font-bold mb-4 text-senepay-dark">
-              Clés API de Test
-            </h2>
-            <p className="text-gray-700 mb-6">
-              Utilisez ces clés pour vos tests. Elles ne traiteront jamais de vrais paiements.
-            </p>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-semibold">Clé Publique</Label>
-                <div className="bg-gray-100 p-3 rounded font-mono text-sm">
-                  pk_test_senepay_sandbox_123456789
-                </div>
-              </div>
-              <div>
-                <Label className="text-sm font-semibold">Clé Secrète</Label>
-                <div className="bg-gray-100 p-3 rounded font-mono text-sm">
-                  sk_test_senepay_sandbox_987654321
-                </div>
-              </div>
             </div>
-          </Card>
 
-          {/* CTA */}
-          <div className="text-center">
-            <div className="bg-gradient-senepay rounded-2xl p-8 inline-block">
-              <h3 className="text-2xl font-bold mb-4 text-white">
-                Prêt pour la Production ?
-              </h3>
-              <p className="text-lg mb-6 opacity-90 text-white">
-                Créez votre compte et obtenez vos clés de production
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={() => navigate('/auth')}
-                  className="bg-white text-senepay-dark hover:bg-gray-100 px-8 py-3 font-bold"
-                >
-                  Créer un Compte
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigate('/api-documentation')}
-                  className="border-white text-white hover:bg-white hover:text-senepay-dark px-8 py-3"
-                >
-                  Documentation
-                </Button>
+            {/* CTA */}
+            <div className="text-center">
+              <div className="bg-gradient-senepay rounded-2xl p-8 inline-block">
+                <h3 className="text-2xl font-bold mb-4 text-white">
+                  Prêt à Intégrer ?
+                </h3>
+                <p className="text-lg mb-6 opacity-90 text-white">
+                  Accédez à notre documentation complète et nos exemples de code
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    onClick={() => navigate('/api-documentation')}
+                    className="bg-white text-senepay-dark hover:bg-gray-100 px-8 py-3 font-bold"
+                  >
+                    Documentation API
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/sdks')}
+                    className="border-white text-white hover:bg-white hover:text-senepay-dark px-8 py-3"
+                  >
+                    Télécharger SDKs
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
