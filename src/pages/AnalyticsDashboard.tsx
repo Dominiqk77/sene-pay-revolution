@@ -40,6 +40,14 @@ const AnalyticsDashboard = () => {
     console.log('Exporting analytics data...');
   };
 
+  // Debug logging
+  console.log('🔍 Analytics Dashboard Debug:', {
+    userLoading,
+    analyticsLoading,
+    merchantAccount: merchantAccount?.id,
+    analyticsData: !!analyticsData
+  });
+
   if (userLoading || analyticsLoading) {
     return (
       <div className="min-h-screen">
@@ -173,20 +181,100 @@ const AnalyticsDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-senepay-orange" />
-                Aucune donnée disponible
+                Génération des données d'exemple
               </CardTitle>
               <CardDescription>
-                Commencez à recevoir des paiements pour voir vos analytics
+                Données mockées pour démonstration - Connectez vos vraies transactions pour voir vos analytics
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">
-                Une fois que vous aurez des transactions, cette page affichera des analytics 
-                détaillées avec des graphiques interactifs et des prédictions IA.
-              </p>
-              <Button className="bg-gradient-to-r from-senepay-orange to-senepay-gold">
-                Voir la documentation API
-              </Button>
+              <div className="space-y-6">
+                {/* Données mockées pour la démonstration */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <RevenueChart 
+                    data={[
+                      { date: '20 Déc', revenue: 125000, transactions: 12 },
+                      { date: '21 Déc', revenue: 89000, transactions: 8 },
+                      { date: '22 Déc', revenue: 156000, transactions: 15 },
+                      { date: '23 Déc', revenue: 203000, transactions: 18 },
+                      { date: '24 Déc', revenue: 187000, transactions: 14 },
+                      { date: '25 Déc', revenue: 234000, transactions: 22 },
+                      { date: '26 Déc', revenue: 198000, transactions: 16 }
+                    ]}
+                    period="7d"
+                    totalRevenue={1192000}
+                    growth={15.2}
+                  />
+                  <PaymentMethodsChart data={[
+                    { name: 'Orange Money', value: 450000, count: 45, color: '#ff6b35' },
+                    { name: 'Wave', value: 320000, count: 32, color: '#00d4ff' },
+                    { name: 'Free Money', value: 280000, count: 28, color: '#8b5cf6' },
+                    { name: 'Visa Card', value: 142000, count: 14, color: '#1d4ed8' }
+                  ]} />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <TransactionVolumeChart 
+                    data={[
+                      { time: '0h-3h', volume: 12000, count: 2 },
+                      { time: '3h-6h', volume: 8000, count: 1 },
+                      { time: '6h-9h', volume: 45000, count: 5 },
+                      { time: '9h-12h', volume: 89000, count: 12 },
+                      { time: '12h-15h', volume: 156000, count: 18 },
+                      { time: '15h-18h', volume: 134000, count: 16 },
+                      { time: '18h-21h', volume: 98000, count: 11 },
+                      { time: '21h-24h', volume: 67000, count: 8 }
+                    ]}
+                    period="today"
+                  />
+                  <SuccessRateChart data={[
+                    { method: 'Orange Money', successRate: 98.5, totalTransactions: 200, successfulTransactions: 197, color: '#10b981' },
+                    { method: 'Wave', successRate: 96.2, totalTransactions: 130, successfulTransactions: 125, color: '#10b981' },
+                    { method: 'Free Money', successRate: 94.8, totalTransactions: 115, successfulTransactions: 109, color: '#10b981' },
+                    { method: 'Visa Card', successRate: 89.3, totalTransactions: 75, successfulTransactions: 67, color: '#f59e0b' }
+                  ]} />
+                </div>
+
+                <BusinessMetrics metrics={{
+                  mrr: 2850000,
+                  arr: 34200000,
+                  churnRate: 3.2,
+                  customerLtv: 1250000,
+                  averageOrderValue: 87500,
+                  conversionRate: 94.8,
+                  responseTime: 145,
+                  uptime: 99.94,
+                  mrrGrowth: 18.5,
+                  customerGrowth: 12.3
+                }} />
+
+                <AIPredictions predictions={[
+                  {
+                    type: 'revenue',
+                    title: 'Revenus Projetés (30j)',
+                    value: '3.2M FCFA',
+                    confidence: 87,
+                    trend: 'up',
+                    description: 'Basé sur la croissance actuelle et les tendances saisonnières',
+                    recommendation: 'Optimisez vos campagnes marketing en fin de mois pour maximiser la croissance'
+                  },
+                  {
+                    type: 'opportunity',
+                    title: 'Opportunité Orange Money',
+                    value: '+23% revenus potentiels',
+                    confidence: 92,
+                    trend: 'up',
+                    description: 'Orange Money montre le meilleur taux de conversion mais représente seulement 35% du volume',
+                    recommendation: 'Augmentez la visibilité d\'Orange Money sur votre checkout pour optimiser les conversions'
+                  }
+                ]} />
+              </div>
+              
+              <div className="mt-6 text-center">
+                <Button className="bg-gradient-to-r from-senepay-orange to-senepay-gold">
+                  Voir la documentation API pour connecter vos données
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}
