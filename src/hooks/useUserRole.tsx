@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -62,7 +63,7 @@ export const useUserRole = () => {
         // Attendre un court délai pour éviter les problèmes de timing
         await new Promise(resolve => setTimeout(resolve, 100));
         
-        // Essayer de créer le profil s'il n'existe pas
+        // Essayer de créer le profil s'il n'existe pas - AVEC avatar_url
         const { data: existingProfile, error: checkError } = await supabase
           .from('profiles')
           .select('*')
@@ -84,7 +85,8 @@ export const useUserRole = () => {
               email: user.email,
               full_name: user.user_metadata?.full_name || '',
               role: 'merchant',
-              is_verified: false
+              is_verified: false,
+              avatar_url: null
             })
             .select()
             .single();
@@ -164,7 +166,7 @@ export const useUserRole = () => {
     }
 
     try {
-      // Refetch profile
+      // Refetch profile - AVEC avatar_url
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
