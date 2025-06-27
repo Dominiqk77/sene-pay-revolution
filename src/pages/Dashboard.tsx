@@ -76,15 +76,98 @@ interface DashboardStats {
   today_amount: number;
 }
 
+// Données par défaut pour affichage immédiat
+const defaultStats: DashboardStats = {
+  total_transactions: 0,
+  total_amount: 0,
+  completed_amount: 0,
+  success_rate: 0,
+  pending_count: 0,
+  completed_count: 0,
+  failed_count: 0,
+  today_transactions: 0,
+  today_amount: 0
+};
+
 const Dashboard = () => {
   const { user } = useAuth();
   const { profile, merchantAccount, loading: roleLoading, isSuperAdmin } = useUserRole();
   const navigate = useNavigate();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [stats, setStats] = useState<DashboardStats>(defaultStats);
+  const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [filters, setFilters] = useState<any>({});
 
-  // Chargement immédiat des données analytics
+  // Ajouter les données analytics
   const { data: analyticsData, loading: analyticsLoading } = useAnalyticsData(merchantAccount?.id);
+
+  // Données mockées pour la démonstration analytics
+  const mockAnalyticsData = {
+    revenueData: [
+      { date: '20 Déc', revenue: 125000, transactions: 12 },
+      { date: '21 Déc', revenue: 89000, transactions: 8 },
+      { date: '22 Déc', revenue: 156000, transactions: 15 },
+      { date: '23 Déc', revenue: 203000, transactions: 18 },
+      { date: '24 Déc', revenue: 187000, transactions: 14 },
+      { date: '25 Déc', revenue: 234000, transactions: 22 },
+      { date: '26 Déc', revenue: 198000, transactions: 16 }
+    ],
+    paymentMethodsData: [
+      { name: 'Orange Money', value: 450000, count: 45, color: '#ff6b35' },
+      { name: 'Wave', value: 320000, count: 32, color: '#00d4ff' },
+      { name: 'Free Money', value: 280000, count: 28, color: '#8b5cf6' },
+      { name: 'Wizall', value: 180000, count: 18, color: '#10b981' },
+      { name: 'Visa Card', value: 142000, count: 14, color: '#1d4ed8' }
+    ],
+    volumeData: [
+      { time: '0h-3h', volume: 12000, count: 2 },
+      { time: '3h-6h', volume: 8000, count: 1 },
+      { time: '6h-9h', volume: 45000, count: 5 },
+      { time: '9h-12h', volume: 89000, count: 12 },
+      { time: '12h-15h', volume: 156000, count: 18 },
+      { time: '15h-18h', volume: 134000, count: 16 },
+      { time: '18h-21h', volume: 98000, count: 11 },
+      { time: '21h-24h', volume: 67000, count: 8 }
+    ],
+    successRateData: [
+      { method: 'Orange Money', successRate: 98.5, totalTransactions: 200, successfulTransactions: 197, color: '#10b981' },
+      { method: 'Wave', successRate: 96.2, totalTransactions: 130, successfulTransactions: 125, color: '#10b981' },
+      { method: 'Free Money', successRate: 94.8, totalTransactions: 115, successfulTransactions: 109, color: '#10b981' },
+      { method: 'Wizall', successRate: 92.1, totalTransactions: 95, successfulTransactions: 87, color: '#10b981' },
+      { method: 'Visa Card', successRate: 89.3, totalTransactions: 75, successfulTransactions: 67, color: '#f59e0b' }
+    ],
+    businessMetrics: {
+      mrr: 2850000,
+      arr: 34200000,
+      churnRate: 3.2,
+      customerLtv: 1250000,
+      averageOrderValue: 87500,
+      conversionRate: 94.8,
+      responseTime: 145,
+      uptime: 99.94,
+      mrrGrowth: 18.5,
+      customerGrowth: 12.3
+    },
+    predictions: [
+      {
+        type: 'revenue' as const,
+        title: 'Revenus Projetés (30j)',
+        value: '3.2M FCFA',
+        confidence: 87,
+        trend: 'up' as const,
+        description: 'Basé sur la croissance actuelle et les tendances saisonnières',
+        recommendation: 'Optimisez vos campagnes marketing en fin de mois pour maximiser la croissance'
+      },
+      {
+        type: 'opportunity' as const,
+        title: 'Opportunité Orange Money',
+        value: '+23% revenus potentiels',
+        confidence: 92,
+        trend: 'up' as const,
+        description: 'Orange Money montre le meilleur taux de conversion mais représente seulement 35% du volume',
+        recommendation: 'Augmentez la visibilité d\'Orange Money sur votre checkout pour optimiser les conversions'
+      }
+    ]
+  };
 
   // Debug logging pour identifier le problème
   useEffect(() => {
@@ -101,89 +184,77 @@ const Dashboard = () => {
   useEffect(() => {
     if (!roleLoading && profile?.role === 'super_admin') {
       console.log('🚨 Super Admin detected - immediate redirect to /super-admin');
+      // Redirection immédiate sans délai
       window.location.href = '/super-admin';
-      return;
+      return; // Arrêter l'exécution
     }
   }, [profile, roleLoading]);
 
-  // Chargement optimisé des stats en parallèle
+  // Chargement des stats en arrière-plan sans bloquer l'affichage
   useEffect(() => {
     if (user && merchantAccount && !isSuperAdmin) {
-      loadDashboardData();
+      fetchDashboardStats();
     }
   }, [user, merchantAccount, isSuperAdmin]);
 
-  const loadDashboardData = async () => {
-    if (!merchantAccount) return;
+  const fetchDashboardStats = async () => {
+    if (!merchantAccount) {
+      return;
+    }
 
+    setIsLoadingStats(true);
     try {
-      // Requête optimisée pour récupérer toutes les données nécessaires en une fois
+      // Récupérer toutes les transactions
       const { data: transactions, error } = await supabase
         .from('transactions')
-        .select('amount, status, created_at, payment_method, customer_email')
-        .eq('merchant_id', merchantAccount.id)
-        .order('created_at', { ascending: false });
+        .select('amount, status, created_at')
+        .eq('merchant_id', merchantAccount.id);
 
-      if (error) {
-        console.error('Error fetching transactions:', error);
-        return;
-      }
+      if (error) throw error;
 
       if (transactions) {
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        // Calculs optimisés en une seule passe
-        const statsData = transactions.reduce(
-          (acc, t) => {
-            const amount = Number(t.amount);
-            acc.total_transactions++;
-            acc.total_amount += amount;
+        const total_transactions = transactions.length;
+        const total_amount = transactions.reduce((sum, t) => sum + Number(t.amount), 0);
+        const completed_transactions = transactions.filter(t => t.status === 'completed');
+        const completed_amount = completed_transactions.reduce((sum, t) => sum + Number(t.amount), 0);
+        const success_rate = total_transactions > 0 ? (completed_transactions.length / total_transactions) * 100 : 0;
+        
+        const pending_count = transactions.filter(t => t.status === 'pending').length;
+        const completed_count = completed_transactions.length;
+        const failed_count = transactions.filter(t => t.status === 'failed').length;
 
-            if (t.status === 'completed') {
-              acc.completed_count++;
-              acc.completed_amount += amount;
-            } else if (t.status === 'pending') {
-              acc.pending_count++;
-            } else if (t.status === 'failed') {
-              acc.failed_count++;
-            }
-
-            // Transactions du jour
-            if (new Date(t.created_at) >= today) {
-              acc.today_transactions++;
-              acc.today_amount += amount;
-            }
-
-            return acc;
-          },
-          {
-            total_transactions: 0,
-            total_amount: 0,
-            completed_amount: 0,
-            pending_count: 0,
-            completed_count: 0,
-            failed_count: 0,
-            today_transactions: 0,
-            today_amount: 0,
-            success_rate: 0
-          }
+        const today_transactions_data = transactions.filter(t => 
+          new Date(t.created_at) >= today
         );
+        const today_transactions = today_transactions_data.length;
+        const today_amount = today_transactions_data.reduce((sum, t) => sum + Number(t.amount), 0);
 
-        // Calcul du taux de succès
-        statsData.success_rate = statsData.total_transactions > 0 
-          ? (statsData.completed_count / statsData.total_transactions) * 100 
-          : 0;
-
-        setStats(statsData);
+        setStats({
+          total_transactions,
+          total_amount,
+          completed_amount,
+          success_rate,
+          pending_count,
+          completed_count,
+          failed_count,
+          today_transactions,
+          today_amount
+        });
       }
+
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('Error fetching dashboard stats:', error);
+    } finally {
+      setIsLoadingStats(false);
     }
   };
 
   const handleFiltersChange = (newFilters: any) => {
     setFilters(newFilters);
+    // Ici on pourrait appliquer les filtres aux données
     console.log('Filters applied:', newFilters);
   };
 
@@ -203,18 +274,20 @@ const Dashboard = () => {
       .slice(0, 2);
   };
 
-  // Affichage immédiat avec données disponibles
+  // Affichage immédiat du dashboard
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
       <main className="pt-20 container mx-auto px-4 py-8">
+        {/* Security Alert */}
         <SecurityAlert />
         
         {/* Welcome Section avec Notifications et Photo de profil */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              {/* Photo de profil */}
               <Avatar className="h-16 w-16">
                 <AvatarImage src={profile?.avatar_url || undefined} />
                 <AvatarFallback className="text-lg font-medium bg-gradient-to-br from-senepay-orange to-senepay-gold text-white">
@@ -228,6 +301,11 @@ const Dashboard = () => {
                 </h1>
                 <p className="text-gray-600 text-sm md:text-base">
                   Gérez vos paiements et développez votre business avec SenePay
+                  {isLoadingStats && (
+                    <span className="ml-2 text-xs text-senepay-orange">
+                      • Mise à jour en cours...
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
@@ -235,6 +313,7 @@ const Dashboard = () => {
             <div className="flex items-center gap-4">
               <NotificationCenter merchantId={merchantAccount?.id} />
               
+              {/* Debug info pour Super Admin (à supprimer plus tard) */}
               {profile?.role === 'super_admin' && (
                 <div className="text-right">
                   <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white mb-2">
@@ -303,29 +382,29 @@ const Dashboard = () => {
           </div>
 
           <TabsContent value="overview" className="space-y-6">
-            {/* Statistiques Améliorées - Affichage immédiat */}
-            <EnhancedStats stats={stats ? {
+            {/* Statistiques Améliorées */}
+            <EnhancedStats stats={{
               totalRevenue: stats.completed_amount,
               totalTransactions: stats.total_transactions,
               successRate: stats.success_rate,
               averageOrderValue: stats.completed_amount / Math.max(1, stats.completed_count),
               todayRevenue: stats.today_amount,
               todayTransactions: stats.today_transactions,
-              activeCustomers: Math.floor(stats.total_transactions * 0.7),
-              responseTime: 145
-            } : undefined} />
+              activeCustomers: Math.floor(stats.total_transactions * 0.7), // Mock
+              responseTime: 145 // Mock
+            }} />
 
             {/* Filtres rapides */}
             <QuickFilters onFiltersChange={handleFiltersChange} />
 
-            {/* Statuts des transactions - Affichage immédiat */}
+            {/* Statuts des transactions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">En attente</p>
-                      <p className="text-3xl font-bold">{stats?.pending_count || 0}</p>
+                      <p className="text-3xl font-bold">{stats.pending_count}</p>
                     </div>
                     <Clock className="h-8 w-8 text-orange-500" />
                   </div>
@@ -337,7 +416,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Confirmées</p>
-                      <p className="text-3xl font-bold">{stats?.completed_count || 0}</p>
+                      <p className="text-3xl font-bold">{stats.completed_count}</p>
                     </div>
                     <CheckCircle className="h-8 w-8 text-green-500" />
                   </div>
@@ -349,7 +428,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Échouées</p>
-                      <p className="text-3xl font-bold">{stats?.failed_count || 0}</p>
+                      <p className="text-3xl font-bold">{stats.failed_count}</p>
                     </div>
                     <XCircle className="h-8 w-8 text-red-500" />
                   </div>
@@ -357,6 +436,7 @@ const Dashboard = () => {
               </Card>
             </div>
 
+            {/* Export de données */}
             <DataExport merchantId={merchantAccount?.id} />
 
             {/* Account Status */}
@@ -450,47 +530,52 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Analytics Content - Affichage immédiat */}
+            {/* Analytics Content - Toujours affiché */}
             <div className="space-y-6">
+              {/* Graphiques principaux */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <RevenueChart 
-                  data={analyticsData?.revenueData || []}
+                  data={analyticsData?.revenueData || mockAnalyticsData.revenueData}
                   period="7d"
-                  totalRevenue={analyticsData?.revenueData?.reduce((sum, item) => sum + item.revenue, 0) || 0}
+                  totalRevenue={(analyticsData?.revenueData || mockAnalyticsData.revenueData).reduce((sum, item) => sum + item.revenue, 0)}
                   growth={15.2}
                 />
-                <PaymentMethodsChart data={analyticsData?.paymentMethodsData || []} />
+                <PaymentMethodsChart data={analyticsData?.paymentMethodsData || mockAnalyticsData.paymentMethodsData} />
               </div>
 
+              {/* Volume et taux de succès */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <TransactionVolumeChart 
-                  data={analyticsData?.volumeData || []} 
+                  data={analyticsData?.volumeData || mockAnalyticsData.volumeData} 
                   period="today"
                 />
-                <SuccessRateChart data={analyticsData?.successRateData || []} />
+                <SuccessRateChart data={analyticsData?.successRateData || mockAnalyticsData.successRateData} />
               </div>
 
-              <BusinessMetrics metrics={analyticsData?.businessMetrics} />
-              <AIPredictions predictions={analyticsData?.predictions?.slice(0, 2) || []} />
+              {/* Business Metrics */}
+              <BusinessMetrics metrics={analyticsData?.businessMetrics || mockAnalyticsData.businessMetrics} />
 
-              {/* Message informatif si pas de données */}
-              {!analyticsData?.revenueData?.length && (
+              {/* Prédictions IA */}
+              <AIPredictions predictions={analyticsData?.predictions?.slice(0, 2) || mockAnalyticsData.predictions} />
+
+              {/* Message pour les données de démonstration */}
+              {!analyticsData && (
                 <Card className="border-senepay-orange/20 bg-gradient-to-r from-orange-50 to-yellow-50">
                   <CardContent className="p-6">
                     <div className="text-center">
                       <Crown className="h-8 w-8 text-senepay-orange mx-auto mb-3" />
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        Aucune donnée disponible
+                        Données de démonstration
                       </h3>
                       <p className="text-gray-600 mb-4">
-                        Commencez à traiter des paiements pour voir vos analytics personnalisées.
+                        Ces graphiques montrent des données d'exemple. Connectez vos vraies transactions pour voir vos analytics personnalisées.
                       </p>
                       <Button 
                         className="bg-gradient-to-r from-senepay-orange to-senepay-gold"
                         onClick={() => navigate('/analytics')}
                       >
                         <BarChart3 className="h-5 w-5 mr-2" />
-                        En savoir plus
+                        Voir la version complète
                       </Button>
                     </div>
                   </CardContent>
@@ -500,6 +585,7 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="api" className="space-y-6">
+            {/* API Credentials */}
             {merchantAccount && (
               <Card>
                 <CardHeader>
@@ -574,6 +660,7 @@ const Dashboard = () => {
               </p>
             </div>
 
+            {/* Composant ProfileSettings */}
             <ProfileSettings />
 
             {/* Actions rapides */}
