@@ -31,6 +31,10 @@ import DataExport from '@/components/dashboard/DataExport';
 import QuickFilters from '@/components/dashboard/QuickFilters';
 import EnhancedStats from '@/components/dashboard/EnhancedStats';
 import ProfileSettings from '@/components/ProfileSettings';
+import Avatar from '@/components/ui/avatar';
+import AvatarImage from '@/components/ui/avatar-image';
+import AvatarFallback from '@/components/ui/avatar-fallback';
+import User from '@/components/ui/user';
 
 // Import des composants analytics
 import RevenueChart from '@/components/analytics/RevenueChart';
@@ -48,6 +52,7 @@ interface Profile {
   phone: string;
   role: string;
   is_verified: boolean;
+  avatar_url: string;
 }
 
 interface MerchantAccount {
@@ -269,6 +274,15 @@ const Dashboard = () => {
     return null;
   }
 
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -277,16 +291,26 @@ const Dashboard = () => {
         {/* Security Alert */}
         <SecurityAlert />
         
-        {/* Welcome Section avec Notifications */}
+        {/* Welcome Section avec Notifications et Photo de profil */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                Bienvenue, {profile?.full_name || 'Utilisateur'} 👋
-              </h1>
-              <p className="text-gray-600 text-sm md:text-base">
-                Gérez vos paiements et développez votre business avec SenePay
-              </p>
+            <div className="flex items-center gap-4">
+              {/* Photo de profil */}
+              <Avatar className="h-16 w-16">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="text-lg font-medium bg-gradient-to-br from-senepay-orange to-senepay-gold text-white">
+                  {profile?.full_name ? getInitials(profile.full_name) : <User className="h-8 w-8" />}
+                </AvatarFallback>
+              </Avatar>
+              
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  Bienvenue, {profile?.full_name || 'Utilisateur'} 👋
+                </h1>
+                <p className="text-gray-600 text-sm md:text-base">
+                  Gérez vos paiements et développez votre business avec SenePay
+                </p>
+              </div>
             </div>
             
             <div className="flex items-center gap-4">

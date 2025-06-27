@@ -23,7 +23,6 @@ const ProfileSettings = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors, isDirty }, reset } = useForm<ProfileFormData>({
     defaultValues: {
@@ -51,14 +50,25 @@ const ProfileSettings = () => {
     setIsUploadingPhoto(true);
 
     try {
-      // Upload vers un bucket fictif pour la démonstration
-      // En production, vous devriez créer un bucket storage dans Supabase
-      const fileName = `avatar-${profile.id}-${Date.now()}.${file.name.split('.').pop()}`;
-      
-      // Simuler l'upload et générer une URL temporaire
+      // Convertir l'image en base64 pour la sauvegarder
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatarUrl(e.target?.result as string);
+      reader.onload = async (e) => {
+        const base64String = e.target?.result as string;
+        
+        // Sauvegarder la photo en base de données
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            avatar_url: base64String,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', profile.id);
+
+        if (error) throw error;
+
+        // Rafraîchir les données utilisateur
+        await refreshUserData();
+        
         toast({
           title: 'Photo mise à jour',
           description: 'Votre photo de profil a été mise à jour avec succès.',
@@ -71,6 +81,41 @@ const ProfileSettings = () => {
       toast({
         title: 'Erreur',
         description: 'Impossible de mettre à jour la photo de profil.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    if (!profile) return;
+
+    setIsUploadingPhoto(true);
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          avatar_url: null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      await refreshUserData();
+      
+      toast({
+        title: 'Photo supprimée',
+        description: 'Votre photo de profil a été supprimée.',
+      });
+
+    } catch (error) {
+      console.error('Erreur suppression photo:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de supprimer la photo de profil.',
         variant: 'destructive'
       });
     } finally {
@@ -154,7 +199,7 @@ const ProfileSettings = () => {
           <div className="flex items-center space-x-6">
             <div className="relative">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={avatarUrl || undefined} />
+                <AvatarImage src={profile.avatar_url || undefined} />
                 <AvatarFallback className="text-lg font-medium bg-gradient-to-br from-senepay-orange to-senepay-gold text-white">
                   {profile.full_name ? getInitials(profile.full_name) : <User className="h-8 w-8" />}
                 </AvatarFallback>
@@ -183,11 +228,12 @@ const ProfileSettings = () => {
                     disabled={isUploadingPhoto}
                   />
                 </Button>
-                {avatarUrl && (
+                {profile.avatar_url && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setAvatarUrl(null)}
+                    onClick={handleRemovePhoto}
+                    disabled={isUploadingPhoto}
                   >
                     Supprimer
                   </Button>
