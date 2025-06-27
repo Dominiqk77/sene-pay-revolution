@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -31,6 +30,8 @@ import SecurityAlert from '@/components/SecurityAlert';
 import NotificationCenter from '@/components/dashboard/NotificationCenter';
 import DataExport from '@/components/dashboard/DataExport';
 import QuickFilters from '@/components/dashboard/QuickFilters';
+import AdvancedFilters from '@/components/dashboard/AdvancedFilters';
+import ValueAddedWidgets from '@/components/dashboard/ValueAddedWidgets';
 import EnhancedStats from '@/components/dashboard/EnhancedStats';
 import ProfileSettings from '@/components/ProfileSettings';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -96,6 +97,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState<DashboardStats>(defaultStats);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [filters, setFilters] = useState<any>({});
+  const [activeFilters, setActiveFilters] = useState<any>({});
 
   // Ajouter les données analytics
   const { data: analyticsData, loading: analyticsLoading } = useAnalyticsData(merchantAccount?.id);
@@ -253,9 +255,20 @@ const Dashboard = () => {
   };
 
   const handleFiltersChange = (newFilters: any) => {
-    setFilters(newFilters);
-    // Ici on pourrait appliquer les filtres aux données
-    console.log('Filters applied:', newFilters);
+    setActiveFilters(newFilters);
+    console.log('🔍 Filtres appliqués:', newFilters);
+    
+    // Ici vous pouvez appliquer les filtres aux données
+    // Par exemple, filtrer les transactions selon les critères
+    if (newFilters.currency) {
+      console.log('💱 Devise sélectionnée:', newFilters.currency);
+    }
+    if (newFilters.search) {
+      console.log('🔍 Recherche:', newFilters.search);
+    }
+    if (newFilters.startDate || newFilters.endDate) {
+      console.log('📅 Période:', newFilters.startDate, 'à', newFilters.endDate);
+    }
   };
 
   // Si c'est un super admin et qu'on est encore ici, forcer la redirection
@@ -334,6 +347,11 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Filtres Avancés */}
+        <div className="mb-8">
+          <AdvancedFilters onFiltersChange={handleFiltersChange} />
+        </div>
+
         <Tabs defaultValue="overview" className="space-y-6">
           {/* Tabs optimisés mobile */}
           <div className="w-full overflow-x-auto pb-2">
@@ -394,8 +412,8 @@ const Dashboard = () => {
               responseTime: 145 // Mock
             }} />
 
-            {/* Filtres rapides */}
-            <QuickFilters onFiltersChange={handleFiltersChange} />
+            {/* Widgets de valeur ajoutée */}
+            <ValueAddedWidgets merchantId={merchantAccount?.id} />
 
             {/* Statuts des transactions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
