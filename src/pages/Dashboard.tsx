@@ -21,7 +21,8 @@ import {
   CheckCircle,
   XCircle,
   Crown,
-  Shield
+  Shield,
+  User
 } from "lucide-react";
 import Header from "@/components/Header";
 import TransactionsList from "@/components/TransactionsList";
@@ -31,10 +32,7 @@ import DataExport from '@/components/dashboard/DataExport';
 import QuickFilters from '@/components/dashboard/QuickFilters';
 import EnhancedStats from '@/components/dashboard/EnhancedStats';
 import ProfileSettings from '@/components/ProfileSettings';
-import Avatar from '@/components/ui/avatar';
-import AvatarImage from '@/components/ui/avatar-image';
-import AvatarFallback from '@/components/ui/avatar-fallback';
-import User from '@/components/ui/user';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 // Import des composants analytics
 import RevenueChart from '@/components/analytics/RevenueChart';
