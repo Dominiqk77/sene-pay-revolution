@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -75,12 +76,25 @@ interface DashboardStats {
   today_amount: number;
 }
 
+// Données par défaut pour affichage immédiat
+const defaultStats: DashboardStats = {
+  total_transactions: 0,
+  total_amount: 0,
+  completed_amount: 0,
+  success_rate: 0,
+  pending_count: 0,
+  completed_count: 0,
+  failed_count: 0,
+  today_transactions: 0,
+  today_amount: 0
+};
+
 const Dashboard = () => {
   const { user } = useAuth();
   const { profile, merchantAccount, loading: roleLoading, isSuperAdmin } = useUserRole();
   const navigate = useNavigate();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats>(defaultStats);
+  const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [filters, setFilters] = useState<any>({});
 
   // Ajouter les données analytics
@@ -176,18 +190,19 @@ const Dashboard = () => {
     }
   }, [profile, roleLoading]);
 
+  // Chargement des stats en arrière-plan sans bloquer l'affichage
   useEffect(() => {
-    if (user && !isSuperAdmin && !roleLoading) {
+    if (user && merchantAccount && !isSuperAdmin) {
       fetchDashboardStats();
     }
-  }, [user, isSuperAdmin, roleLoading]);
+  }, [user, merchantAccount, isSuperAdmin]);
 
   const fetchDashboardStats = async () => {
     if (!merchantAccount) {
-      setLoading(false);
       return;
     }
 
+    setIsLoadingStats(true);
     try {
       // Récupérer toutes les transactions
       const { data: transactions, error } = await supabase
@@ -233,7 +248,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     } finally {
-      setLoading(false);
+      setIsLoadingStats(false);
     }
   };
 
@@ -242,21 +257,6 @@ const Dashboard = () => {
     // Ici on pourrait appliquer les filtres aux données
     console.log('Filters applied:', newFilters);
   };
-
-  // Affichage de chargement simplifié - seulement pour les données
-  if (loading) {
-    return (
-      <div className="min-h-screen">
-        <Header />
-        <div className="pt-20 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-senepay-orange mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement de votre tableau de bord...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // Si c'est un super admin et qu'on est encore ici, forcer la redirection
   if (profile?.role === 'super_admin') {
@@ -274,6 +274,7 @@ const Dashboard = () => {
       .slice(0, 2);
   };
 
+  // Affichage immédiat du dashboard
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -300,6 +301,11 @@ const Dashboard = () => {
                 </h1>
                 <p className="text-gray-600 text-sm md:text-base">
                   Gérez vos paiements et développez votre business avec SenePay
+                  {isLoadingStats && (
+                    <span className="ml-2 text-xs text-senepay-orange">
+                      • Mise à jour en cours...
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
@@ -377,7 +383,7 @@ const Dashboard = () => {
 
           <TabsContent value="overview" className="space-y-6">
             {/* Statistiques Améliorées */}
-            <EnhancedStats stats={stats ? {
+            <EnhancedStats stats={{
               totalRevenue: stats.completed_amount,
               totalTransactions: stats.total_transactions,
               successRate: stats.success_rate,
@@ -386,7 +392,7 @@ const Dashboard = () => {
               todayTransactions: stats.today_transactions,
               activeCustomers: Math.floor(stats.total_transactions * 0.7), // Mock
               responseTime: 145 // Mock
-            } : undefined} />
+            }} />
 
             {/* Filtres rapides */}
             <QuickFilters onFiltersChange={handleFiltersChange} />
@@ -398,7 +404,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">En attente</p>
-                      <p className="text-3xl font-bold">{stats?.pending_count || 0}</p>
+                      <p className="text-3xl font-bold">{stats.pending_count}</p>
                     </div>
                     <Clock className="h-8 w-8 text-orange-500" />
                   </div>
@@ -410,7 +416,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Confirmées</p>
-                      <p className="text-3xl font-bold">{stats?.completed_count || 0}</p>
+                      <p className="text-3xl font-bold">{stats.completed_count}</p>
                     </div>
                     <CheckCircle className="h-8 w-8 text-green-500" />
                   </div>
@@ -422,7 +428,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Échouées</p>
-                      <p className="text-3xl font-bold">{stats?.failed_count || 0}</p>
+                      <p className="text-3xl font-bold">{stats.failed_count}</p>
                     </div>
                     <XCircle className="h-8 w-8 text-red-500" />
                   </div>
