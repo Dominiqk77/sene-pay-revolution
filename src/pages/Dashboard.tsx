@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -41,8 +42,6 @@ import TransactionVolumeChart from '@/components/analytics/TransactionVolumeChar
 import SuccessRateChart from '@/components/analytics/SuccessRateChart';
 import BusinessMetrics from '@/components/analytics/BusinessMetrics';
 import AIPredictions from '@/components/analytics/AIPredictions';
-import AdvancedFilters from '@/components/dashboard/AdvancedFilters';
-import ValueAddedWidgets from '@/components/dashboard/ValueAddedWidgets';
 
 interface Profile {
   id: string;
@@ -97,8 +96,6 @@ const Dashboard = () => {
   const [stats, setStats] = useState<DashboardStats>(defaultStats);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [filters, setFilters] = useState<any>({});
-  
-  const [activeFilters, setActiveFilters] = useState<any>({});
 
   // Ajouter les données analytics
   const { data: analyticsData, loading: analyticsLoading } = useAnalyticsData(merchantAccount?.id);
@@ -260,13 +257,6 @@ const Dashboard = () => {
     // Ici on pourrait appliquer les filtres aux données
     console.log('Filters applied:', newFilters);
   };
-  
-  const handleFiltersChange = (filters: any) => {
-    setActiveFilters(filters);
-    console.log('🔍 Filtres appliqués:', filters);
-    // Ici on appliquerait les filtres aux données
-    // Pour l'instant, on log juste pour le debug
-  };
 
   // Si c'est un super admin et qu'on est encore ici, forcer la redirection
   if (profile?.role === 'super_admin') {
@@ -344,9 +334,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Nouveaux filtres avancés */}
-        <AdvancedFilters onFiltersChange={handleFiltersChange} />
-
         <Tabs defaultValue="overview" className="space-y-6">
           {/* Tabs optimisés mobile */}
           <div className="w-full overflow-x-auto pb-2">
@@ -395,9 +382,6 @@ const Dashboard = () => {
           </div>
 
           <TabsContent value="overview" className="space-y-6">
-            {/* Widgets de valeur ajoutée */}
-            <ValueAddedWidgets merchantId={merchantAccount?.id} />
-
             {/* Statistiques Améliorées */}
             <EnhancedStats stats={{
               totalRevenue: stats.completed_amount,
@@ -409,6 +393,9 @@ const Dashboard = () => {
               activeCustomers: Math.floor(stats.total_transactions * 0.7), // Mock
               responseTime: 145 // Mock
             }} />
+
+            {/* Filtres rapides */}
+            <QuickFilters onFiltersChange={handleFiltersChange} />
 
             {/* Statuts des transactions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -512,7 +499,6 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
-          
           <TabsContent value="transactions">
             <TransactionsList merchantId={merchantAccount?.id} />
           </TabsContent>
