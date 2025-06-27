@@ -243,22 +243,15 @@ const Dashboard = () => {
     console.log('Filters applied:', newFilters);
   };
 
-  // Affichage de chargement amélioré
-  if (loading || roleLoading) {
+  // Affichage de chargement simplifié - seulement pour les données
+  if (loading) {
     return (
       <div className="min-h-screen">
         <Header />
         <div className="pt-20 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-senepay-orange mx-auto mb-4"></div>
-            <p className="text-gray-600">
-              {roleLoading ? 'Vérification de vos permissions...' : 'Chargement de votre tableau de bord...'}
-            </p>
-            {profile?.role === 'super_admin' && (
-              <p className="text-sm text-senepay-orange mt-2">
-                Redirection vers le tableau de bord Super Admin...
-              </p>
-            )}
+            <p className="text-gray-600">Chargement de votre tableau de bord...</p>
           </div>
         </div>
       </div>
