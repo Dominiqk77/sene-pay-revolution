@@ -66,7 +66,7 @@ export const useUserRole = () => {
         // Essayer de créer le profil s'il n'existe pas - AVEC avatar_url
         const { data: existingProfile, error: checkError } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, email, full_name, company_name, phone, role, is_verified, avatar_url, created_at, updated_at')
           .eq('id', user.id)
           .maybeSingle();
 
@@ -88,7 +88,7 @@ export const useUserRole = () => {
               is_verified: false,
               avatar_url: null
             })
-            .select()
+            .select('id, email, full_name, company_name, phone, role, is_verified, avatar_url, created_at, updated_at')
             .single();
 
           if (insertError) {
@@ -123,7 +123,7 @@ export const useUserRole = () => {
         // Debug final pour le rôle Super Admin
         const finalProfile = existingProfile || await supabase
           .from('profiles')
-          .select('*')
+          .select('id, email, full_name, company_name, phone, role, is_verified, avatar_url, created_at, updated_at')
           .eq('id', user.id)
           .single()
           .then(({ data }) => data);
@@ -169,7 +169,7 @@ export const useUserRole = () => {
       // Refetch profile - AVEC avatar_url
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, full_name, company_name, phone, role, is_verified, avatar_url, created_at, updated_at')
         .eq('id', user.id)
         .single();
 
