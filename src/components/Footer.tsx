@@ -1,3 +1,4 @@
+
 import { Separator } from "@/components/ui/separator";
 import Logo from "@/components/Logo";
 
@@ -61,6 +62,9 @@ const Footer = () => {
     links: [{
       name: "À propos",
       href: "/about"
+    }, {
+      name: "Investisseurs",
+      href: "/investors"
     }, {
       name: "Carrières",
       href: "/careers"
