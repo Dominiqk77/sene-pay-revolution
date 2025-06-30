@@ -26,6 +26,7 @@ import TransactionVolumeChart from '@/components/analytics/TransactionVolumeChar
 import SuccessRateChart from '@/components/analytics/SuccessRateChart';
 import BusinessMetrics from '@/components/analytics/BusinessMetrics';
 import AIPredictions from '@/components/analytics/AIPredictions';
+
 interface Profile {
   id: string;
   email: string;
@@ -351,8 +352,11 @@ const Dashboard = () => {
               
               <div>
                 <h1 className="md:text-3xl font-bold text-gray-900 mb-2 text-sm">
-                  Bienvenue, {profile?.full_name || 'Utilisateur'} 👋
+                  Bienvenue 👋
                 </h1>
+                <h2 className="text-xl md:text-2xl font-semibold text-senepay-orange mb-2">
+                  {profile?.full_name || 'Utilisateur'}
+                </h2>
                 <p className="text-gray-600 text-sm md:text-base">
                   Gérez vos paiements et développez votre business avec SenePay
                   {isLoadingStats && <span className="ml-2 text-xs text-senepay-orange">
