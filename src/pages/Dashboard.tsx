@@ -350,7 +350,7 @@ const Dashboard = () => {
               </Avatar>
               
               <div>
-                <h1 className="md:text-3xl font-bold text-gray-900 mb-2 text-sm">
+                <h1 className="md:text-3xl font-bold text-gray-900 mb-2 text-base">
                   Bienvenue 👋
                 </h1>
                 <h2 className="md:text-2xl font-semibold text-senepay-orange mb-2 text-base">
