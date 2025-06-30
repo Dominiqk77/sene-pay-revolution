@@ -26,6 +26,7 @@ import TransactionVolumeChart from '@/components/analytics/TransactionVolumeChar
 import SuccessRateChart from '@/components/analytics/SuccessRateChart';
 import BusinessMetrics from '@/components/analytics/BusinessMetrics';
 import AIPredictions from '@/components/analytics/AIPredictions';
+
 interface Profile {
   id: string;
   email: string;
@@ -350,10 +351,10 @@ const Dashboard = () => {
               </Avatar>
               
               <div>
-                <h1 className="md:text-3xl font-bold text-gray-900 mb-2 text-base">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                   Bienvenue 👋
                 </h1>
-                <h2 className="md:text-2xl font-semibold text-senepay-orange mb-2 text-base">
+                <h2 className="text-lg md:text-2xl font-semibold text-senepay-orange mb-2">
                   {profile?.full_name || 'Utilisateur'}
                 </h2>
                 <p className="text-gray-600 text-sm md:text-base">
@@ -384,33 +385,33 @@ const Dashboard = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          {/* Tabs optimisés mobile */}
-          <div className="w-full overflow-x-auto pb-2">
+          {/* Tabs optimisés mobile avec scroll horizontal */}
+          <div className="w-full overflow-x-auto pb-2 -mx-4 px-4">
             <TabsList className="grid grid-cols-5 lg:grid-cols-5 w-full min-w-max lg:min-w-0 gap-1 p-1 bg-muted rounded-lg">
-              <TabsTrigger value="overview" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
+              <TabsTrigger value="overview" className="flex-shrink-0 px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <Activity className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline">Vue d'ensemble</span>
                 <span className="xs:hidden">Vue</span>
               </TabsTrigger>
-              <TabsTrigger value="transactions" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
+              <TabsTrigger value="transactions" className="flex-shrink-0 px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <CreditCard className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline">Transactions</span>
                 <span className="xs:hidden">Trans</span>
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
+              <TabsTrigger value="analytics" className="flex-shrink-0 px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden xs:inline">Analytics Pro</span>
-                <span className="xs:hidden">Analytics</span>
+                <span className="hidden sm:inline">Analytics Pro</span>
+                <span className="sm:hidden">Analytics</span>
               </TabsTrigger>
-              <TabsTrigger value="api" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
+              <TabsTrigger value="api" className="flex-shrink-0 px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <Key className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden xs:inline">API & Dev</span>
-                <span className="xs:hidden">API</span>
+                <span className="hidden sm:inline">API & Dev</span>
+                <span className="sm:hidden">API</span>
               </TabsTrigger>
-              <TabsTrigger value="settings" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
+              <TabsTrigger value="settings" className="flex-shrink-0 px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden xs:inline">Paramètres</span>
-                <span className="xs:hidden">Config</span>
+                <span className="hidden sm:inline">Paramètres</span>
+                <span className="sm:hidden">Config</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -656,62 +657,115 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-                <Settings className="h-6 w-6 text-senepay-orange" />
-                Paramètres du compte
+          <TabsContent value="settings" className="space-y-4 sm:space-y-6">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2 sm:gap-3">
+                <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-senepay-orange" />
+                <span className="text-base sm:text-2xl">Paramètres du compte</span>
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm sm:text-base">
                 Gérez votre profil, vos préférences et la configuration de votre compte
               </p>
             </div>
 
-            {/* Composant ProfileSettings */}
-            <ProfileSettings />
+            {/* Composant ProfileSettings optimisé mobile */}
+            <div className="space-y-4 sm:space-y-6">
+              <ProfileSettings />
+            </div>
 
-            {/* Actions rapides */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
+            {/* Actions rapides - Layout mobile optimisé */}
+            <Card className="mt-4 sm:mt-6">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Settings className="h-4 w-4 sm:h-5 sm:w-5" />
                   Actions rapides
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm">
                   Accès rapide aux fonctionnalités principales
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline" onClick={() => navigate('/analytics')}>
-                    <BarChart3 className="h-8 w-8 text-senepay-orange" />
-                    <span className="font-medium">Analytics</span>
-                    <span className="text-sm text-gray-500 text-center">
-                      Analysez vos performances
+                {/* Grid responsive - 1 colonne sur mobile, 2 sur tablet, 3 sur desktop */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                  <Button 
+                    className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px]" 
+                    variant="outline" 
+                    onClick={() => navigate('/analytics')}
+                  >
+                    <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 text-senepay-orange" />
+                    <span className="font-medium text-sm sm:text-base">Analytics Premium</span>
+                    <span className="text-xs sm:text-sm text-gray-500 text-center leading-tight">
+                      Analysez vos performances en détail
                     </span>
                   </Button>
                   
-                  <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
-                    <Key className="h-8 w-8 text-senepay-gold" />
-                    <span className="font-medium">API Documentation</span>
-                    <span className="text-sm text-gray-500 text-center">
-                      Intégrez SenePay facilement
+                  <Button 
+                    className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px]" 
+                    variant="outline"
+                  >
+                    <Key className="h-6 w-6 sm:h-8 sm:w-8 text-senepay-gold" />
+                    <span className="font-medium text-sm sm:text-base">Clés API</span>
+                    <span className="text-xs sm:text-sm text-gray-500 text-center leading-tight">
+                      Gérez vos clés d'intégration
                     </span>
                   </Button>
                   
-                  <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline">
-                    <Settings className="h-8 w-8 text-gray-600" />
-                    <span className="font-medium">Support</span>
-                    <span className="text-sm text-gray-500 text-center">
-                      Contactez notre équipe
+                  <Button 
+                    className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px] sm:col-span-2 lg:col-span-1" 
+                    variant="outline"
+                  >
+                    <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-gray-600" />
+                    <span className="font-medium text-sm sm:text-base">Transactions</span>
+                    <span className="text-xs sm:text-sm text-gray-500 text-center leading-tight">
+                      Consultez l'historique complet
                     </span>
                   </Button>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Section API - Mobile optimisé */}
+            {merchantAccount && (
+              <Card className="border-blue-100 bg-blue-50/30">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                    <Key className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                    Clés API - Accès rapide
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    Vos identifiants d'intégration SenePay
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="p-3 sm:p-4 bg-white rounded-lg border">
+                      <p className="text-xs sm:text-sm font-medium text-gray-500 mb-2">Clé API Publique</p>
+                      <div className="bg-gray-50 p-2 sm:p-3 rounded border">
+                        <code className="text-xs sm:text-sm text-gray-800 break-all font-mono">
+                          {merchantAccount.api_key}
+                        </code>
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white flex-1">
+                        <Key className="h-4 w-4 mr-2" />
+                        Copier la clé
+                      </Button>
+                      <Button size="sm" variant="outline" className="flex-1">
+                        Documentation API
+                      </Button>
+                    </div>
+                    <p className="text-xs text-amber-600 bg-amber-50 p-2 rounded border border-amber-200">
+                      ⚠️ Gardez vos clés secrètes ! Ne les partagez jamais publiquement.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
       </main>
     </div>;
 };
+
 export default Dashboard;

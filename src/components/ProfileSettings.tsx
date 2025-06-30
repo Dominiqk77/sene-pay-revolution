@@ -163,10 +163,10 @@ const ProfileSettings = () => {
   if (!profile) {
     return (
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-4 sm:p-6">
           <div className="flex items-center space-x-2">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Chargement du profil...</span>
+            <span className="text-sm sm:text-base">Chargement du profil...</span>
           </div>
         </CardContent>
       </Card>
@@ -183,40 +183,41 @@ const ProfileSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Photo de profil */}
+    <div className="space-y-4 sm:space-y-6">
+      {/* Photo de profil - Mobile optimisé */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Camera className="h-5 w-5" />
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Camera className="h-4 w-4 sm:h-5 sm:w-5" />
             Photo de profil
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm">
             Personnalisez votre avatar en uploadant une photo
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center space-x-6">
+          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <div className="relative">
-              <Avatar className="h-20 w-20">
+              <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
                 <AvatarImage src={profile.avatar_url || undefined} />
-                <AvatarFallback className="text-lg font-medium bg-gradient-to-br from-senepay-orange to-senepay-gold text-white">
-                  {profile.full_name ? getInitials(profile.full_name) : <User className="h-8 w-8" />}
+                <AvatarFallback className="text-base sm:text-lg font-medium bg-gradient-to-br from-senepay-orange to-senepay-gold text-white">
+                  {profile.full_name ? getInitials(profile.full_name) : <User className="h-6 w-6 sm:h-8 sm:w-8" />}
                 </AvatarFallback>
               </Avatar>
               {isUploadingPhoto && (
                 <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
-                  <Loader2 className="h-6 w-6 text-white animate-spin" />
+                  <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 text-white animate-spin" />
                 </div>
               )}
             </div>
             
-            <div className="flex-1">
-              <div className="flex items-center space-x-4">
+            <div className="flex-1 text-center sm:text-left">
+              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
                 <Button
                   variant="outline"
-                  className="relative overflow-hidden"
+                  className="relative overflow-hidden w-full sm:w-auto"
                   disabled={isUploadingPhoto}
+                  size="sm"
                 >
                   <Camera className="h-4 w-4 mr-2" />
                   Changer la photo
@@ -234,12 +235,13 @@ const ProfileSettings = () => {
                     size="sm"
                     onClick={handleRemovePhoto}
                     disabled={isUploadingPhoto}
+                    className="w-full sm:w-auto"
                   >
                     Supprimer
                   </Button>
                 )}
               </div>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-xs sm:text-sm text-gray-500 mt-2">
                 JPG, PNG ou GIF. Max 2MB.
               </p>
             </div>
@@ -247,60 +249,62 @@ const ProfileSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Informations personnelles */}
+      {/* Informations personnelles - Mobile optimisé */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <User className="h-4 w-4 sm:h-5 sm:w-5" />
             Informations personnelles
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm">
             Modifiez vos informations de profil
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2">
-                <Label htmlFor="full_name">Nom complet *</Label>
+                <Label htmlFor="full_name" className="text-sm font-medium">Nom complet *</Label>
                 <Input
                   id="full_name"
                   {...register('full_name', { 
                     required: 'Le nom complet est requis' 
                   })}
                   placeholder="Votre nom complet"
-                  className={errors.full_name ? 'border-red-500' : ''}
+                  className={`${errors.full_name ? 'border-red-500' : ''} h-10 sm:h-11`}
                 />
                 {errors.full_name && (
-                  <p className="text-sm text-red-500">{errors.full_name.message}</p>
+                  <p className="text-xs sm:text-sm text-red-500">{errors.full_name.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="company_name">Nom de l'entreprise</Label>
+                <Label htmlFor="company_name" className="text-sm font-medium">Nom de l'entreprise</Label>
                 <Input
                   id="company_name"
                   {...register('company_name')}
                   placeholder="Nom de votre entreprise"
+                  className="h-10 sm:h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Téléphone</Label>
+                <Label htmlFor="phone" className="text-sm font-medium">Téléphone</Label>
                 <Input
                   id="phone"
                   {...register('phone')}
                   placeholder="+221 77 123 45 67"
+                  className="h-10 sm:h-11"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                 <Input
                   id="email"
                   value={profile.email || ''}
                   disabled
-                  className="bg-gray-50 text-gray-500"
+                  className="bg-gray-50 text-gray-500 h-10 sm:h-11"
                 />
                 <p className="text-xs text-gray-500">
                   L'email ne peut pas être modifié
@@ -308,20 +312,20 @@ const ProfileSettings = () => {
               </div>
             </div>
 
-            {/* Statut du compte */}
+            {/* Statut du compte - Mobile friendly */}
             <div className="pt-4 border-t">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <div>
                   <h4 className="text-sm font-medium text-gray-900">Statut du compte</h4>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Informations sur votre compte SenePay
                   </p>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Badge variant={profile.is_verified ? "default" : "secondary"}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                  <Badge variant={profile.is_verified ? "default" : "secondary"} className="text-xs">
                     {profile.is_verified ? "✓ Vérifié" : "En attente"}
                   </Badge>
-                  <Badge variant="outline" className="capitalize">
+                  <Badge variant="outline" className="capitalize text-xs">
                     {profile.role}
                   </Badge>
                 </div>
@@ -332,17 +336,18 @@ const ProfileSettings = () => {
               <Button
                 type="submit"
                 disabled={!isDirty || isLoading}
-                className="bg-gradient-to-r from-senepay-orange to-senepay-gold hover:from-senepay-orange/90 hover:to-senepay-gold/90"
+                className="w-full sm:w-auto bg-gradient-to-r from-senepay-orange to-senepay-gold hover:from-senepay-orange/90 hover:to-senepay-gold/90"
+                size="sm"
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Sauvegarde...
+                    <span className="text-sm">Sauvegarde...</span>
                   </>
                 ) : (
                   <>
                     <Save className="h-4 w-4 mr-2" />
-                    Sauvegarder les modifications
+                    <span className="text-sm">Sauvegarder</span>
                   </>
                 )}
               </Button>

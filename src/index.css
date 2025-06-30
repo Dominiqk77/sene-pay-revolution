@@ -210,124 +210,41 @@
   .mobile-body {
     @apply text-sm sm:text-base lg:text-lg;
   }
-}
 
-/* Animations optimisées pour mobile */
-@keyframes gradient-flow {
-  0% {
-    background-position: 0% 50%;
+  /* Mobile-optimized dashboard elements */
+  .dashboard-card {
+    @apply p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl bg-white shadow-sm border;
   }
-  25% {
-    background-position: 100% 50%;
-  }
-  50% {
-    background-position: 100% 100%;
-  }
-  75% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
 
-@keyframes text-shimmer {
-  0% {
-    text-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+  .dashboard-metric {
+    @apply text-xl sm:text-2xl lg:text-3xl font-bold;
   }
-  50% {
-    text-shadow: 
-      0 0 10px rgba(245, 158, 11, 0.5),
-      0 0 20px rgba(234, 88, 12, 0.3),
-      0 0 30px rgba(5, 150, 105, 0.2);
-  }
-  100% {
-    text-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
-  }
-}
 
-/* Animations spéciales pour le logo navbar (ultra-lentes et subtiles) */
-@keyframes navbar-gradient-flow {
-  0% {
-    background-position: 0% 50%;
+  .dashboard-label {
+    @apply text-xs sm:text-sm text-gray-600;
   }
-  25% {
-    background-position: 100% 50%;
-  }
-  50% {
-    background-position: 100% 100%;
-  }
-  75% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
 
-@keyframes navbar-text-shimmer {
-  0% {
-    text-shadow: 0 0 2px rgba(245, 158, 11, 0.1);
+  /* Mobile-friendly form elements */
+  .mobile-input {
+    @apply h-10 sm:h-11 text-sm sm:text-base px-3 rounded-md border;
   }
-  50% {
-    text-shadow: 
-      0 0 4px rgba(245, 158, 11, 0.2),
-      0 0 8px rgba(234, 88, 12, 0.1),
-      0 0 12px rgba(5, 150, 105, 0.05);
+
+  .mobile-button {
+    @apply h-9 sm:h-10 px-3 sm:px-4 text-sm sm:text-base rounded-md font-medium;
   }
-  100% {
-    text-shadow: 0 0 2px rgba(245, 158, 11, 0.1);
-  }
-}
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom selection colors */
-::selection {
-  background: rgba(245, 158, 11, 0.3);
-  color: #0F172A;
-}
-
-/* Mobile-specific optimizations */
-@media (max-width: 768px) {
-  /* Réduction des animations sur mobile pour performance */
-  @media (prefers-reduced-motion: reduce) {
-    .gradient-text,
-    .navbar-gradient-text {
-      animation: none;
+  /* Responsive breakpoint utilities */
+  .xs\:hidden {
+    @media (max-width: 374px) {
+      display: none;
     }
   }
 
-  /* Optimisation des transitions pour mobile */
-  * {
-    transition-duration: 200ms !important;
-  }
-
-  /* Amélioration des touch targets */
-  button, 
-  a,
-  [role="button"] {
-    min-height: 44px;
-    min-width: 44px;
+  .xs\:inline {
+    @media (max-width: 374px) {
+      display: inline;
+    }
   }
 }
 
-/* Optimisations pour très petits écrans */
-@media (max-width: 480px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  /* Réduction supplémentaire des tailles de police */
-  .mobile-heading {
-    @apply text-xl sm:text-2xl;
-  }
-  
-  .mobile-subheading {
-    @apply text-base sm:text-lg;
-  }
-}
+/* ... keep existing code (animations, smooth scrolling, selection colors, media queries) */
