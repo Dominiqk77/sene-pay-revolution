@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -9,22 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  CreditCard, 
-  DollarSign, 
-  TrendingUp, 
-  Users, 
-  Settings,
-  Key,
-  BarChart3,
-  Activity,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Crown,
-  Shield,
-  User
-} from "lucide-react";
+import { CreditCard, DollarSign, TrendingUp, Users, Settings, Key, BarChart3, Activity, Clock, CheckCircle, XCircle, Crown, Shield, User } from "lucide-react";
 import Header from "@/components/Header";
 import TransactionsList from "@/components/TransactionsList";
 import SecurityAlert from '@/components/SecurityAlert';
@@ -42,7 +26,6 @@ import TransactionVolumeChart from '@/components/analytics/TransactionVolumeChar
 import SuccessRateChart from '@/components/analytics/SuccessRateChart';
 import BusinessMetrics from '@/components/analytics/BusinessMetrics';
 import AIPredictions from '@/components/analytics/AIPredictions';
-
 interface Profile {
   id: string;
   email: string;
@@ -53,7 +36,6 @@ interface Profile {
   is_verified: boolean;
   avatar_url: string;
 }
-
 interface MerchantAccount {
   id: string;
   business_name: string;
@@ -63,7 +45,6 @@ interface MerchantAccount {
   monthly_volume: number;
   total_transactions: number;
 }
-
 interface DashboardStats {
   total_transactions: number;
   total_amount: number;
@@ -88,53 +69,148 @@ const defaultStats: DashboardStats = {
   today_transactions: 0,
   today_amount: 0
 };
-
 const Dashboard = () => {
-  const { user } = useAuth();
-  const { profile, merchantAccount, loading: roleLoading, isSuperAdmin } = useUserRole();
+  const {
+    user
+  } = useAuth();
+  const {
+    profile,
+    merchantAccount,
+    loading: roleLoading,
+    isSuperAdmin
+  } = useUserRole();
   const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats>(defaultStats);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [filters, setFilters] = useState<any>({});
 
   // Ajouter les données analytics
-  const { data: analyticsData, loading: analyticsLoading } = useAnalyticsData(merchantAccount?.id);
+  const {
+    data: analyticsData,
+    loading: analyticsLoading
+  } = useAnalyticsData(merchantAccount?.id);
 
   // Données mockées pour la démonstration analytics
   const mockAnalyticsData = {
-    revenueData: [
-      { date: '20 Déc', revenue: 125000, transactions: 12 },
-      { date: '21 Déc', revenue: 89000, transactions: 8 },
-      { date: '22 Déc', revenue: 156000, transactions: 15 },
-      { date: '23 Déc', revenue: 203000, transactions: 18 },
-      { date: '24 Déc', revenue: 187000, transactions: 14 },
-      { date: '25 Déc', revenue: 234000, transactions: 22 },
-      { date: '26 Déc', revenue: 198000, transactions: 16 }
-    ],
-    paymentMethodsData: [
-      { name: 'Orange Money', value: 450000, count: 45, color: '#ff6b35' },
-      { name: 'Wave', value: 320000, count: 32, color: '#00d4ff' },
-      { name: 'Free Money', value: 280000, count: 28, color: '#8b5cf6' },
-      { name: 'Wizall', value: 180000, count: 18, color: '#10b981' },
-      { name: 'Visa Card', value: 142000, count: 14, color: '#1d4ed8' }
-    ],
-    volumeData: [
-      { time: '0h-3h', volume: 12000, count: 2 },
-      { time: '3h-6h', volume: 8000, count: 1 },
-      { time: '6h-9h', volume: 45000, count: 5 },
-      { time: '9h-12h', volume: 89000, count: 12 },
-      { time: '12h-15h', volume: 156000, count: 18 },
-      { time: '15h-18h', volume: 134000, count: 16 },
-      { time: '18h-21h', volume: 98000, count: 11 },
-      { time: '21h-24h', volume: 67000, count: 8 }
-    ],
-    successRateData: [
-      { method: 'Orange Money', successRate: 98.5, totalTransactions: 200, successfulTransactions: 197, color: '#10b981' },
-      { method: 'Wave', successRate: 96.2, totalTransactions: 130, successfulTransactions: 125, color: '#10b981' },
-      { method: 'Free Money', successRate: 94.8, totalTransactions: 115, successfulTransactions: 109, color: '#10b981' },
-      { method: 'Wizall', successRate: 92.1, totalTransactions: 95, successfulTransactions: 87, color: '#10b981' },
-      { method: 'Visa Card', successRate: 89.3, totalTransactions: 75, successfulTransactions: 67, color: '#f59e0b' }
-    ],
+    revenueData: [{
+      date: '20 Déc',
+      revenue: 125000,
+      transactions: 12
+    }, {
+      date: '21 Déc',
+      revenue: 89000,
+      transactions: 8
+    }, {
+      date: '22 Déc',
+      revenue: 156000,
+      transactions: 15
+    }, {
+      date: '23 Déc',
+      revenue: 203000,
+      transactions: 18
+    }, {
+      date: '24 Déc',
+      revenue: 187000,
+      transactions: 14
+    }, {
+      date: '25 Déc',
+      revenue: 234000,
+      transactions: 22
+    }, {
+      date: '26 Déc',
+      revenue: 198000,
+      transactions: 16
+    }],
+    paymentMethodsData: [{
+      name: 'Orange Money',
+      value: 450000,
+      count: 45,
+      color: '#ff6b35'
+    }, {
+      name: 'Wave',
+      value: 320000,
+      count: 32,
+      color: '#00d4ff'
+    }, {
+      name: 'Free Money',
+      value: 280000,
+      count: 28,
+      color: '#8b5cf6'
+    }, {
+      name: 'Wizall',
+      value: 180000,
+      count: 18,
+      color: '#10b981'
+    }, {
+      name: 'Visa Card',
+      value: 142000,
+      count: 14,
+      color: '#1d4ed8'
+    }],
+    volumeData: [{
+      time: '0h-3h',
+      volume: 12000,
+      count: 2
+    }, {
+      time: '3h-6h',
+      volume: 8000,
+      count: 1
+    }, {
+      time: '6h-9h',
+      volume: 45000,
+      count: 5
+    }, {
+      time: '9h-12h',
+      volume: 89000,
+      count: 12
+    }, {
+      time: '12h-15h',
+      volume: 156000,
+      count: 18
+    }, {
+      time: '15h-18h',
+      volume: 134000,
+      count: 16
+    }, {
+      time: '18h-21h',
+      volume: 98000,
+      count: 11
+    }, {
+      time: '21h-24h',
+      volume: 67000,
+      count: 8
+    }],
+    successRateData: [{
+      method: 'Orange Money',
+      successRate: 98.5,
+      totalTransactions: 200,
+      successfulTransactions: 197,
+      color: '#10b981'
+    }, {
+      method: 'Wave',
+      successRate: 96.2,
+      totalTransactions: 130,
+      successfulTransactions: 125,
+      color: '#10b981'
+    }, {
+      method: 'Free Money',
+      successRate: 94.8,
+      totalTransactions: 115,
+      successfulTransactions: 109,
+      color: '#10b981'
+    }, {
+      method: 'Wizall',
+      successRate: 92.1,
+      totalTransactions: 95,
+      successfulTransactions: 87,
+      color: '#10b981'
+    }, {
+      method: 'Visa Card',
+      successRate: 89.3,
+      totalTransactions: 75,
+      successfulTransactions: 67,
+      color: '#f59e0b'
+    }],
     businessMetrics: {
       mrr: 2850000,
       arr: 34200000,
@@ -147,26 +223,23 @@ const Dashboard = () => {
       mrrGrowth: 18.5,
       customerGrowth: 12.3
     },
-    predictions: [
-      {
-        type: 'revenue' as const,
-        title: 'Revenus Projetés (30j)',
-        value: '3.2M FCFA',
-        confidence: 87,
-        trend: 'up' as const,
-        description: 'Basé sur la croissance actuelle et les tendances saisonnières',
-        recommendation: 'Optimisez vos campagnes marketing en fin de mois pour maximiser la croissance'
-      },
-      {
-        type: 'opportunity' as const,
-        title: 'Opportunité Orange Money',
-        value: '+23% revenus potentiels',
-        confidence: 92,
-        trend: 'up' as const,
-        description: 'Orange Money montre le meilleur taux de conversion mais représente seulement 35% du volume',
-        recommendation: 'Augmentez la visibilité d\'Orange Money sur votre checkout pour optimiser les conversions'
-      }
-    ]
+    predictions: [{
+      type: 'revenue' as const,
+      title: 'Revenus Projetés (30j)',
+      value: '3.2M FCFA',
+      confidence: 87,
+      trend: 'up' as const,
+      description: 'Basé sur la croissance actuelle et les tendances saisonnières',
+      recommendation: 'Optimisez vos campagnes marketing en fin de mois pour maximiser la croissance'
+    }, {
+      type: 'opportunity' as const,
+      title: 'Opportunité Orange Money',
+      value: '+23% revenus potentiels',
+      confidence: 92,
+      trend: 'up' as const,
+      description: 'Orange Money montre le meilleur taux de conversion mais représente seulement 35% du volume',
+      recommendation: 'Augmentez la visibilité d\'Orange Money sur votre checkout pour optimiser les conversions'
+    }]
   };
 
   // Debug logging pour identifier le problème
@@ -196,42 +269,32 @@ const Dashboard = () => {
       fetchDashboardStats();
     }
   }, [user, merchantAccount, isSuperAdmin]);
-
   const fetchDashboardStats = async () => {
     if (!merchantAccount) {
       return;
     }
-
     setIsLoadingStats(true);
     try {
       // Récupérer toutes les transactions
-      const { data: transactions, error } = await supabase
-        .from('transactions')
-        .select('amount, status, created_at')
-        .eq('merchant_id', merchantAccount.id);
-
+      const {
+        data: transactions,
+        error
+      } = await supabase.from('transactions').select('amount, status, created_at').eq('merchant_id', merchantAccount.id);
       if (error) throw error;
-
       if (transactions) {
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
         const total_transactions = transactions.length;
         const total_amount = transactions.reduce((sum, t) => sum + Number(t.amount), 0);
         const completed_transactions = transactions.filter(t => t.status === 'completed');
         const completed_amount = completed_transactions.reduce((sum, t) => sum + Number(t.amount), 0);
-        const success_rate = total_transactions > 0 ? (completed_transactions.length / total_transactions) * 100 : 0;
-        
+        const success_rate = total_transactions > 0 ? completed_transactions.length / total_transactions * 100 : 0;
         const pending_count = transactions.filter(t => t.status === 'pending').length;
         const completed_count = completed_transactions.length;
         const failed_count = transactions.filter(t => t.status === 'failed').length;
-
-        const today_transactions_data = transactions.filter(t => 
-          new Date(t.created_at) >= today
-        );
+        const today_transactions_data = transactions.filter(t => new Date(t.created_at) >= today);
         const today_transactions = today_transactions_data.length;
         const today_amount = today_transactions_data.reduce((sum, t) => sum + Number(t.amount), 0);
-
         setStats({
           total_transactions,
           total_amount,
@@ -244,14 +307,12 @@ const Dashboard = () => {
           today_amount
         });
       }
-
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     } finally {
       setIsLoadingStats(false);
     }
   };
-
   const handleFiltersChange = (newFilters: any) => {
     setFilters(newFilters);
     // Ici on pourrait appliquer les filtres aux données
@@ -264,19 +325,12 @@ const Dashboard = () => {
     window.location.href = '/super-admin';
     return null;
   }
-
   const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+    return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase().slice(0, 2);
   };
 
   // Affichage immédiat du dashboard
-  return (
-    <div className="min-h-screen bg-gray-50">
+  return <div className="min-h-screen bg-gray-50">
       <Header />
       
       <main className="pt-20 container mx-auto px-4 py-8">
@@ -296,16 +350,14 @@ const Dashboard = () => {
               </Avatar>
               
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="md:text-3xl font-bold text-gray-900 mb-2 text-sm">
                   Bienvenue, {profile?.full_name || 'Utilisateur'} 👋
                 </h1>
                 <p className="text-gray-600 text-sm md:text-base">
                   Gérez vos paiements et développez votre business avec SenePay
-                  {isLoadingStats && (
-                    <span className="ml-2 text-xs text-senepay-orange">
+                  {isLoadingStats && <span className="ml-2 text-xs text-senepay-orange">
                       • Mise à jour en cours...
-                    </span>
-                  )}
+                    </span>}
                 </p>
               </div>
             </div>
@@ -314,22 +366,16 @@ const Dashboard = () => {
               <NotificationCenter merchantId={merchantAccount?.id} />
               
               {/* Debug info pour Super Admin (à supprimer plus tard) */}
-              {profile?.role === 'super_admin' && (
-                <div className="text-right">
+              {profile?.role === 'super_admin' && <div className="text-right">
                   <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white mb-2">
                     <Crown className="h-3 w-3 mr-1" />
                     Super Admin Détecté
                   </Badge>
-                  <Button 
-                    onClick={() => navigate('/super-admin')}
-                    size="sm"
-                    className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600"
-                  >
+                  <Button onClick={() => navigate('/super-admin')} size="sm" className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600">
                     <Crown className="h-4 w-4 mr-2" />
                     Accéder Super Admin
                   </Button>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
         </div>
@@ -338,42 +384,27 @@ const Dashboard = () => {
           {/* Tabs optimisés mobile */}
           <div className="w-full overflow-x-auto pb-2">
             <TabsList className="grid grid-cols-5 lg:grid-cols-5 w-full min-w-max lg:min-w-0 gap-1 p-1 bg-muted rounded-lg">
-              <TabsTrigger 
-                value="overview" 
-                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
-              >
+              <TabsTrigger value="overview" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <Activity className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline">Vue d'ensemble</span>
                 <span className="xs:hidden">Vue</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="transactions"
-                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
-              >
+              <TabsTrigger value="transactions" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <CreditCard className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline">Transactions</span>
                 <span className="xs:hidden">Trans</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="analytics"
-                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
-              >
+              <TabsTrigger value="analytics" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline">Analytics Pro</span>
                 <span className="xs:hidden">Analytics</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="api"
-                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
-              >
+              <TabsTrigger value="api" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <Key className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline">API & Dev</span>
                 <span className="xs:hidden">API</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="settings"
-                className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200"
-              >
+              <TabsTrigger value="settings" className="flex-shrink-0 px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap data-[state=active]:bg-white data-[state=active]:text-senepay-orange data-[state=active]:shadow-sm transition-all duration-200">
                 <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden xs:inline">Paramètres</span>
                 <span className="xs:hidden">Config</span>
@@ -384,15 +415,16 @@ const Dashboard = () => {
           <TabsContent value="overview" className="space-y-6">
             {/* Statistiques Améliorées */}
             <EnhancedStats stats={{
-              totalRevenue: stats.completed_amount,
-              totalTransactions: stats.total_transactions,
-              successRate: stats.success_rate,
-              averageOrderValue: stats.completed_amount / Math.max(1, stats.completed_count),
-              todayRevenue: stats.today_amount,
-              todayTransactions: stats.today_transactions,
-              activeCustomers: Math.floor(stats.total_transactions * 0.7), // Mock
-              responseTime: 145 // Mock
-            }} />
+            totalRevenue: stats.completed_amount,
+            totalTransactions: stats.total_transactions,
+            successRate: stats.success_rate,
+            averageOrderValue: stats.completed_amount / Math.max(1, stats.completed_count),
+            todayRevenue: stats.today_amount,
+            todayTransactions: stats.today_transactions,
+            activeCustomers: Math.floor(stats.total_transactions * 0.7),
+            // Mock
+            responseTime: 145 // Mock
+          }} />
 
             {/* Filtres rapides */}
             <QuickFilters onFiltersChange={handleFiltersChange} />
@@ -447,12 +479,10 @@ const Dashboard = () => {
                     <CardTitle className="flex items-center gap-2">
                       <Users className="h-5 w-5" />
                       Statut du compte
-                      {profile?.role === 'super_admin' && (
-                        <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white ml-2">
+                      {profile?.role === 'super_admin' && <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white ml-2">
                           <Crown className="h-3 w-3 mr-1" />
                           Super Admin
-                        </Badge>
-                      )}
+                        </Badge>}
                     </CardTitle>
                     <CardDescription>
                       Informations sur votre compte marchand
@@ -472,28 +502,20 @@ const Dashboard = () => {
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-gray-500">Rôle</p>
                     <Badge variant="outline" className="capitalize">
-                      {profile?.role === 'super_admin' ? (
-                        <span className="flex items-center">
+                      {profile?.role === 'super_admin' ? <span className="flex items-center">
                           <Shield className="h-3 w-3 mr-1" />
                           Super Administrateur
-                        </span>
-                      ) : (
-                        profile?.role
-                      )}
+                        </span> : profile?.role}
                     </Badge>
                   </div>
-                  {profile?.company_name && (
-                    <div className="space-y-2">
+                  {profile?.company_name && <div className="space-y-2">
                       <p className="text-sm font-medium text-gray-500">Entreprise</p>
                       <p className="font-medium">{profile.company_name}</p>
-                    </div>
-                  )}
-                  {profile?.phone && (
-                    <div className="space-y-2">
+                    </div>}
+                  {profile?.phone && <div className="space-y-2">
                       <p className="text-sm font-medium text-gray-500">Téléphone</p>
                       <p className="font-medium">{profile.phone}</p>
-                    </div>
-                  )}
+                    </div>}
                 </div>
               </CardContent>
             </Card>
@@ -520,10 +542,7 @@ const Dashboard = () => {
                   </p>
                 </div>
                 
-                <Button 
-                  className="bg-gradient-to-r from-senepay-orange to-senepay-gold text-white"
-                  onClick={() => navigate('/analytics')}
-                >
+                <Button className="bg-gradient-to-r from-senepay-orange to-senepay-gold text-white" onClick={() => navigate('/analytics')}>
                   <BarChart3 className="h-5 w-5 mr-2" />
                   Version Complète
                 </Button>
@@ -534,21 +553,13 @@ const Dashboard = () => {
             <div className="space-y-6">
               {/* Graphiques principaux */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <RevenueChart 
-                  data={analyticsData?.revenueData || mockAnalyticsData.revenueData}
-                  period="7d"
-                  totalRevenue={(analyticsData?.revenueData || mockAnalyticsData.revenueData).reduce((sum, item) => sum + item.revenue, 0)}
-                  growth={15.2}
-                />
+                <RevenueChart data={analyticsData?.revenueData || mockAnalyticsData.revenueData} period="7d" totalRevenue={(analyticsData?.revenueData || mockAnalyticsData.revenueData).reduce((sum, item) => sum + item.revenue, 0)} growth={15.2} />
                 <PaymentMethodsChart data={analyticsData?.paymentMethodsData || mockAnalyticsData.paymentMethodsData} />
               </div>
 
               {/* Volume et taux de succès */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <TransactionVolumeChart 
-                  data={analyticsData?.volumeData || mockAnalyticsData.volumeData} 
-                  period="today"
-                />
+                <TransactionVolumeChart data={analyticsData?.volumeData || mockAnalyticsData.volumeData} period="today" />
                 <SuccessRateChart data={analyticsData?.successRateData || mockAnalyticsData.successRateData} />
               </div>
 
@@ -559,8 +570,7 @@ const Dashboard = () => {
               <AIPredictions predictions={analyticsData?.predictions?.slice(0, 2) || mockAnalyticsData.predictions} />
 
               {/* Message pour les données de démonstration */}
-              {!analyticsData && (
-                <Card className="border-senepay-orange/20 bg-gradient-to-r from-orange-50 to-yellow-50">
+              {!analyticsData && <Card className="border-senepay-orange/20 bg-gradient-to-r from-orange-50 to-yellow-50">
                   <CardContent className="p-6">
                     <div className="text-center">
                       <Crown className="h-8 w-8 text-senepay-orange mx-auto mb-3" />
@@ -570,24 +580,19 @@ const Dashboard = () => {
                       <p className="text-gray-600 mb-4">
                         Ces graphiques montrent des données d'exemple. Connectez vos vraies transactions pour voir vos analytics personnalisées.
                       </p>
-                      <Button 
-                        className="bg-gradient-to-r from-senepay-orange to-senepay-gold"
-                        onClick={() => navigate('/analytics')}
-                      >
+                      <Button className="bg-gradient-to-r from-senepay-orange to-senepay-gold" onClick={() => navigate('/analytics')}>
                         <BarChart3 className="h-5 w-5 mr-2" />
                         Voir la version complète
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
-              )}
+                </Card>}
             </div>
           </TabsContent>
 
           <TabsContent value="api" className="space-y-6">
             {/* API Credentials */}
-            {merchantAccount && (
-              <Card>
+            {merchantAccount && <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Key className="h-5 w-5" />
@@ -610,8 +615,7 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
 
             {/* API Documentation */}
             <Card>
@@ -676,11 +680,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button 
-                    className="h-auto p-6 flex flex-col items-center gap-2" 
-                    variant="outline"
-                    onClick={() => navigate('/analytics')}
-                  >
+                  <Button className="h-auto p-6 flex flex-col items-center gap-2" variant="outline" onClick={() => navigate('/analytics')}>
                     <BarChart3 className="h-8 w-8 text-senepay-orange" />
                     <span className="font-medium">Analytics</span>
                     <span className="text-sm text-gray-500 text-center">
@@ -709,8 +709,6 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
