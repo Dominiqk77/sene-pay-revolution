@@ -26,7 +26,6 @@ import TransactionVolumeChart from '@/components/analytics/TransactionVolumeChar
 import SuccessRateChart from '@/components/analytics/SuccessRateChart';
 import BusinessMetrics from '@/components/analytics/BusinessMetrics';
 import AIPredictions from '@/components/analytics/AIPredictions';
-
 interface Profile {
   id: string;
   email: string;
@@ -351,7 +350,7 @@ const Dashboard = () => {
               </Avatar>
               
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="md:text-3xl font-bold text-gray-900 mb-2 text-lg">
                   Bienvenue 👋
                 </h1>
                 <h2 className="text-lg md:text-2xl font-semibold text-senepay-orange mb-2">
@@ -687,11 +686,7 @@ const Dashboard = () => {
               <CardContent>
                 {/* Grid responsive - 1 colonne sur mobile, 2 sur tablet, 3 sur desktop */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                  <Button 
-                    className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px]" 
-                    variant="outline" 
-                    onClick={() => navigate('/analytics')}
-                  >
+                  <Button className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px]" variant="outline" onClick={() => navigate('/analytics')}>
                     <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 text-senepay-orange" />
                     <span className="font-medium text-sm sm:text-base">Analytics Premium</span>
                     <span className="text-xs sm:text-sm text-gray-500 text-center leading-tight">
@@ -699,10 +694,7 @@ const Dashboard = () => {
                     </span>
                   </Button>
                   
-                  <Button 
-                    className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px]" 
-                    variant="outline"
-                  >
+                  <Button className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px]" variant="outline">
                     <Key className="h-6 w-6 sm:h-8 sm:w-8 text-senepay-gold" />
                     <span className="font-medium text-sm sm:text-base">Clés API</span>
                     <span className="text-xs sm:text-sm text-gray-500 text-center leading-tight">
@@ -710,10 +702,7 @@ const Dashboard = () => {
                     </span>
                   </Button>
                   
-                  <Button 
-                    className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px] sm:col-span-2 lg:col-span-1" 
-                    variant="outline"
-                  >
+                  <Button className="h-auto p-4 sm:p-6 flex flex-col items-center gap-2 text-center min-h-[100px] sm:min-h-[120px] sm:col-span-2 lg:col-span-1" variant="outline">
                     <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-gray-600" />
                     <span className="font-medium text-sm sm:text-base">Transactions</span>
                     <span className="text-xs sm:text-sm text-gray-500 text-center leading-tight">
@@ -725,8 +714,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Section API - Mobile optimisé */}
-            {merchantAccount && (
-              <Card className="border-blue-100 bg-blue-50/30">
+            {merchantAccount && <Card className="border-blue-100 bg-blue-50/30">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
                     <Key className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
@@ -760,12 +748,10 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
           </TabsContent>
         </Tabs>
       </main>
     </div>;
 };
-
 export default Dashboard;
