@@ -15,6 +15,7 @@ import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import Auth from "./pages/Auth";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
+import Investors from "./pages/Investors";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Legal Pages
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/checkout/:paymentId" element={<Checkout />} />
+            <Route path="/investors" element={<Investors />} />
             
             {/* Protected Routes */}
             <Route 
