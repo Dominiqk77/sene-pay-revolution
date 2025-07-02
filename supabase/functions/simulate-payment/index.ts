@@ -75,125 +75,19 @@ serve(async (req) => {
     const minDelay = config.min_delay || 5
     const maxDelay = config.max_delay || 15
 
-    // Simulation du délai de traitement
-    const processingDelay = Math.random() * (maxDelay - minDelay) + minDelay
-    await new Promise(resolve => setTimeout(resolve, processingDelay * 1000))
-
-    // Simulation du résultat basé sur le taux de succès
-    const isSuccess = Math.random() < successRate
-    const newStatus = isSuccess ? 'completed' : 'failed'
-
-    // Générer des codes d'erreur réalistes pour les échecs
-    const errorCodes = {
-      orange_money: ['INSUFFICIENT_FUNDS', 'NETWORK_TIMEOUT', 'INVALID_PIN', 'SERVICE_UNAVAILABLE'],
-      wave: ['ACCOUNT_BLOCKED', 'DAILY_LIMIT_EXCEEDED', 'INVALID_OTP', 'NETWORK_ERROR'],
-      visa_card: ['CARD_DECLINED', 'INSUFFICIENT_FUNDS', 'CARD_EXPIRED', 'CVV_MISMATCH'],
-      mastercard: ['CARD_DECLINED', 'INSUFFICIENT_FUNDS', 'CARD_EXPIRED', 'CVV_MISMATCH'],
-      free_money: ['INSUFFICIENT_BALANCE', 'PIN_INCORRECT', 'SERVICE_TIMEOUT', 'ACCOUNT_SUSPENDED'],
-      wizall: ['BALANCE_LOW', 'PIN_BLOCKED', 'TRANSACTION_LIMIT', 'NETWORK_ISSUE']
-    }
-
-    const errorCode = !isSuccess ? 
-      (errorCodes[payment_method as keyof typeof errorCodes] || ['GENERIC_ERROR'])[
-        Math.floor(Math.random() * (errorCodes[payment_method as keyof typeof errorCodes] || ['GENERIC_ERROR']).length)
-      ] : null
-
-    // Mettre à jour la transaction
-    const updateData: any = {
-      status: newStatus,
-      payment_method: payment_method,
-      updated_at: new Date().toISOString()
-    }
-
-    if (customer_phone) {
-      updateData.customer_phone = customer_phone
-    }
-
-    if (isSuccess) {
-      updateData.completed_at = new Date().toISOString()
+    // Traitement réel selon la méthode de paiement
+    if (payment_method === 'orange_money') {
+      return await processOrangeMoneyPayment(payment_id, customer_phone, transaction.amount, transaction.reference_id, supabase);
+    } else if (payment_method === 'wave') {
+      return await processWavePayment(payment_id, customer_phone, transaction.amount, transaction.reference_id, supabase);
     } else {
-      updateData.metadata = {
-        ...transaction.metadata,
-        error_code: errorCode,
-        error_message: getErrorMessage(errorCode, payment_method)
-      }
+      // Fallback: simulation pour les autres méthodes (cartes, etc.)
+      const processingDelay = Math.random() * (maxDelay - minDelay) + minDelay;
+      await new Promise(resolve => setTimeout(resolve, processingDelay * 1000));
+      const isSuccess = Math.random() < successRate;
+      const newStatus = isSuccess ? 'completed' : 'failed';
+      return await simulateGenericPayment(payment_id, payment_method, transaction, isSuccess, newStatus, customer_phone, supabase);
     }
-
-    const { data: updatedTransaction, error: updateError } = await supabase
-      .from('transactions')
-      .update(updateData)
-      .eq('id', payment_id)
-      .select()
-      .single()
-
-    if (updateError) {
-      console.error('Transaction update error:', updateError)
-      return new Response(
-        JSON.stringify({ error: 'Failed to update transaction' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    // Créer webhook event pour notifier le merchant
-    if (transaction.callback_url) {
-      const webhookPayload = {
-        event: isSuccess ? 'payment.completed' : 'payment.failed',
-        payment_id: payment_id,
-        reference: transaction.reference_id,
-        amount: transaction.amount,
-        currency: transaction.currency,
-        status: newStatus,
-        payment_method: payment_method,
-        customer_email: transaction.customer_email,
-        customer_phone: customer_phone || transaction.customer_phone,
-        metadata: updatedTransaction.metadata,
-        timestamp: new Date().toISOString()
-      }
-
-      await supabase.from('webhook_events').insert({
-        merchant_id: transaction.merchant_id,
-        transaction_id: payment_id,
-        event_type: isSuccess ? 'payment.completed' : 'payment.failed',
-        payload: webhookPayload,
-        webhook_url: transaction.callback_url,
-        next_retry_at: new Date().toISOString()
-      })
-    }
-
-    // Audit log
-    await supabase.from('audit_logs').insert({
-      merchant_id: transaction.merchant_id,
-      action: 'simulate_payment',
-      resource_type: 'transaction',
-      resource_id: payment_id,
-      user_agent: req.headers.get('user-agent'),
-      metadata: {
-        payment_method,
-        status: newStatus,
-        processing_delay: processingDelay,
-        error_code: errorCode
-      }
-    })
-
-    return new Response(
-      JSON.stringify({
-        payment_id: payment_id,
-        reference: transaction.reference_id,
-        status: newStatus,
-        payment_method: payment_method,
-        amount: transaction.amount,
-        currency: transaction.currency,
-        processing_time: processingDelay,
-        error_code: errorCode,
-        error_message: errorCode ? getErrorMessage(errorCode, payment_method) : null,
-        completed_at: updatedTransaction.completed_at,
-        redirect_url: isSuccess ? transaction.success_url : transaction.cancel_url
-      }),
-      { 
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    )
 
   } catch (error) {
     console.error('Simulate payment error:', error)
@@ -229,4 +123,184 @@ function getErrorMessage(errorCode: string, paymentMethod: string): string {
   }
 
   return messages[errorCode] || messages['GENERIC_ERROR']
+}
+
+// Fonction pour traiter les paiements Orange Money
+async function processOrangeMoneyPayment(payment_id: string, customer_phone: string, amount: number, reference: string, supabase: any) {
+  try {
+    const response = await supabase.functions.invoke('process-orange-money', {
+      body: {
+        payment_id,
+        customer_phone,
+        amount,
+        reference
+      }
+    });
+
+    if (response.error) {
+      console.error('Orange Money processing error:', response.error);
+      return new Response(
+        JSON.stringify({
+          status: 'failed',
+          error_code: 'ORANGE_MONEY_ERROR',
+          error_message: 'Erreur lors du traitement Orange Money'
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
+        status: 'processing',
+        payment_url: response.data.payment_url,
+        redirect_url: response.data.payment_url,
+        message: 'Redirection vers Orange Money en cours...'
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Orange Money integration error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Orange Money service unavailable' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+// Fonction pour traiter les paiements Wave
+async function processWavePayment(payment_id: string, customer_phone: string, amount: number, reference: string, supabase: any) {
+  try {
+    const response = await supabase.functions.invoke('process-wave', {
+      body: {
+        payment_id,
+        customer_phone,
+        amount,
+        reference
+      }
+    });
+
+    if (response.error) {
+      console.error('Wave processing error:', response.error);
+      return new Response(
+        JSON.stringify({
+          status: 'failed',
+          error_code: 'WAVE_ERROR',
+          error_message: 'Erreur lors du traitement Wave'
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
+        status: 'processing',
+        checkout_url: response.data.checkout_url,
+        redirect_url: response.data.checkout_url,
+        message: 'Redirection vers Wave en cours...'
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Wave integration error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Wave service unavailable' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+// Fonction pour simuler les autres méthodes de paiement (cartes, etc.)
+async function simulateGenericPayment(payment_id: string, payment_method: string, transaction: any, isSuccess: boolean, newStatus: string, customer_phone: string, supabase: any) {
+  const errorCodes = {
+    visa_card: ['CARD_DECLINED', 'INSUFFICIENT_FUNDS', 'CARD_EXPIRED', 'CVV_MISMATCH'],
+    mastercard: ['CARD_DECLINED', 'INSUFFICIENT_FUNDS', 'CARD_EXPIRED', 'CVV_MISMATCH'],
+    free_money: ['INSUFFICIENT_BALANCE', 'PIN_INCORRECT', 'SERVICE_TIMEOUT', 'ACCOUNT_SUSPENDED'],
+    wizall: ['BALANCE_LOW', 'PIN_BLOCKED', 'TRANSACTION_LIMIT', 'NETWORK_ISSUE']
+  };
+
+  const errorCode = !isSuccess ? 
+    (errorCodes[payment_method as keyof typeof errorCodes] || ['GENERIC_ERROR'])[
+      Math.floor(Math.random() * (errorCodes[payment_method as keyof typeof errorCodes] || ['GENERIC_ERROR']).length)
+    ] : null;
+
+  // Mettre à jour la transaction
+  const updateData: any = {
+    status: newStatus,
+    payment_method: payment_method,
+    updated_at: new Date().toISOString()
+  };
+
+  if (customer_phone) {
+    updateData.customer_phone = customer_phone;
+  }
+
+  if (isSuccess) {
+    updateData.completed_at = new Date().toISOString();
+  } else {
+    updateData.metadata = {
+      ...transaction.metadata,
+      error_code: errorCode,
+      error_message: getErrorMessage(errorCode, payment_method)
+    };
+  }
+
+  const { data: updatedTransaction, error: updateError } = await supabase
+    .from('transactions')
+    .update(updateData)
+    .eq('id', payment_id)
+    .select()
+    .single();
+
+  if (updateError) {
+    console.error('Transaction update error:', updateError);
+    return new Response(
+      JSON.stringify({ error: 'Failed to update transaction' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Créer webhook event pour notifier le merchant
+  if (transaction.callback_url) {
+    const webhookPayload = {
+      event: isSuccess ? 'payment.completed' : 'payment.failed',
+      payment_id: payment_id,
+      reference: transaction.reference_id,
+      amount: transaction.amount,
+      currency: transaction.currency,
+      status: newStatus,
+      payment_method: payment_method,
+      customer_email: transaction.customer_email,
+      customer_phone: customer_phone || transaction.customer_phone,
+      metadata: updatedTransaction.metadata,
+      timestamp: new Date().toISOString()
+    };
+
+    await supabase.from('webhook_events').insert({
+      merchant_id: transaction.merchant_id,
+      transaction_id: payment_id,
+      event_type: isSuccess ? 'payment.completed' : 'payment.failed',
+      payload: webhookPayload,
+      webhook_url: transaction.callback_url,
+      next_retry_at: new Date().toISOString()
+    });
+  }
+
+  return new Response(
+    JSON.stringify({
+      payment_id: payment_id,
+      reference: transaction.reference_id,
+      status: newStatus,
+      payment_method: payment_method,
+      amount: transaction.amount,
+      currency: transaction.currency,
+      error_code: errorCode,
+      error_message: errorCode ? getErrorMessage(errorCode, payment_method) : null,
+      completed_at: updatedTransaction.completed_at,
+      redirect_url: isSuccess ? transaction.success_url : transaction.cancel_url
+    }),
+    { 
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    }
+  );
 }
