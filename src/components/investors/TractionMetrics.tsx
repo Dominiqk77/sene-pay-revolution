@@ -132,7 +132,7 @@ const TractionMetrics = () => {
         once: true
       }}>
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-            <span className="text-black">Traction &</span>
+            <span className="text-gray-50">Traction &</span>
             <br />
             <span className="gradient-text bg-gradient-to-r from-senepay-gold to-senepay-orange bg-clip-text text-transparent">
               Performance Exceptionnelle
