@@ -265,7 +265,7 @@ const FinancialProjections = () => {
                 <Card className={`bg-gradient-to-br ${scenario.color} border-white/10 backdrop-blur-sm h-full`}>
                   <CardContent className="p-6">
                     <div className="text-center mb-6">
-                      <h4 className="text-xl font-bold text-white mb-2">{scenario.name}</h4>
+                      <h4 className="text-xl font-bold mb-2 text-zinc-950">{scenario.name}</h4>
                       <div className="text-3xl font-bold text-senepay-gold mb-1">{scenario.amount}</div>
                       <div className="text-gray-300">{scenario.equity} equity</div>
                       <div className="text-sm text-gray-400">Valorisation: {scenario.valuation}</div>
