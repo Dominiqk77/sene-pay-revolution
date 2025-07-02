@@ -224,7 +224,7 @@ const TractionMetrics = () => {
 
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardHeader>
-              <CardTitle className="text-black flex items-center">
+              <CardTitle className="flex items-center text-gray-50">
                 <Users className="w-6 h-6 mr-3 text-senepay-green" />
                 Croissance Utilisateurs
               </CardTitle>
