@@ -247,7 +247,7 @@ const MarketOpportunity = () => {
             <CardContent className="p-6 text-center">
               <Zap className="w-12 h-12 text-senepay-gold mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2">89%</h3>
-              <p className="text-gray-950">des sites e-commerce sénégalais n'acceptent pas les paiements en ligne</p>
+              <p className="text-white">des sites e-commerce sénégalais n'acceptent pas les paiements en ligne</p>
             </CardContent>
           </Card>
           
@@ -255,7 +255,7 @@ const MarketOpportunity = () => {
             <CardContent className="p-6 text-center">
               <TrendingUp className="w-12 h-12 text-senepay-green mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2">45%</h3>
-              <p className="text-zinc-950">de croissance annuelle du marché e-commerce ouest-africain</p>
+              <p className="text-white">de croissance annuelle du marché e-commerce ouest-africain</p>
             </CardContent>
           </Card>
           
@@ -263,7 +263,7 @@ const MarketOpportunity = () => {
             <CardContent className="p-6 text-center">
               <Globe className="w-12 h-12 text-senepay-orange mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2">25K+</h3>
-              <p className="text-gray-950">e-commerces potentiels dans la zone CEDEAO d'ici 2026</p>
+              <p className="text-white">e-commerces potentiels dans la zone CEDEAO d'ici 2026</p>
             </CardContent>
           </Card>
         </motion.div>
