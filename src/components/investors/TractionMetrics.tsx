@@ -262,7 +262,7 @@ const TractionMetrics = () => {
       }}>
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardHeader>
-              <CardTitle className="text-black flex items-center">
+              <CardTitle className="text-white flex items-center">
                 <Zap className="w-6 h-6 mr-3 text-senepay-orange" />
                 Performance par Méthode de Paiement
               </CardTitle>
@@ -273,7 +273,7 @@ const TractionMetrics = () => {
                     <div className="flex items-center space-x-4">
                       <div className="w-3 h-3 rounded-full bg-senepay-gold"></div>
                       <div>
-                        <div className="text-black font-semibold">{method.method}</div>
+                        <div className="text-white font-semibold">{method.method}</div>
                         <div className="text-gray-400 text-sm">{method.transactions.toLocaleString()} transactions</div>
                       </div>
                     </div>
