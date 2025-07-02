@@ -132,7 +132,7 @@ const TractionMetrics = () => {
         once: true
       }}>
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-            <span className="text-white">Traction &</span>
+            <span className="text-black">Traction &</span>
             <br />
             <span className="gradient-text bg-gradient-to-r from-senepay-gold to-senepay-orange bg-clip-text text-transparent">
               Performance Exceptionnelle
@@ -163,7 +163,7 @@ const TractionMetrics = () => {
               <Card className={`bg-gradient-to-br ${kpi.bgColor} to-transparent border-white/10 backdrop-blur-sm`}>
                 <CardContent className="p-6 text-center">
                   <kpi.icon className={`w-8 h-8 ${kpi.color} mx-auto mb-3`} />
-                  <div className="text-3xl font-bold text-white mb-1">{kpi.value}</div>
+                  <div className="text-3xl font-bold text-black mb-1">{kpi.value}</div>
                   <div className="text-sm text-gray-400 mb-2">{kpi.title}</div>
                   <Badge className={`${kpi.color} bg-transparent border-current`}>
                     <TrendingUp className="w-3 h-3 mr-1" />
@@ -189,7 +189,7 @@ const TractionMetrics = () => {
       }}>
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardHeader>
-              <CardTitle className="text-white flex items-center">
+              <CardTitle className="text-black flex items-center">
                 <TrendingUp className="w-6 h-6 mr-3 text-senepay-gold" />
                 Croissance des Revenus (K$)
               </CardTitle>
@@ -208,8 +208,8 @@ const TractionMetrics = () => {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="month" stroke="#fff" fontSize={12} />
-                  <YAxis stroke="#fff" />
+                  <XAxis dataKey="month" stroke="#000" fontSize={12} />
+                   <YAxis stroke="#000" />
                   <Tooltip contentStyle={{
                   backgroundColor: 'rgba(0,0,0,0.8)',
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -224,7 +224,7 @@ const TractionMetrics = () => {
 
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardHeader>
-              <CardTitle className="text-white flex items-center">
+              <CardTitle className="text-black flex items-center">
                 <Users className="w-6 h-6 mr-3 text-senepay-green" />
                 Croissance Utilisateurs
               </CardTitle>
@@ -233,8 +233,8 @@ const TractionMetrics = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={userGrowthData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="month" stroke="#fff" />
-                  <YAxis stroke="#fff" />
+                  <XAxis dataKey="month" stroke="#000" />
+                  <YAxis stroke="#000" />
                   <Tooltip contentStyle={{
                   backgroundColor: 'rgba(0,0,0,0.8)',
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -262,7 +262,7 @@ const TractionMetrics = () => {
       }}>
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardHeader>
-              <CardTitle className="text-white flex items-center">
+              <CardTitle className="text-black flex items-center">
                 <Zap className="w-6 h-6 mr-3 text-senepay-orange" />
                 Performance par Méthode de Paiement
               </CardTitle>
@@ -273,7 +273,7 @@ const TractionMetrics = () => {
                     <div className="flex items-center space-x-4">
                       <div className="w-3 h-3 rounded-full bg-senepay-gold"></div>
                       <div>
-                        <div className="text-white font-semibold">{method.method}</div>
+                        <div className="text-black font-semibold">{method.method}</div>
                         <div className="text-gray-400 text-sm">{method.transactions.toLocaleString()} transactions</div>
                       </div>
                     </div>
@@ -300,7 +300,7 @@ const TractionMetrics = () => {
       }} viewport={{
         once: true
       }}>
-          <h3 className="text-2xl font-bold text-white mb-8">Témoignages Clients</h3>
+          <h3 className="text-2xl font-bold text-black mb-8">Témoignages Clients</h3>
           <div className="grid md:grid-cols-3 gap-8">
             {[{
             quote: "SenePay a transformé notre e-commerce. +340% de conversions en 3 mois.",
@@ -321,7 +321,7 @@ const TractionMetrics = () => {
                 <CardContent className="p-6">
                   <div className="text-4xl text-senepay-gold mb-4">"</div>
                   <p className="mb-4 italic text-zinc-950">{testimonial.quote}</p>
-                  <div className="text-white font-semibold">{testimonial.author}</div>
+                  <div className="text-black font-semibold">{testimonial.author}</div>
                   <div className="text-gray-400 text-sm">{testimonial.company}</div>
                   <Badge className="mt-2 bg-senepay-green/20 text-senepay-green border-senepay-green/30">
                     {testimonial.growth} revenus
