@@ -300,7 +300,7 @@ const TractionMetrics = () => {
       }} viewport={{
         once: true
       }}>
-          <h3 className="text-2xl font-bold text-black mb-8">Témoignages Clients</h3>
+          <h3 className="text-2xl font-bold mb-8 text-gray-50">Témoignages Clients</h3>
           <div className="grid md:grid-cols-3 gap-8">
             {[{
             quote: "SenePay a transformé notre e-commerce. +340% de conversions en 3 mois.",
