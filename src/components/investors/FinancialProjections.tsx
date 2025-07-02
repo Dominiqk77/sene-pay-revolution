@@ -273,10 +273,10 @@ const FinancialProjections = () => {
                     
                     <div className="space-y-3">
                       <h5 className="font-semibold text-zinc-950">Milestones Clés:</h5>
-                      {scenario.milestones.map((milestone, idx) => <div key={idx} className="flex items-center text-gray-300 text-sm">
-                          <div className="w-2 h-2 bg-senepay-gold rounded-full mr-3"></div>
-                          {milestone}
-                        </div>)}
+                       {scenario.milestones.map((milestone, idx) => <div key={idx} className="flex items-center text-black text-sm">
+                           <div className="w-2 h-2 bg-senepay-gold rounded-full mr-3"></div>
+                           {milestone}
+                         </div>)}
                     </div>
                   </CardContent>
                 </Card>
