@@ -208,8 +208,8 @@ const TractionMetrics = () => {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="month" stroke="#000" fontSize={12} />
-                   <YAxis stroke="#000" />
+                  <XAxis dataKey="month" stroke="#fff" fontSize={12} />
+                   <YAxis stroke="#fff" />
                   <Tooltip contentStyle={{
                   backgroundColor: 'rgba(0,0,0,0.8)',
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -233,8 +233,8 @@ const TractionMetrics = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={userGrowthData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="month" stroke="#000" />
-                  <YAxis stroke="#000" />
+                  <XAxis dataKey="month" stroke="#fff" />
+                  <YAxis stroke="#fff" />
                   <Tooltip contentStyle={{
                   backgroundColor: 'rgba(0,0,0,0.8)',
                   border: '1px solid rgba(255,255,255,0.1)',
