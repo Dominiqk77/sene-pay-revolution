@@ -304,7 +304,7 @@ const BlogPost = () => {
               <div className="flex flex-wrap items-center gap-6 text-gray-500 border-b border-gray-200 pb-6">
                 <div className="flex items-center">
                   <img
-                    src="/lovable-uploads/73c4c6f7-047b-4539-af47-a4a9f290fa73.png"
+                    src="/lovable-uploads/856c5d11-f4a7-40b5-8400-a063597b67d3.png"
                     alt="SenePay Team"
                     className="w-10 h-10 rounded-full mr-3 object-cover"
                   />
