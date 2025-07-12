@@ -131,7 +131,7 @@ const TeamSection = () => {
                     <Badge className="bg-senepay-green/20 text-senepay-green border-senepay-green/30 mb-3">
                       {member.experience}
                     </Badge>
-                    <p className="text-gray-300 text-sm mb-4 leading-relaxed">{member.description}</p>
+                    <p className="text-sm mb-4 leading-relaxed text-slate-950">{member.description}</p>
                     
                     {/* Achievements */}
                     <div className="space-y-2 mb-4">
