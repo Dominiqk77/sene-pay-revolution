@@ -71,52 +71,57 @@ const generateSEOContent = async (category: string, title: string): Promise<any>
     throw new Error('GROQ_API_KEY not found');
   }
 
-  const prompt = `En tant qu'expert FinTech sénégalais et rédacteur SEO de classe mondiale, rédigez un article de blog ultra-engageant de 4000+ mots sur le sujet : "${title}"
+  const prompt = `En tant qu'expert FinTech sénégalais et rédacteur SEO de classe mondiale, rédigez un article de blog ultra-professionnel de 6000+ mots sur le sujet : "${title}"
 
 CONTEXTE SENEPAY :
-- Première passerelle de paiement 100% sénégalaise
-- Unifie Orange Money, Wave, Free Money, cartes bancaires
+- Première passerelle de paiement 100% sénégalaise créée par Dominiqk Mendy
+- Unifie Orange Money, Wave, Free Money, cartes bancaires en une seule API
 - Mission : démocratiser les paiements digitaux en Afrique
-- Vision panafricaine de souveraineté digitale
+- Vision panafricaine de souveraineté numérique et inclusion financière
 
-STRUCTURE OBLIGATOIRE :
-1. Introduction percutante avec hook émotionnel
-2. Problématique actuelle détaillée
-3. Solutions innovantes (focus SenePay)
-4. Cas d'usage concrets sénégalais
-5. Impact économique et social
-6. Témoignages clients authentiques
-7. Analyse comparative concurrentielle
-8. Roadmap et tendances futures
-9. Call-to-action conversion
-10. Conclusion patriotique inspirante
+STRUCTURE OBLIGATOIRE ULTRA-DÉTAILLÉE :
+1. Introduction percutante avec accroche émotionnelle africaine (8-10 paragraphes riches)
+2. Contextualisation historique et patriotique (6-8 paragraphes approfondis)
+3. Analyse technique approfondie avec données statistiques (10-12 paragraphes experts)
+4. Témoignages clients authentiques avec ROI précis (6-8 cas concrets détaillés)
+5. Comparaison concurrentielle poussée (8-10 paragraphes analytiques)
+6. Projections économiques et impact social (8-10 paragraphes avec chiffres)
+7. Roadmap technologique et tendances futures (6-8 paragraphes prospectifs)
+8. Call-to-action conversion stratégiques (3-4 CTA intégrés naturellement)
+9. Conclusion patriotique inspirante avec vision panafricaine (6-8 paragraphes)
 
-INSTRUCTIONS SEO ET STYLE :
+EXIGENCES QUALITÉ PREMIUM :
+- Chaque paragraphe doit contenir 6-10 lignes minimum avec contenu riche et engageant
 - Utilisez les mots-clés : ${articleTemplates[category as keyof typeof articleTemplates]?.keywords.join(', ')}
-- Intégrez naturellement "SenePay" 8-12 fois
-- Incluez des statistiques précises sénégalaises
-- Ajoutez des émojis pour l'engagement 🚀💰🌍🇸🇳
-- IMPORTANT : N'utilisez PAS de ## ou ### ou ** dans le contenu
-- Écrivez les titres en texte normal qui seront stylés avec des gradients
-- Créez des paragraphes courts (2-3 lignes max)
-- Mettez en avant les mots-clés importants en MAJUSCULES ocasionnellement
+- Intégrez "SenePay" 12-15 fois naturellement dans le contenu
+- Incluez des statistiques précises et crédibles du Sénégal et de l'Afrique de l'Ouest
+- Ajoutez des données chiffrées concrètes (pourcentages, montants, croissance)
+- ABSOLUMENT INTERDIT : N'utilisez JAMAIS ## ou ### ou ** dans le contenu
+- Écrivez les titres en texte normal sans formatage markdown
+- Créez des paragraphes substantiels avec analyses approfondies
+- Mettez en avant les mots-clés importants en MAJUSCULES stratégiquement
 
-STYLE RÉDACTIONNEL :
-- Ton patriotique et panafricain inspirant 🌍🇸🇳
-- Expertise technique accessible
-- Storytelling émotionnel avec impact humain
-- Données chiffrées crédibles du Sénégal
-- Exemples concrets sénégalais et ouest-africains
-- Célébrez la diaspora et l'unité africaine
-- Mentionnez l'héritage de résistance et d'innovation africaine
+STYLE EXPERT ULTRA-PROFESSIONNEL :
+- Ton d'expert international en transformation digitale africaine
+- Analyses économiques pointues avec références sectorielles
+- Storytelling émotionnel avec impact humain fort
+- Données macro-économiques du Sénégal et de la région CEDEAO
+- Exemples concrets d'entreprises sénégalaises et ouest-africaines
+- Célébrez l'innovation africaine et la diaspora entrepreneuriale
+- Mentionnez l'héritage historique de résistance et d'innovation du Sénégal
+- Intégrez des comparaisons internationales (Silicon Valley, Europe, Asie)
 
-MONÉTISATION :
-- Intégrez 3-4 CTA vers SenePay naturellement
-- Mentionnez les bénéfices concrets (+67% CA)
-- Incluez des liens vers documentation/inscription
-- Proposez des solutions spécifiques par secteur
+MONÉTISATION STRATÉGIQUE :
+- Intégrez 4-5 CTA vers SenePay de manière fluide et naturelle
+- Mentionnez des ROI concrets (+67% CA, réduction coûts -45%, conversion +120%)
+- Incluez des bénéfices sectoriels spécifiques (e-commerce, services, restaurants)
+- Proposez des solutions personnalisées par taille d'entreprise
+- Ajoutez des testimonials authentiques avec résultats chiffrés
 
-Rédigez un article de référence qui va dominer Google et convertir massivement !`;
+SIGNATURE OBLIGATOIRE :
+Signez TOUS les articles par "Dominiqk Mendy - Expert en Transformation Digitale - Consultant International en Innovation Numérique"
+
+Rédigez l'article de référence FinTech qui va révolutionner la perception des paiements digitaux africains !`;
 
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -144,33 +149,27 @@ Rédigez un article de référence qui va dominer Google et convertir massivemen
 };
 
 const getRandomImage = async (): Promise<string> => {
-  // Specific African-focused search terms for people and faces
-  const africanSearchTerms = [
-    'african-business-people',
-    'senegalese-entrepreneurs', 
-    'african-technology-workers',
-    'black-professionals-africa',
-    'african-women-business',
-    'african-men-technology',
-    'senegal-business-meeting',
-    'african-startup-founders',
-    'black-african-professionals',
-    'african-fintech-workers'
+  // STRICT POLICY: Only African faces/characters or no people at all
+  const strictAfricanImages = [
+    // African business professionals (verified African faces)
+    'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1200&h=630&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=630&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1580894908361-967195033215?w=1200&h=630&q=80&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=1200&h=630&q=80&auto=format&fit=crop',
+    
+    // Technology and fintech imagery without people
+    'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&h=630&q=80&auto=format&fit=crop', // Mobile payment
+    'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1200&h=630&q=80&auto=format&fit=crop', // Fintech concept
+    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=630&q=80&auto=format&fit=crop', // Digital technology
+    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&q=80&auto=format&fit=crop', // Mobile banking
+    
+    // African landscapes and culture (no people)
+    'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1200&h=630&q=80&auto=format&fit=crop', // African sunset
+    'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1200&h=630&q=80&auto=format&fit=crop', // African cityscape
+    'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200&h=630&q=80&auto=format&fit=crop', // Modern African city
   ];
   
-  const randomTerm = africanSearchTerms[Math.floor(Math.random() * africanSearchTerms.length)];
-  
-  // Using Unsplash with specific queries for African faces/people
-  const unsplashUrls = [
-    `https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1200&h=630&q=80&auto=format&fit=crop`, // African business
-    `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=630&q=80&auto=format&fit=crop`, // African entrepreneur
-    `https://images.unsplash.com/photo-1522075469751-3847036cea64?w=1200&h=630&q=80&auto=format&fit=crop`, // African tech worker
-    `https://images.unsplash.com/photo-1580894908361-967195033215?w=1200&h=630&q=80&auto=format&fit=crop`, // African woman professional
-    `https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=1200&h=630&q=80&auto=format&fit=crop`, // African man business
-    `https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=630&q=80&auto=format&fit=crop`, // African startup
-  ];
-  
-  return unsplashUrls[Math.floor(Math.random() * unsplashUrls.length)];
+  return strictAfricanImages[Math.floor(Math.random() * strictAfricanImages.length)];
 };
 
 const calculateReadingTime = (content: string): number => {
@@ -255,7 +254,7 @@ serve(async (req) => {
         meta_description: metaDescription,
         reading_time: readingTime,
         author_name: 'Dominiqk Mendy - Expert en Transformation Digitale',
-        author_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+        author_avatar: '/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png',
         is_featured: Math.random() > 0.7, // 30% chance to be featured
         seo_score: Math.floor(Math.random() * 20) + 80, // Score between 80-100
         monetization_cta: {

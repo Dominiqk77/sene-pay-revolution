@@ -12,23 +12,62 @@ import { useToast } from "@/hooks/use-toast";
 // Component to render enhanced blog content with gradients and colors
 const BlogContent = ({ content }: { content: string }) => {
   const parseContent = (text: string) => {
-    return text
-      // Replace ## titles with gradient headings
-      .replace(/## (.+?)(?=\n|$)/g, '<h2 class="text-3xl font-bold bg-gradient-to-r from-senepay-orange to-senepay-gold bg-clip-text text-transparent my-8">$1</h2>')
-      // Replace ### subtitles with colored headings
-      .replace(/### (.+?)(?=\n|$)/g, '<h3 class="text-2xl font-semibold text-senepay-orange my-6">$1</h3>')
-      // Replace **bold** with colored strong text
-      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-senepay-gold">$1</strong>')
-      // Enhanced paragraph formatting
-      .replace(/\n\n/g, '</p><p class="text-gray-700 leading-relaxed mb-6">')
-      // Add African flag emojis and patriotic elements
-      .replace(/Sénégal|sénégal/g, 'Sénégal 🇸🇳')
-      .replace(/Afrique|afrique/g, 'Afrique 🌍')
-      // Highlight key terms with colors
-      .replace(/\b(SenePay|Orange Money|Wave|Free Money)\b/g, '<span class="font-semibold text-senepay-orange bg-senepay-orange/10 px-2 py-1 rounded">$1</span>')
-      .replace(/\b(FinTech|Innovation|Digital|API)\b/g, '<span class="font-medium text-senepay-gold">$1</span>')
-      // Convert newlines to proper paragraphs
-      .replace(/\n/g, '<br>');
+    let processedText = text;
+    
+    // Remove ALL markdown symbols (##, ###, **)
+    processedText = processedText.replace(/#{1,6}\s*/g, '');
+    processedText = processedText.replace(/\*\*(.*?)\*\*/g, '$1');
+    
+    // Split into paragraphs and process each
+    const paragraphs = processedText.split('\n\n').filter(p => p.trim());
+    
+    let result = '';
+    let colorIndex = 0;
+    const gradientColors = [
+      'from-blue-600 to-purple-600',
+      'from-green-600 to-emerald-600', 
+      'from-orange-600 to-red-600',
+      'from-purple-600 to-pink-600',
+      'from-emerald-600 to-cyan-600',
+      'from-indigo-600 to-blue-600'
+    ];
+    
+    paragraphs.forEach((paragraph, index) => {
+      const trimmed = paragraph.trim();
+      
+      // Check if it's a title (first word is capitalized and paragraph is short)
+      if (trimmed.length < 100 && /^[A-ZÀÂÄÉÈÊËÏÎÔÖÙÛÜŸÇ]/.test(trimmed) && 
+          (trimmed.includes(':') || trimmed.includes('?') || trimmed.includes('!'))) {
+        const gradient = gradientColors[colorIndex % gradientColors.length];
+        colorIndex++;
+        result += `<h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent my-8 leading-tight">${trimmed}</h2>`;
+      } else {
+        // Enhanced paragraph with better formatting
+        let enhancedParagraph = trimmed
+          // Replace country references with flags
+          .replace(/\bSénégal\b/g, 'Sénégal 🇸🇳')
+          .replace(/\bAfrique\b/g, 'Afrique 🌍')
+          .replace(/\bMali\b/g, 'Mali 🇲🇱')
+          .replace(/\bBurkina\b/g, 'Burkina Faso 🇧🇫')
+          .replace(/\bCôte d\'Ivoire\b/g, 'Côte d\'Ivoire 🇨🇮')
+          // Highlight company names with varied colors
+          .replace(/\b(SenePay)\b/g, '<span class="font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-md">$1</span>')
+          .replace(/\b(Orange Money)\b/g, '<span class="font-semibold text-orange-500 bg-orange-50 px-2 py-1 rounded-md">$1</span>')
+          .replace(/\b(Wave)\b/g, '<span class="font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">$1</span>')
+          .replace(/\b(Free Money)\b/g, '<span class="font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md">$1</span>')
+          // Highlight tech terms with different colors
+          .replace(/\b(FinTech|Fintech)\b/g, '<span class="font-medium text-purple-600">$1</span>')
+          .replace(/\b(Innovation|Digital|API|Mobile Money)\b/g, '<span class="font-medium text-indigo-600">$1</span>')
+          .replace(/\b(Blockchain|Intelligence Artificielle|IA)\b/g, '<span class="font-medium text-emerald-600">$1</span>')
+          // Highlight percentages and numbers
+          .replace(/(\d+%|\d+\.\d+%)/g, '<span class="font-bold text-green-600 bg-green-50 px-1 rounded">$1</span>')
+          .replace(/(\d+[.,]\d+|\d{1,3}[., ]\d{3})/g, '<span class="font-semibold text-blue-600">$1</span>');
+        
+        result += `<p class="text-gray-800 leading-8 mb-6 text-lg">${enhancedParagraph}</p>`;
+      }
+    });
+    
+    return result;
   };
 
   return (
@@ -352,9 +391,9 @@ const BlogPost = () => {
                 <div className="mt-16 p-8 bg-gradient-to-br from-senepay-orange/5 to-senepay-gold/5 rounded-2xl border-l-4 border-senepay-orange">
                   <div className="flex items-start space-x-6">
                     <img
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face"
+                      src="/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png"
                       alt="Dominiqk Mendy"
-                      className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+                      className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
                     />
                     <div className="flex-1">
                       <h3 className="text-2xl font-bold bg-gradient-to-r from-senepay-orange to-senepay-gold bg-clip-text text-transparent mb-2">
