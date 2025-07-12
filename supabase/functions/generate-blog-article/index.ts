@@ -254,7 +254,7 @@ serve(async (req) => {
         meta_description: metaDescription,
         reading_time: readingTime,
         author_name: 'Dominiqk Mendy - Expert en Transformation Digitale',
-        author_avatar: '/lovable-uploads/88dbce95-d909-4dce-83ae-d7b6b87eedfd.png',
+        author_avatar: '/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png',
         is_featured: Math.random() > 0.7, // 30% chance to be featured
         seo_score: Math.floor(Math.random() * 20) + 80, // Score between 80-100
         monetization_cta: {
