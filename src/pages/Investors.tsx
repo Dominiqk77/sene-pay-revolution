@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import InvestorHero from '@/components/investors/InvestorHero';
 import MarketOpportunity from '@/components/investors/MarketOpportunity';
 import TractionMetrics from '@/components/investors/TractionMetrics';
-import TeamSection from '@/components/investors/TeamSection';
+
 import FundingRequest from '@/components/investors/FundingRequest';
 import InvestorForm from '@/components/investors/InvestorForm';
 import FinancialProjections from '@/components/investors/FinancialProjections';
@@ -42,8 +42,6 @@ const Investors = () => {
         {/* Strategic Partnerships */}
         <PartnershipsSection />
         
-        {/* Team & Vision */}
-        <TeamSection />
         
         {/* Funding Request */}
         <FundingRequest />
