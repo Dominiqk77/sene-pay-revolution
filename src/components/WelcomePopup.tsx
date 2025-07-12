@@ -74,7 +74,7 @@ const WelcomePopup = () => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <Card className="w-full max-w-4xl mx-auto relative overflow-hidden animate-scale-in">
+      <Card className="w-full max-w-2xl mx-auto relative overflow-hidden animate-scale-in">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-senepay-orange/5 via-senepay-gold/5 to-orange-500/5" />
         
@@ -100,10 +100,10 @@ const WelcomePopup = () => {
               🇸🇳 Révolution Fintech Ouest-Africaine
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+            <h1 className="text-2xl md:text-3xl font-bold leading-tight">
               Bienvenue sur <span className="gradient-text">SenePay</span>
               <br />
-              <span className="text-xl md:text-2xl text-muted-foreground font-normal">
+              <span className="text-lg md:text-xl text-muted-foreground font-normal">
                 La passerelle de paiement qui va dominer l'Afrique de l'Ouest
               </span>
             </h1>
