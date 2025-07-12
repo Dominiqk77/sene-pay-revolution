@@ -23,27 +23,56 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { message, sessionId, userId, context } = await req.json();
 
-    console.log('Chat request received:', { message, sessionId, userId, context });
+    console.log('💬 Chat request received:', { message, sessionId, userId, context });
 
-    // Detect user type and intent
+    // ÉTAPE 1: Détection et qualification de lead intelligent
     const userProfile = await detectUserProfile(supabase, userId);
     const messageIntent = await analyzeMessageIntent(message);
-
-    // Search knowledge base for relevant information
+    const leadScore = await calculateLeadScore(message, userProfile, messageIntent);
+    
+    // ÉTAPE 2: Créer ou mettre à jour le lead avec scoring automatique
+    const leadData = await createOrUpdateLead(supabase, sessionId, userId, userProfile, messageIntent, leadScore, context);
+    
+    // ÉTAPE 3: Recherche intelligente dans la base de connaissances
     const relevantKnowledge = await searchKnowledgeBase(supabase, message, messageIntent);
-
-    // Generate enhanced AI response with multiple sources
-    const aiResponse = await generateEnhancedAIResponse(message, userProfile, relevantKnowledge, context, messageIntent);
-
-    // Save conversation
+    
+    // ÉTAPE 4: Obtenir les offres contextuelles personnalisées
+    const contextualOffers = await getContextualOffers(supabase, userProfile, messageIntent);
+    
+    // ÉTAPE 5: Générer une réponse IA optimisée pour la conversion
+    const aiResponse = await generateConversionOptimizedAIResponse(
+      message, userProfile, relevantKnowledge, context, messageIntent, leadData, contextualOffers
+    );
+    
+    // ÉTAPE 6: Programmer les actions automatisées si lead qualifié
+    if (leadData.qualification_status === 'qualified' || leadData.qualification_status === 'hot') {
+      await scheduleAutomatedActions(supabase, leadData.id, userProfile, messageIntent);
+    }
+    
+    // ÉTAPE 7: Tracking des conversions
+    await trackConversionEvent(supabase, leadData.id, sessionId, 'chat_interaction', messageIntent);
+    
+    // ÉTAPE 8: Démarrer séquence de nurturing si applicable
+    await initializeNurturingSequence(supabase, leadData.id, userProfile, messageIntent);
+    
+    // ÉTAPE 9: Sauvegarder la conversation
     await saveConversation(supabase, sessionId, userId, message, aiResponse, context);
 
-    console.log('AI response generated successfully');
+    console.log('🚀 Système de génération de leads activé:', {
+      leadScore: leadData.lead_score,
+      qualification: leadData.qualification_status,
+      revenue_potential: leadData.estimated_revenue
+    });
 
     return new Response(JSON.stringify({ 
       response: aiResponse,
-      suggestions: generateSuggestions(messageIntent, userProfile),
-      context: await updateContext(context, message, aiResponse)
+      suggestions: generateSmartSuggestions(messageIntent, userProfile, leadData),
+      context: await updateContext(context, message, aiResponse),
+      leadData: {
+        score: leadData.lead_score,
+        qualification: leadData.qualification_status,
+        offers: contextualOffers
+      }
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -557,6 +586,506 @@ async function updateContext(context: any, message: string, response: string) {
     lastResponse: response,
     timestamp: new Date().toISOString()
   };
+}
+
+// ============= SYSTÈME AVANCÉ DE GÉNÉRATION DE LEADS ET REVENUS =============
+
+async function calculateLeadScore(message: string, userProfile: any, intent: string) {
+  let score = 0;
+  
+  // Scoring basé sur l'intention (0-30 points)
+  const intentScores = {
+    'integration': 25,
+    'pricing': 20,
+    'payment_methods': 15,
+    'troubleshooting': 10,
+    'webhooks': 15,
+    'documentation': 5,
+    'general': 5
+  };
+  score += intentScores[intent] || 5;
+  
+  // Scoring basé sur le profil utilisateur (0-25 points)
+  if (userProfile.hasAccount) score += 10;
+  if (userProfile.companyName) score += 8;
+  if (userProfile.experience === 'advanced') score += 7;
+  else if (userProfile.experience === 'intermediate') score += 5;
+  
+  // Scoring basé sur le contenu du message (0-25 points)
+  const lowerMessage = message.toLowerCase();
+  if (lowerMessage.includes('budget') || lowerMessage.includes('coût')) score += 8;
+  if (lowerMessage.includes('urgent') || lowerMessage.includes('rapidement')) score += 6;
+  if (lowerMessage.includes('équipe') || lowerMessage.includes('développeur')) score += 5;
+  if (lowerMessage.includes('production') || lowerMessage.includes('mise en ligne')) score += 8;
+  
+  // Bonifications qualité (0-20 points)
+  if (userProfile.type === 'enterprise') score += 15;
+  else if (userProfile.type === 'sme') score += 10;
+  else if (userProfile.type === 'startup') score += 8;
+  
+  return Math.min(score, 100); // Max 100 points
+}
+
+async function createOrUpdateLead(supabase: any, sessionId: string, userId: string | null, userProfile: any, intent: string, leadScore: number, context: any) {
+  try {
+    // Déterminer la qualification basée sur le score
+    let qualification = 'new';
+    if (leadScore >= 80) qualification = 'hot';
+    else if (leadScore >= 60) qualification = 'qualified';
+    else if (leadScore >= 40) qualification = 'qualified';
+    else if (leadScore < 25) qualification = 'cold';
+    
+    // Déterminer le type de profil
+    let profileType = 'unknown';
+    if (userProfile.companyName) {
+      if (userProfile.type === 'enterprise') profileType = 'enterprise';
+      else if (userProfile.experience === 'advanced') profileType = 'sme';
+      else profileType = 'startup';
+    } else if (userProfile.type === 'developer') {
+      profileType = 'developer';
+    }
+    
+    // Estimer le revenu potentiel basé sur le profil
+    const revenueEstimates = {
+      'enterprise': 50000,
+      'sme': 15000,
+      'startup': 5000,
+      'developer': 2000,
+      'unknown': 1000
+    };
+    
+    const estimatedRevenue = revenueEstimates[profileType] || 1000;
+    const conversionProbability = Math.min(leadScore / 100 * 0.8, 0.8); // Max 80%
+    
+    // Créer ou mettre à jour le lead
+    const { data: existingLead } = await supabase
+      .from('leads')
+      .select('*')
+      .eq('session_id', sessionId)
+      .single();
+    
+    if (existingLead) {
+      // Mettre à jour le lead existant
+      const { data: updatedLead } = await supabase
+        .from('leads')
+        .update({
+          lead_score: Math.max(existingLead.lead_score, leadScore),
+          qualification_status: qualification,
+          profile_type: profileType,
+          intent: intent,
+          interaction_count: existingLead.interaction_count + 1,
+          last_interaction_at: new Date().toISOString(),
+          conversion_probability: conversionProbability,
+          estimated_revenue: estimatedRevenue,
+          metadata: { ...existingLead.metadata, ...context }
+        })
+        .eq('id', existingLead.id)
+        .select()
+        .single();
+      
+      return updatedLead;
+    } else {
+      // Créer un nouveau lead
+      const { data: newLead } = await supabase
+        .from('leads')
+        .insert({
+          session_id: sessionId,
+          user_id: userId,
+          email: context.email || null,
+          phone: context.phone || null,
+          company_name: userProfile.companyName || null,
+          lead_score: leadScore,
+          qualification_status: qualification,
+          profile_type: profileType,
+          intent: intent,
+          conversion_probability: conversionProbability,
+          estimated_revenue: estimatedRevenue,
+          metadata: context
+        })
+        .select()
+        .single();
+      
+      return newLead;
+    }
+  } catch (error) {
+    console.error('❌ Erreur création/mise à jour lead:', error);
+    return { id: 'fallback', lead_score: leadScore, qualification_status: 'new', estimated_revenue: 0 };
+  }
+}
+
+async function getContextualOffers(supabase: any, userProfile: any, intent: string) {
+  try {
+    const profileType = userProfile.type === 'enterprise' ? 'enterprise' : 
+                       userProfile.experience === 'advanced' ? 'sme' : 
+                       userProfile.type === 'developer' ? 'developer' : 'startup';
+    
+    const { data: offers } = await supabase
+      .from('contextual_offers')
+      .select('*')
+      .eq('is_active', true)
+      .or(`target_profile.eq.${profileType},target_intent.eq.${intent}`)
+      .limit(3);
+    
+    return offers || [];
+  } catch (error) {
+    console.error('❌ Erreur récupération offres:', error);
+    return [];
+  }
+}
+
+async function generateConversionOptimizedAIResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string, leadData: any, offers: any[]) {
+  // Construire un prompt optimisé pour la conversion
+  const conversionPrompt = buildConversionPrompt(userProfile, knowledge, intent, leadData, offers);
+  
+  // Utiliser la même logique de fallback que l'ancienne fonction
+  if (groqApiKey) {
+    try {
+      return await generateGroqConversionResponse(message, conversionPrompt);
+    } catch (error) {
+      console.error('Groq API error, falling back to Hugging Face:', error);
+    }
+  }
+
+  if (huggingFaceApiKey) {
+    try {
+      return await generateHuggingFaceConversionResponse(message, conversionPrompt);
+    } catch (error) {
+      console.error('Hugging Face API error, falling back to OpenAI:', error);
+    }
+  }
+
+  if (openAIApiKey) {
+    try {
+      return await generateOpenAIConversionResponse(message, conversionPrompt);
+    } catch (error) {
+      console.error('OpenAI API error, falling back to static:', error);
+    }
+  }
+
+  return getConversionOptimizedStaticResponse(message, userProfile, intent, leadData, offers);
+}
+
+function buildConversionPrompt(userProfile: any, knowledge: any[], intent: string, leadData: any, offers: any[]) {
+  const knowledgeContext = knowledge.map(k => k.content).join('\n\n');
+  const offersContext = offers.map(o => `${o.offer_name}: ${o.offer_text} (${o.call_to_action})`).join('\n');
+  
+  return `MISSION: Tu es l'assistant commercial IA de SenePay optimisé pour la CONVERSION et la GÉNÉRATION DE REVENUS.
+
+🎯 OBJECTIF PRINCIPAL: Transformer chaque interaction en opportunité commerciale qualifiée.
+
+📊 PROFIL LEAD ANALYSÉ:
+- Score: ${leadData.lead_score}/100 (${leadData.qualification_status})
+- Type: ${leadData.profile_type}
+- Revenue potentiel: ${leadData.estimated_revenue} XOF
+- Probabilité conversion: ${Math.round(leadData.conversion_probability * 100)}%
+- Intention: ${intent}
+
+💰 OFFRES CONTEXTUELLES DISPONIBLES:
+${offersContext}
+
+📚 BASE DE CONNAISSANCES:
+${knowledgeContext}
+
+🚀 STRATÉGIE DE RÉPONSE SELON QUALIFICATION:
+${leadData.qualification_status === 'hot' ? 
+  '🔥 LEAD CHAUD: Proposer démo immédiate, devis personnalisé, contact commercial direct' : 
+  leadData.qualification_status === 'qualified' ? 
+  '✅ LEAD QUALIFIÉ: Éduquer sur la valeur, calculer ROI, proposer essai gratuit' : 
+  '🌱 LEAD NOUVEAU: Sensibiliser aux bénéfices, créer urgence, capturer informations'
+}
+
+💡 ÉLÉMENTS OBLIGATOIRES À INCLURE:
+- Calcul ROI personnalisé avec chiffres concrets
+- Comparaison avec solutions actuelles (économies)
+- Call-to-action clair et actionnable
+- Création d'urgence (offres limitées)
+- Social proof (clients similaires)
+- Next steps précis
+
+🎯 OBJECTIFS DE CONVERSION:
+1. Capturer email/téléphone si absent
+2. Qualifier le budget et timeline
+3. Identifier les décideurs
+4. Proposer prochaine étape concrète (démo, devis, consultation)
+5. Créer sentiment d'urgence
+
+STYLE: Professionnel mais humain, focus business value, data-driven, persuasif sans être aggressive.`;
+}
+
+async function generateGroqConversionResponse(message: string, conversionPrompt: string) {
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${groqApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-70b-versatile',
+      messages: [
+        { role: 'system', content: conversionPrompt },
+        { role: 'user', content: message }
+      ],
+      temperature: 0.4,
+      max_tokens: 1200,
+      top_p: 0.9,
+    }),
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+async function generateHuggingFaceConversionResponse(message: string, conversionPrompt: string) {
+  const fullPrompt = `${conversionPrompt}\n\nUtilisateur: ${message}\n\nAssistant commercial SenePay:`;
+
+  const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-large', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${huggingFaceApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      inputs: fullPrompt,
+      parameters: {
+        max_new_tokens: 1000,
+        temperature: 0.5,
+        top_p: 0.9,
+        return_full_text: false
+      }
+    }),
+  });
+
+  const data = await response.json();
+  return data[0]?.generated_text || getConversionOptimizedStaticResponse(message, {}, 'general', {}, []);
+}
+
+async function generateOpenAIConversionResponse(message: string, conversionPrompt: string) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${openAIApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: conversionPrompt },
+        { role: 'user', content: message }
+      ],
+      temperature: 0.5,
+      max_tokens: 1200,
+      top_p: 0.9,
+    }),
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+function getConversionOptimizedStaticResponse(message: string, userProfile: any, intent: string, leadData: any, offers: any[]) {
+  const companyName = userProfile.companyName || 'votre entreprise';
+  const qualification = leadData.qualification_status || 'new';
+  
+  // Réponses optimisées selon la qualification
+  if (qualification === 'hot') {
+    return `🔥 **Opportunité immédiate pour ${companyName}**
+
+Votre profil montre un potentiel de ${leadData.estimated_revenue || 25000} XOF d'économies annuelles !
+
+🎯 **Actions immédiates disponibles :**
+- **Démo personnalisée** en 15 minutes → Réserver maintenant
+- **Devis sur mesure** envoyé en 2h → Demander le devis
+- **Contact commercial** direct → +221 77 656 40 42
+
+💰 **Offre exclusive (24h)** : ${offers[0]?.offer_text || '30% de réduction sur vos 3 premiers mois'}
+
+⚡ **Prochaine étape** : Partagez votre email pour recevoir votre analyse personnalisée.`;
+  }
+  
+  if (qualification === 'qualified') {
+    return `✅ **Solution idéale identifiée pour ${companyName}**
+
+📊 **Votre économie potentielle avec SenePay :**
+- Mobile Money : **57% moins cher** que la concurrence
+- Cartes bancaires : **46% moins cher**
+- ROI projeté : +40% d'économies sur 12 mois
+
+🎁 **Offre découverte** : ${offers[0]?.offer_text || 'Consultation gratuite de 30 minutes'}
+
+💡 **Calculez vos économies exactes** → Partagez votre volume mensuel
+
+🚀 **Commencer maintenant** : ${offers[0]?.call_to_action || 'Créer votre compte test gratuit'}`;
+  }
+  
+  // Réponse pour nouveaux leads
+  return `🌟 **Découvrez pourquoi +2,500 entreprises choisissent SenePay**
+
+**Avantages immédiats pour ${companyName} :**
+💸 Économisez jusqu'à 57% sur vos frais de paiement
+⚡ Intégration en 5 minutes avec notre API
+📱 Tous les moyens de paiement sénégalais (Orange Money, Wave...)
+🛡️ Sécurité bancaire niveau 1
+
+🎯 **Offre de bienvenue** : 100 premières transactions gratuites
+
+**Prochaine étape** → Créez votre compte gratuit en 2 minutes : senepay.com/register
+
+💬 **Questions ?** Continuez à me parler ou appelez +221 77 656 40 42`;
+}
+
+async function scheduleAutomatedActions(supabase: any, leadId: string, userProfile: any, intent: string) {
+  try {
+    const actions = [];
+    
+    // Actions selon l'intention
+    if (intent === 'pricing') {
+      actions.push({
+        lead_id: leadId,
+        action_type: 'quote_generation',
+        trigger_condition: 'pricing_interest',
+        scheduled_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2h
+        action_data: { template: 'custom_pricing', urgency: 'high' }
+      });
+    }
+    
+    if (intent === 'integration') {
+      actions.push({
+        lead_id: leadId,
+        action_type: 'demo_invite',
+        trigger_condition: 'integration_need',
+        scheduled_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30min
+        action_data: { type: 'technical_demo', duration: 30 }
+      });
+    }
+    
+    // Action de suivi systématique
+    actions.push({
+      lead_id: leadId,
+      action_type: 'follow_up_call',
+      trigger_condition: 'qualified_lead',
+      scheduled_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24h
+      action_data: { priority: 'high', type: 'commercial' }
+    });
+    
+    if (actions.length > 0) {
+      await supabase
+        .from('automated_actions')
+        .insert(actions);
+      
+      console.log(`📅 ${actions.length} actions automatisées programmées pour lead ${leadId}`);
+    }
+  } catch (error) {
+    console.error('❌ Erreur programmation actions:', error);
+  }
+}
+
+async function trackConversionEvent(supabase: any, leadId: string, sessionId: string, eventType: string, intent: string) {
+  try {
+    // Déterminer l'étape du funnel
+    let funnelStage = 'visitor';
+    if (intent === 'pricing' || intent === 'integration') funnelStage = 'lead';
+    
+    await supabase
+      .from('conversion_tracking')
+      .insert({
+        lead_id: leadId,
+        session_id: sessionId,
+        funnel_stage: funnelStage,
+        conversion_event: eventType,
+        attribution_data: { intent, timestamp: new Date().toISOString() }
+      });
+    
+    console.log(`📊 Événement de conversion tracké: ${eventType} (${funnelStage})`);
+  } catch (error) {
+    console.error('❌ Erreur tracking conversion:', error);
+  }
+}
+
+async function initializeNurturingSequence(supabase: any, leadId: string, userProfile: any, intent: string) {
+  try {
+    // Sélectionner le type de séquence selon le profil et l'intention
+    let sequenceType = 'education';
+    let totalSteps = 5;
+    
+    if (intent === 'integration') {
+      sequenceType = 'onboarding';
+      totalSteps = 7;
+    } else if (intent === 'pricing') {
+      sequenceType = 'conversion';
+      totalSteps = 4;
+    }
+    
+    await supabase
+      .from('nurturing_sequences')
+      .insert({
+        lead_id: leadId,
+        sequence_type: sequenceType,
+        total_steps: totalSteps,
+        next_action_at: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(), // 4h
+        sequence_data: {
+          profile: userProfile.type,
+          intent: intent,
+          started_at: new Date().toISOString()
+        }
+      });
+    
+    console.log(`🎯 Séquence de nurturing ${sequenceType} initialisée pour lead ${leadId}`);
+  } catch (error) {
+    console.error('❌ Erreur initialisation nurturing:', error);
+  }
+}
+
+function generateSmartSuggestions(intent: string, userProfile: any, leadData: any) {
+  const qualification = leadData.qualification_status || 'new';
+  
+  // Suggestions optimisées selon la qualification
+  if (qualification === 'hot') {
+    return [
+      "📞 Réserver ma démo immédiate",
+      "💰 Obtenir mon devis personnalisé",
+      "🚀 Commencer l'intégration maintenant",
+      "📊 Calculer mes économies exactes"
+    ];
+  }
+  
+  if (qualification === 'qualified') {
+    return [
+      "💡 Voir les cas d'usage similaires",
+      "🎯 Estimer mes économies",
+      "📱 Tester avec mon volume",
+      "👥 Parler à un expert"
+    ];
+  }
+  
+  // Suggestions pour nouveaux leads
+  const suggestions = {
+    integration: [
+      "🔧 Guide d'intégration en 5 minutes",
+      "📚 Voir la documentation API",
+      "⚡ Créer mon compte test gratuit",
+      "💬 Assistance développeur"
+    ],
+    pricing: [
+      "💰 Calculer mes économies",
+      "📊 Comparer avec ma solution actuelle",
+      "🎁 Voir les offres du moment",
+      "📞 Demander un devis personnalisé"
+    ],
+    payment_methods: [
+      "📱 Orange Money vs concurrents",
+      "⚡ Intégrer Wave rapidement",
+      "🌍 Support multi-opérateurs",
+      "🔧 Configuration technique"
+    ],
+    general: [
+      "🚀 Commencer gratuitement",
+      "📖 Guide de démarrage",
+      "💡 Voir les bénéfices",
+      "📞 Parler à un expert"
+    ]
+  };
+  
+  return suggestions[intent] || suggestions.general;
 }
 
 async function saveConversation(supabase: any, sessionId: string, userId: string | null, message: string, response: string, context: any) {

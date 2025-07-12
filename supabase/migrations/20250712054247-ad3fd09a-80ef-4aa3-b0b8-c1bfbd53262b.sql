@@ -1,0 +1,7 @@
+-- Insertion des données initiales pour les offres contextuelles
+INSERT INTO public.contextual_offers (offer_name, offer_type, target_profile, target_intent, discount_percentage, validity_hours, offer_text, call_to_action) VALUES
+('Réduction Première Intégration', 'discount', 'startup', 'integration', 30.00, 48, 'Obtenez 30% de réduction sur vos frais pendant 3 mois pour votre première intégration SenePay !', 'Créer mon compte maintenant'),
+('Demo Personnalisée Enterprise', 'demo', 'enterprise', 'general', NULL, 72, 'Réservez une démonstration personnalisée avec notre équipe technique pour voir SenePay en action !', 'Réserver ma démonstration'),
+('Consultation Gratuite PME', 'consultation', 'sme', 'pricing', NULL, 24, 'Consultation gratuite de 30 minutes pour optimiser vos coûts de paiement avec un expert SenePay.', 'Réserver ma consultation'),
+('Extension Essai Développeur', 'trial_extension', 'developer', 'integration', NULL, 168, 'Prolongez votre période d essai de 30 jours supplémentaires pour finaliser votre intégration.', 'Activer l extension'),
+('Offre Flash Mobile Money', 'discount', 'sme', 'payment_methods', 25.00, 6, 'Flash : 25% de réduction sur tous les paiements Mobile Money pendant 24h !', 'Profiter de l offre maintenant');

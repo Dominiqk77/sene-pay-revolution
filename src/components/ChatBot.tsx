@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import { useChatBot } from '@/hooks/useChatBot';
+import ContextualOffers from '@/components/chat/ContextualOffers';
 
 interface Message {
   id: string;
@@ -29,6 +30,8 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sessionId] = useState(() => crypto.randomUUID());
+  const [leadData, setLeadData] = useState<any>(null);
+  const [contextualOffers, setContextualOffers] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { trigger: chatTrigger } = useChatBot();
@@ -163,6 +166,14 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
       });
 
       if (error) throw error;
+
+      // Mettre à jour les données de lead et offres
+      if (data.leadData) {
+        setLeadData(data.leadData);
+      }
+      if (data.leadData?.offers) {
+        setContextualOffers(data.leadData.offers);
+      }
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
@@ -320,6 +331,20 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
                       </div>
                     </div>
                   </div>
+                )}
+                
+                {/* Offres contextuelles intelligentes */}
+                {contextualOffers.length > 0 && (
+                  <ContextualOffers 
+                    offers={contextualOffers}
+                    leadData={leadData}
+                    onOfferAccepted={(offerId, offerType) => {
+                      toast({
+                        title: "🎯 Lead qualifié !",
+                        description: `Action ${offerType} déclenchée pour optimiser la conversion.`
+                      });
+                    }}
+                  />
                 )}
               </div>
               <div ref={messagesEndRef} />
