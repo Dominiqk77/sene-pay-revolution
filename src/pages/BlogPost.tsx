@@ -328,7 +328,7 @@ const BlogPost = () => {
             {/* Featured Image */}
             <div className="mb-12">
               <img
-                src={article.featured_image_url}
+                src="/src/assets/african-fintech-hero.jpg"
                 alt={article.title}
                 className="w-full h-[400px] md:h-[500px] object-cover rounded-2xl shadow-xl"
               />
