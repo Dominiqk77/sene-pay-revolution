@@ -238,7 +238,7 @@ const PartnershipsSection = () => {
           <Card className="bg-gradient-to-br from-senepay-gold/10 via-senepay-orange/10 to-senepay-green/10 border-senepay-gold/30 max-w-4xl mx-auto">
             <CardContent className="p-8">
               <Award className="w-12 h-12 text-senepay-gold mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-4">
+              <h3 className="text-2xl font-bold mb-4 text-zinc-950">
                 Écosystème de Partenariats Unique
               </h3>
               <p className="text-gray-300 text-lg leading-relaxed mb-6">
