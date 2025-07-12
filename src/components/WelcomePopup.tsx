@@ -73,8 +73,11 @@ const WelcomePopup = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl mx-auto relative overflow-hidden animate-scale-in">
+    <div 
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+      onClick={handleClose}
+    >
+      <Card className="w-full max-w-lg mx-auto relative overflow-hidden animate-scale-in" onClick={(e) => e.stopPropagation()}>
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-senepay-orange/5 via-senepay-gold/5 to-orange-500/5" />
         
