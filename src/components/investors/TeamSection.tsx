@@ -237,7 +237,7 @@ const TeamSection = () => {
       }}>
           <Card className="bg-gradient-to-br from-senepay-gold/10 via-senepay-orange/10 to-senepay-green/10 border-senepay-gold/30 max-w-4xl mx-auto">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-white mb-4">
+              <h3 className="text-2xl font-bold mb-4 text-green-600">
                 Notre Vision 2030
               </h3>
               <p className="text-lg leading-relaxed text-slate-950">
