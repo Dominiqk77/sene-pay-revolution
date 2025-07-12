@@ -246,7 +246,7 @@ const MarketOpportunity = () => {
           <Card className="bg-gradient-to-br from-senepay-gold/20 to-senepay-orange/20 border-senepay-gold/30">
             <CardContent className="p-6 text-center">
               <Zap className="w-12 h-12 text-senepay-gold mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">89%</h3>
+              <h3 className="text-2xl font-bold mb-2 text-zinc-950">89%</h3>
               <p className="text-slate-950">des sites e-commerce sénégalais n'acceptent pas les paiements en ligne</p>
             </CardContent>
           </Card>
