@@ -13,6 +13,90 @@ const DeveloperSection = () => {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
+  // Fonction pour colorer le code avec syntax highlighting
+  const highlightCode = (code: string, language: string) => {
+    const lines = code.split('\n');
+    return lines.map((line, index) => {
+      let coloredLine = line;
+      
+      // Commentaires
+      if (line.trim().startsWith('//') || line.trim().startsWith('#')) {
+        return (
+          <div key={index} className="text-green-400">
+            {line}
+          </div>
+        );
+      }
+      
+      // Mots-clés JavaScript/Node.js
+      if (language === 'javascript') {
+        coloredLine = coloredLine
+          .replace(/(import|from|const|let|var|function|async|await|return|if|else|switch|case|break)/g, '<span class="text-purple-400 font-semibold">$1</span>')
+          .replace(/(new|class|extends|super)/g, '<span class="text-blue-400 font-semibold">$1</span>')
+          .replace(/(npm|install|senepay-sdk)/g, '<span class="text-yellow-400 font-semibold">$1</span>')
+          .replace(/('.*?'|".*?")/g, '<span class="text-green-300">$1</span>')
+          .replace(/(\d+)/g, '<span class="text-orange-400">$1</span>')
+          .replace(/(console\.log|\.create|\.verify|\.payments|\.webhooks)/g, '<span class="text-cyan-400">$1</span>');
+      }
+      
+      // Mots-clés PHP
+      if (language === 'php') {
+        coloredLine = coloredLine
+          .replace(/(<\?php|\?>)/g, '<span class="text-purple-500 font-bold">$1</span>')
+          .replace(/(require_once|use|new|class|function|return|if|else|echo)/g, '<span class="text-purple-400 font-semibold">$1</span>')
+          .replace(/(\$\w+)/g, '<span class="text-blue-400">$1</span>')
+          .replace(/(composer|require)/g, '<span class="text-yellow-400 font-semibold">$1</span>')
+          .replace(/('.*?'|".*?")/g, '<span class="text-green-300">$1</span>')
+          .replace(/(\d+)/g, '<span class="text-orange-400">$1</span>')
+          .replace(/(->)/g, '<span class="text-cyan-400">$1</span>');
+      }
+      
+      // Mots-clés Python
+      if (language === 'python') {
+        coloredLine = coloredLine
+          .replace(/(from|import|def|class|return|if|else|elif|try|except|with|for|while|in|and|or|not)/g, '<span class="text-purple-400 font-semibold">$1</span>')
+          .replace(/(pip|install)/g, '<span class="text-yellow-400 font-semibold">$1</span>')
+          .replace(/('.*?'|".*?")/g, '<span class="text-green-300">$1</span>')
+          .replace(/(\d+)/g, '<span class="text-orange-400">$1</span>')
+          .replace(/(\.create|\.payments|print|f".*?")/g, '<span class="text-cyan-400">$1</span>');
+      }
+      
+      return (
+        <div key={index} dangerouslySetInnerHTML={{ __html: coloredLine }} />
+      );
+    });
+  };
+
+  // Fonction pour colorer les webhooks
+  const highlightWebhookCode = (code: string) => {
+    const lines = code.split('\n');
+    return lines.map((line, index) => {
+      let coloredLine = line;
+      
+      // Commentaires
+      if (line.trim().startsWith('//')) {
+        return (
+          <div key={index} className="text-green-400">
+            {line}
+          </div>
+        );
+      }
+      
+      // Mots-clés et méthodes
+      coloredLine = coloredLine
+        .replace(/(app\.post|req\.headers|req\.body|res\.status|res\.send)/g, '<span class="text-cyan-400 font-semibold">$1</span>')
+        .replace(/(const|return|if|switch|case|break)/g, '<span class="text-purple-400 font-semibold">$1</span>')
+        .replace(/(senepay\.webhooks\.verify|fulfillOrder|sendConfirmationEmail|notifyPaymentFailure)/g, '<span class="text-blue-400">$1</span>')
+        .replace(/('.*?'|".*?")/g, '<span class="text-green-300">$1</span>')
+        .replace(/(\d+)/g, '<span class="text-orange-400">$1</span>')
+        .replace(/(payment\.succeeded|payment\.failed|Unauthorized|OK)/g, '<span class="text-yellow-300">$1</span>');
+      
+      return (
+        <div key={index} dangerouslySetInnerHTML={{ __html: coloredLine }} />
+      );
+    });
+  };
+
   const integrations = [{
     name: "React/Next.js",
     logo: "⚛️",
@@ -228,9 +312,9 @@ app.post('/webhooks/senepay', (req, res) => {
                         {copiedCode === lang ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                     </div>
-                    <pre className="text-xs sm:text-sm text-gray-300 font-mono leading-relaxed overflow-x-auto">
-                      <code>{code}</code>
-                    </pre>
+                    <div className="text-xs sm:text-sm font-mono leading-relaxed overflow-x-auto">
+                      {highlightCode(code, lang)}
+                    </div>
                   </div>
                 </div>
               </TabsContent>
@@ -257,9 +341,9 @@ app.post('/webhooks/senepay', (req, res) => {
                 {copiedCode === 'webhook' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
-            <pre className="text-xs sm:text-sm text-gray-300 font-mono leading-relaxed overflow-x-auto">
-              <code>{webhookExample}</code>
-            </pre>
+            <div className="text-xs sm:text-sm font-mono leading-relaxed overflow-x-auto">
+              {highlightWebhookCode(webhookExample)}
+            </div>
           </div>
         </div>
 
