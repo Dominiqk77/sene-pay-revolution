@@ -57,6 +57,7 @@ import Press from "./pages/Press";
 import PaiementMobileSenegal from "./pages/PaiementMobileSenegal";
 import ApiOrangeMoneySenegal from "./pages/ApiOrangeMoneySenegal";
 import ApiWaveSenegal from "./pages/ApiWaveSenegal";
+import ApiFreeMoneySenegal from "./pages/ApiFreeMoneySenegal";
 import PasgarellePaiementSenegal from "./pages/PasgarellePaiementSenegal";
 
 const queryClient = new QueryClient();
@@ -138,6 +139,7 @@ const App = () => (
             <Route path="/paiement-mobile-senegal" element={<PaiementMobileSenegal />} />
             <Route path="/api-orange-money-senegal" element={<ApiOrangeMoneySenegal />} />
             <Route path="/api-wave-senegal" element={<ApiWaveSenegal />} />
+            <Route path="/api-free-money-senegal" element={<ApiFreeMoneySenegal />} />
             <Route path="/passerelle-paiement-senegal" element={<PasgarellePaiementSenegal />} />
 
             <Route path="*" element={<NotFound />} />

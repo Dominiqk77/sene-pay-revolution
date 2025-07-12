@@ -1,14 +1,51 @@
+# Robots.txt optimisé pour SenePay - API Paiement Mobile Sénégal #1
+# Générateur: SenePay SEO Team
+# Dernière mise à jour: 2024-12-07
+
+# Accès prioritaire pour les moteurs de recherche principaux
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# Réseaux sociaux - accès complet pour partage
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# Accès général - tous les bots autorisés
 User-agent: *
 Allow: /
+Crawl-delay: 2
+
+# Directives spéciales pour contenus critiques SEO
+Allow: /api-orange-money-senegal
+Allow: /api-wave-senegal
+Allow: /api-free-money-senegal
+Allow: /passerelle-paiement-senegal
+Allow: /paiement-mobile-senegal
+
+# Sitemap location
+Sitemap: https://senepay.sn/sitemap.xml
+
+# Host preference (canonical domain)
+Host: senepay.sn

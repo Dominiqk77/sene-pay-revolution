@@ -20,18 +20,18 @@ const HeroSection = () => {
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
-                <span className="gradient-text">SenePay</span> <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">🇸🇳</span>
+                <span className="gradient-text">Passerelle Paiement Mobile</span>
                 <br />
-                <span className="text-white">Passerelle de</span>
+                <span className="text-white">#1 Sénégal</span> <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">🇸🇳</span>
                 <br />
-                <span className="gradient-text">Paiement #1</span>
+                <span className="gradient-text">SenePay API</span>
               </h1>
               
               <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                La solution de paiement ultra-puissante qui connecte tous les moyens de paiement 
-                sénégalais et internationaux en une seule API révolutionnaire. 
-                <strong className="text-senepay-gold">Intégration en 5 minutes</strong>, 
-                commissions 50% moins chères que la concurrence.
+                🏆 <strong className="text-senepay-gold">API Paiement Sénégal la plus avancée</strong> - Intégrez 
+                <span className="text-senepay-gold font-semibold"> Orange Money, Wave, Free Money</span> en 5 minutes. 
+                <strong className="text-senepay-gold">Commissions 50% moins chères</strong> que la concurrence. 
+                +2000 marchands Dakar font confiance ⚡
               </p>
             </div>
 
