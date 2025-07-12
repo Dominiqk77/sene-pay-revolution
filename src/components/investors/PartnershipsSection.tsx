@@ -134,7 +134,7 @@ const PartnershipsSection = () => {
                     
                     <div>
                       <div className="text-black font-semibold text-sm mb-1">Impact:</div>
-                      <div className="text-gray-300 text-sm">{partnership.impact}</div>
+                      <div className="text-red-400 text-senepay-green ">{partnership.impact}</div>
                     </div>
                   </div>
                 </CardContent>
