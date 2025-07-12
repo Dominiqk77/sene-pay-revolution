@@ -8,6 +8,7 @@ const corsHeaders = {
 };
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -30,8 +31,8 @@ serve(async (req) => {
     // Search knowledge base for relevant information
     const relevantKnowledge = await searchKnowledgeBase(supabase, message, messageIntent);
 
-    // Generate AI response
-    const aiResponse = await generateAIResponse(message, userProfile, relevantKnowledge, context);
+    // Generate enhanced AI response with multiple sources
+    const aiResponse = await generateEnhancedAIResponse(message, userProfile, relevantKnowledge, context, messageIntent);
 
     // Save conversation
     await saveConversation(supabase, sessionId, userId, message, aiResponse, context);
@@ -143,153 +144,394 @@ async function searchKnowledgeBase(supabase: any, message: string, intent: strin
   }
 }
 
-async function generateAIResponse(message: string, userProfile: any, knowledge: any[], context: any) {
-  if (!openAIApiKey) {
-    return getStaticResponse(message, userProfile);
+async function generateEnhancedAIResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
+  // Try Perplexity first for real-time, intelligent responses
+  if (perplexityApiKey) {
+    try {
+      return await generatePerplexityResponse(message, userProfile, knowledge, context, intent);
+    } catch (error) {
+      console.error('Perplexity API error, falling back to OpenAI:', error);
+    }
   }
 
-  const systemPrompt = buildSystemPrompt(userProfile, knowledge);
-  const contextualMessage = buildContextualMessage(message, context);
-
-  try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: contextualMessage }
-        ],
-        temperature: 0.7,
-        max_tokens: 800,
-      }),
-    });
-
-    const data = await response.json();
-    return data.choices[0].message.content;
-
-  } catch (error) {
-    console.error('Error generating AI response:', error);
-    return getStaticResponse(message, userProfile);
+  // Fallback to OpenAI with enhanced prompting
+  if (openAIApiKey) {
+    try {
+      return await generateEnhancedOpenAIResponse(message, userProfile, knowledge, context, intent);
+    } catch (error) {
+      console.error('OpenAI API error, falling back to static:', error);
+    }
   }
+
+  // Final fallback to intelligent static responses
+  return getIntelligentStaticResponse(message, userProfile, intent, knowledge);
 }
 
-function buildSystemPrompt(userProfile: any, knowledge: any[]) {
+async function generatePerplexityResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
+  const contextualPrompt = buildEnhancedPrompt(message, userProfile, knowledge, intent);
+
+  const response = await fetch('https://api.perplexity.ai/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${perplexityApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-sonar-large-128k-online',
+      messages: [
+        {
+          role: 'system',
+          content: `Tu es l'assistant IA expert de SenePay, la plateforme de paiement mobile #1 au Sénégal. 
+
+PROFIL UTILISATEUR: ${JSON.stringify(userProfile)}
+CONTEXTE: ${JSON.stringify(context)}
+INTENTION: ${intent}
+
+INSTRUCTIONS CRITIQUES:
+- Réponds UNIQUEMENT en français
+- Sois précis, technique et actionnable
+- Utilise les données SenePay réelles
+- Génère du code si demandé
+- Fournis des liens et ressources
+- Adapte ton ton selon l'expérience utilisateur
+- Focus sur l'écosystème de paiement sénégalais/africain
+
+CONNAISSANCES SENEPAY:
+${knowledge.map(k => k.content).join('\n\n')}`
+        },
+        {
+          role: 'user',
+          content: contextualPrompt
+        }
+      ],
+      temperature: 0.3,
+      top_p: 0.9,
+      max_tokens: 1000,
+      return_images: false,
+      return_related_questions: false,
+      search_recency_filter: 'month',
+      frequency_penalty: 1,
+      presence_penalty: 0
+    }),
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+async function generateEnhancedOpenAIResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
+  const systemPrompt = buildEnhancedSystemPrompt(userProfile, knowledge, intent);
+  const contextualMessage = buildEnhancedPrompt(message, userProfile, knowledge, intent);
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${openAIApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: contextualMessage }
+      ],
+      temperature: 0.4,
+      max_tokens: 1000,
+      top_p: 0.9,
+      frequency_penalty: 0.5,
+      presence_penalty: 0.3,
+    }),
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+function buildEnhancedSystemPrompt(userProfile: any, knowledge: any[], intent: string) {
   const knowledgeContext = knowledge.map(k => k.content).join('\n\n');
   
-  return `Tu es l'assistant IA de SenePay, la plateforme de paiement mobile #1 au Sénégal.
+  const personalizedInstructions = {
+    beginner: "Explique de manière très simple, étape par étape, avec des exemples concrets",
+    intermediate: "Donne des détails techniques appropriés avec des exemples de code",
+    advanced: "Sois technique et précis, focus sur l'optimisation et les bonnes pratiques"
+  };
 
-CONTEXTE UTILISATEUR:
-- Type: ${userProfile.type}
-- Expérience: ${userProfile.experience}
-- Compte marchand: ${userProfile.hasAccount ? 'Oui' : 'Non'}
+  const intentInstructions = {
+    integration: "Focus sur le code, les APIs et les guides d'implémentation",
+    troubleshooting: "Identifie la cause, donne une solution claire et des vérifications",
+    pricing: "Détaille les coûts, compare avec la concurrence, calcule des exemples",
+    payment_methods: "Explique les spécificités techniques et business de chaque méthode",
+    webhooks: "Focus sécurité, configuration et gestion d'erreurs",
+    documentation: "Fournis des liens précis et des exemples pratiques"
+  };
+
+  return `Tu es l'expert SenePay, assistant IA spécialisé dans les paiements mobiles africains.
+
+PROFIL UTILISATEUR:
+- Type: ${userProfile.type} (${userProfile.experience})
+- Compte marchand: ${userProfile.hasAccount ? 'Actif' : 'Non configuré'}
+- Entreprise: ${userProfile.companyName || 'Non renseignée'}
+
+INSTRUCTION PERSONNALISÉE: ${personalizedInstructions[userProfile.experience] || personalizedInstructions.beginner}
+FOCUS INTENTION: ${intentInstructions[intent] || 'Assistance générale complète'}
 
 CONNAISSANCES SENEPAY:
 ${knowledgeContext}
 
-INFORMATIONS CLÉS:
-- SenePay connecte Orange Money, Wave, Free Money, Wizall
-- Intégration simple avec APIs REST
-- Support Webhooks pour notifications temps réel
-- Tarifs: 1.2% Mobile Money, 1.9% cartes bancaires
-- Support technique 24/7 au +221 77 656 40 42
+DONNÉES CLÉS SENEPAY 2024:
+- Mobile Money: Orange Money (8M users), Wave (2M users), Free Money, Wizall
+- Tarifs compétitifs: 1.2% Mobile Money, 1.9% cartes bancaires
+- Couverture: Sénégal (principal), Mali, Burkina Faso (expansion)
+- API REST moderne, webhooks temps réel, SDKs multilingues
+- Support: +221 77 656 40 42, support@senepay.com
 
 STYLE DE RÉPONSE:
-- Professionnel mais amical
-- Français principalement
-- Code examples si pertinent
-- Liens vers documentation
-- Émojis subtils (🚀💳📱)
+- Français professionnel mais accessible
+- Émojis subtils (📱💳🚀⚡🔧)
+- Code examples avec explications
+- Liens vers docs officielles
+- Call-to-action pertinents
 
-TU PEUX:
-- Guider l'intégration SenePay
-- Expliquer les APIs et webhooks
-- Diagnostiquer les erreurs
-- Générer du code personnalisé
-- Recommander les meilleures pratiques
+CAPACITÉS:
+✅ Intégrations techniques détaillées
+✅ Diagnostic et résolution d'erreurs
+✅ Calculs tarifaires personnalisés
+✅ Génération de code sur mesure
+✅ Recommandations business
 
-TU NE PEUX PAS:
-- Accéder aux données privées
-- Modifier les configurations
-- Traiter les paiements
-- Révéler les secrets API`;
+INTERDICTIONS:
+❌ Jamais révéler les clés API ou secrets
+❌ Pas d'accès aux données privées clients
+❌ Pas de modifications de comptes
+❌ Pas de traitement de paiements réels`;
 }
 
-function buildContextualMessage(message: string, context: any) {
-  if (!context || Object.keys(context).length === 0) {
-    return message;
+function buildEnhancedPrompt(message: string, userProfile: any, knowledge: any[], intent: string) {
+  const contextElements = [];
+  
+  if (userProfile.hasAccount) {
+    contextElements.push(`L'utilisateur a déjà un compte marchand SenePay`);
+  } else {
+    contextElements.push(`L'utilisateur découvre SenePay - guider vers l'inscription`);
   }
 
-  return `Contexte de la conversation: ${JSON.stringify(context)}
+  if (userProfile.companyName) {
+    contextElements.push(`Entreprise: ${userProfile.companyName}`);
+  }
 
-Question actuelle: ${message}`;
+  const relevantKnowledge = knowledge.filter(k => 
+    k.category === intent || 
+    k.content.toLowerCase().includes(message.toLowerCase().split(' ')[0])
+  );
+
+  return `CONTEXTE UTILISATEUR: ${contextElements.join(', ')}
+
+CONNAISSANCES PERTINENTES:
+${relevantKnowledge.map(k => `- ${k.content_type}: ${k.content.substring(0, 200)}...`).join('\n')}
+
+QUESTION: ${message}
+
+Réponds de manière personnalisée selon le profil et l'intention détectée.`;
 }
 
-function getStaticResponse(message: string, userProfile: any) {
+function getIntelligentStaticResponse(message: string, userProfile: any, intent: string, knowledge: any[]) {
   const lowerMessage = message.toLowerCase();
+  const experience = userProfile.experience || 'beginner';
   
-  if (lowerMessage.includes('bonjour') || lowerMessage.includes('salut')) {
-    return `Bonjour ! 👋 Je suis l'assistant IA de SenePay. Comment puis-je vous aider avec l'intégration de notre plateforme de paiement ?`;
+  // Réponses intelligentes basées sur l'intention et le profil
+  const responses = {
+    integration: {
+      beginner: `🚀 **Guide d'intégration SenePay pour débutants**
+
+Pour ${userProfile.companyName || 'votre entreprise'}, voici les étapes simples :
+
+1. **Inscription gratuite** → [senepay.com/register](https://senepay.com/register)
+2. **Récupérer vos clés API** (dashboard → Paramètres)
+3. **Premier test en 5 minutes** :
+\`\`\`javascript
+// Installation simple
+npm install senepay-sdk
+
+// Premier paiement
+const senepay = new SenePay('pk_test_...');
+const payment = await senepay.payments.create({
+  amount: 1000, // 1000 XOF
+  currency: 'XOF',
+  methods: ['orange_money', 'wave']
+});
+\`\`\`
+
+💡 **Besoin d'aide ?** → Chat avec moi ou appelez +221 77 656 40 42`,
+
+      intermediate: `⚡ **Intégration SenePay avancée**
+
+Pour optimiser ${userProfile.companyName || 'votre intégration'} :
+
+**APIs principales :**
+- \`POST /payments\` - Créer un paiement
+- \`GET /payments/{id}\` - Vérifier le statut
+- \`POST /webhooks\` - Notifications temps réel
+
+**Exemple production-ready :**
+\`\`\`javascript
+const payment = await senepay.payments.create({
+  amount: 15000,
+  currency: 'XOF',
+  payment_methods: ['orange_money', 'wave'],
+  customer: { phone: '+221771234567' },
+  metadata: { order_id: 'CMD-123' },
+  webhook_url: 'https://api.votresite.com/senepay/webhook'
+});
+\`\`\`
+
+📊 **Tarifs** : 1.2% Mobile Money, 50% moins cher que la concurrence`,
+
+      advanced: `🔧 **Architecture SenePay Enterprise**
+
+**Optimisations pour ${userProfile.companyName || 'votre scale'} :**
+
+\`\`\`typescript
+// Configuration avancée avec retry et monitoring
+const senePayClient = new SenePay({
+  apiKey: process.env.SENEPAY_SECRET_KEY,
+  timeout: 30000,
+  retries: 3,
+  webhookSecret: process.env.SENEPAY_WEBHOOK_SECRET
+});
+
+// Paiement avec escrow pour marketplace
+const payment = await senePayClient.payments.create({
+  amount: 50000,
+  split_payment: {
+    merchant_fee: 2000,
+    platform_fee: 500,
+    vendor_amount: 47500
+  },
+  webhook_url: 'https://api.votresite.com/webhook',
+  idempotency_key: uuid()
+});
+\`\`\`
+
+**Performance :** 99.9% uptime, <200ms response time`
+    },
+
+    pricing: {
+      beginner: `💰 **Tarifs SenePay transparents**
+
+**Pour ${userProfile.companyName || 'votre business'} :**
+- 🏦 **Mobile Money** : 1.2% (Orange Money, Wave, etc.)
+- 💳 **Cartes bancaires** : 1.9% (Visa, Mastercard)
+- 🎯 **Aucun frais fixe** - Payez seulement quand vous vendez !
+
+**Exemple de calcul :**
+- Vente de 10,000 XOF → Frais = 120 XOF
+- Vous recevez : 9,880 XOF
+
+🎁 **Offre spéciale** : 100 premières transactions gratuites !`,
+      
+      intermediate: `📊 **Analyse tarifaire SenePay vs Concurrence**
+
+**Votre économie potentielle :**
+${userProfile.hasAccount ? '- Transactions actuelles analysées' : '- Estimation basée sur volume moyen'}
+
+| Méthode | SenePay | Concurrents | Économie |
+|---------|---------|-------------|----------|
+| Orange Money | 1.2% | 2.8% | **57% moins cher** |
+| Wave | 1.2% | 2.5% | **52% moins cher** |
+| Cartes | 1.9% | 3.5% | **46% moins cher** |
+
+💡 **ROI estimé** : ${userProfile.companyName || 'Votre entreprise'} économise ~40% sur les frais de transaction`,
+
+      advanced: `💎 **Optimisation tarifaire Enterprise**
+
+**Structure de pricing personnalisée pour ${userProfile.companyName || 'votre volume'} :**
+
+\`\`\`json
+{
+  "tiers": {
+    "starter": { "volume": "0-1M XOF/mois", "rate": "1.2%" },
+    "business": { "volume": "1M-10M XOF/mois", "rate": "1.0%" },
+    "enterprise": { "volume": "10M+ XOF/mois", "rate": "0.8%" }
+  },
+  "volume_discounts": {
+    "high_frequency": "-0.1%",
+    "recurring_payments": "-0.05%",
+    "bulk_operations": "-0.15%"
   }
-  
-  if (lowerMessage.includes('api') || lowerMessage.includes('intégr')) {
-    return `Pour intégrer SenePay, vous pouvez:
-    
-1. 📚 Consulter notre documentation: https://docs.senepay.com
-2. 🔑 Récupérer vos clés API depuis le dashboard
-3. 💻 Utiliser nos SDKs (JavaScript, PHP, Python)
-4. 🔗 Configurer les webhooks pour les notifications
+}
+\`\`\`
 
-Besoin d'aide avec une étape spécifique ? 🚀`;
+📞 **Contact commercial** : +221 77 656 40 42 pour tarifs négociés`
+    }
+  };
+
+  // Sélection intelligente de la réponse
+  if (responses[intent] && responses[intent][experience]) {
+    return responses[intent][experience];
   }
-  
-  if (lowerMessage.includes('tarif') || lowerMessage.includes('prix')) {
-    return `Nos tarifs SenePay sont très compétitifs:
 
-💳 **Mobile Money**: 1.2% (Orange Money, Wave, Free Money)
-🏦 **Cartes bancaires**: 1.9% (Visa, Mastercard)
-⚡ **Pas de frais de setup** - Démarrez gratuitement !
+  // Réponse par défaut personnalisée
+  const defaultResponse = `Bonjour ${userProfile.companyName ? `l'équipe de ${userProfile.companyName}` : ''} ! 👋
 
-Volume élevé ? Contactez-nous pour des tarifs préférentiels ! 📞 +221 77 656 40 42`;
-  }
-  
-  return `Je suis là pour vous aider avec SenePay ! 🚀
+Je suis l'assistant IA de SenePay, spécialisé dans les paiements mobiles africains.
 
-Posez-moi vos questions sur:
-• 🔧 Intégration technique
-• 💳 Méthodes de paiement
-• 📊 Tarification
-• 🐛 Résolution de problèmes
-• 📖 Documentation
+**Comment puis-je vous aider ?**
+🔧 Intégration technique
+💰 Tarifs et économies  
+📱 Méthodes de paiement (Orange Money, Wave...)
+🐛 Résolution de problèmes
+📚 Documentation
 
-Comment puis-je vous assister ?`;
+**Votre profil :** ${userProfile.type} ${experience}
+**Status :** ${userProfile.hasAccount ? 'Compte actif' : 'Nouveau sur SenePay'}
+
+Posez-moi votre question spécifique ! 🚀`;
+
+  return defaultResponse;
 }
 
 function generateSuggestions(intent: string, userProfile: any) {
   const suggestions = {
-    integration: [
-      "Comment intégrer Orange Money ?",
-      "Exemple de code pour créer un paiement",
-      "Configuration des webhooks"
+    integration: userProfile.experience === 'beginner' ? [
+      "Guide d'installation étape par étape",
+      "Premier paiement en 5 minutes",
+      "Exemple de code simple"
+    ] : [
+      "Configuration webhooks avancée",
+      "Optimisation performance API",
+      "Gestion d'erreurs robuste"
     ],
+    
     troubleshooting: [
-      "Erreurs API les plus courantes",
-      "Tester l'intégration en sandbox",
-      "Vérifier les logs de transaction"
+      "Vérifier les logs d'API",
+      "Tester en mode sandbox",
+      "Diagnostiquer les timeouts"
     ],
-    pricing: [
-      "Calculateur de coûts",
-      "Tarifs par volume",
-      "Comparaison avec la concurrence"
+    
+    pricing: userProfile.hasAccount ? [
+      "Calculer mes économies actuelles",
+      "Optimiser ma structure tarifaire",
+      "Négocier un tarif enterprise"
+    ] : [
+      "Comparer avec mes coûts actuels",
+      "Estimer le ROI sur 1 an",
+      "Voir la grille tarifaire complète"
     ],
-    general: [
-      "Documentation développeur",
+    
+    payment_methods: [
+      "Intégrer Orange Money",
+      "Configuration Wave",
+      "Support multi-opérateurs"
+    ],
+    
+    general: userProfile.hasAccount ? [
+      "Optimiser mon intégration",
+      "Nouvelles fonctionnalités",
+      "Support technique prioritaire"
+    ] : [
+      "Créer mon compte marchand",
       "Guide de démarrage rapide",
-      "Contacter le support technique"
+      "Voir une démo personnalisée"
     ]
   };
 

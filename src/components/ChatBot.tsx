@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
+import { useChatBot } from '@/hooks/useChatBot';
 
 interface Message {
   id: string;
@@ -30,25 +31,87 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
   const [sessionId] = useState(() => crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const { trigger: chatTrigger } = useChatBot();
 
-  // Initialize with welcome message
+  // Initialize with contextual welcome message
   useEffect(() => {
     if (messages.length === 0) {
+      const currentPath = window.location.pathname;
+      let welcomeContent = `Bonjour ! 👋 Je suis l'assistant IA de SenePay.`;
+      let suggestions = [
+        "Comment intégrer SenePay ?",
+        "Voir les tarifs",
+        "Documentation développeur",
+        "Support technique"
+      ];
+
+      // Contextual welcome based on current page
+      switch (currentPath) {
+        case '/dashboard':
+          welcomeContent += ` Comment puis-je vous aider avec votre dashboard marchand ?`;
+          suggestions = [
+            "Analyser mes transactions",
+            "Optimiser mon intégration",
+            "Configurer les webhooks",
+            "Support technique"
+          ];
+          break;
+        case '/api-documentation':
+          welcomeContent += ` Des questions sur notre API ?`;
+          suggestions = [
+            "Créer un premier paiement",
+            "Configuration webhooks",
+            "Gestion des erreurs",
+            "Exemples de code"
+          ];
+          break;
+        case '/pricing':
+          welcomeContent += ` Voulez-vous calculer vos économies avec SenePay ?`;
+          suggestions = [
+            "Comparer avec mes coûts actuels",
+            "Calculer mon ROI",
+            "Tarifs enterprise",
+            "Réduction de volume"
+          ];
+          break;
+        case '/checkout':
+          welcomeContent += ` Problème avec le processus de paiement ?`;
+          suggestions = [
+            "Résoudre une erreur",
+            "Optimiser la conversion",
+            "Tester les paiements",
+            "Support technique"
+          ];
+          break;
+        default:
+          welcomeContent += ` Comment puis-je vous aider aujourd'hui ?`;
+      }
+
       const welcomeMessage: Message = {
         id: crypto.randomUUID(),
         type: 'assistant',
-        content: `Bonjour ! 👋 Je suis l'assistant IA de SenePay. Comment puis-je vous aider aujourd'hui ?`,
+        content: welcomeContent,
         timestamp: new Date().toISOString(),
-        suggestions: [
-          "Comment intégrer SenePay ?",
-          "Voir les tarifs",
-          "Documentation développeur",
-          "Support technique"
-        ]
+        suggestions
       };
       setMessages([welcomeMessage]);
     }
   }, []);
+
+  // Handle external triggers
+  useEffect(() => {
+    if (chatTrigger) {
+      if (!isOpen) setIsOpen(true);
+      handleSendMessage(chatTrigger.message);
+    }
+  }, [chatTrigger]);
+
+  // Handle trigger context
+  useEffect(() => {
+    if (trigger && isOpen) {
+      handleSendMessage(trigger);
+    }
+  }, [trigger, isOpen]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -69,13 +132,6 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
-
-  // Handle trigger context
-  useEffect(() => {
-    if (trigger && isOpen) {
-      handleSendMessage(trigger);
-    }
-  }, [trigger, isOpen]);
 
   const handleSendMessage = async (messageText?: string) => {
     const message = messageText || inputValue.trim();
