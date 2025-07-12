@@ -9,6 +9,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ChatBot from "@/components/ChatBot";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTop from "@/components/BackToTop";
+import CookieConsent from "@/components/CookieConsent";
+import WelcomePopup from "@/components/WelcomePopup";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -140,9 +142,11 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
-          {/* ChatBot maintenant dans le contexte Router */}
+          {/* Global Components */}
           <ChatBot />
           <BackToTop />
+          <CookieConsent />
+          <WelcomePopup />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
