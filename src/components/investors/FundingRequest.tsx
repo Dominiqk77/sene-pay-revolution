@@ -282,7 +282,7 @@ const FundingRequest = () => {
                     <benefit.icon className="w-12 h-12 text-senepay-gold mx-auto mb-4" />
                     <div className="text-2xl font-bold text-senepay-orange mb-2">{benefit.highlight}</div>
                     <h4 className="text-lg font-bold text-white mb-3">{benefit.title}</h4>
-                    <p className="text-gray-300 text-sm leading-relaxed">{benefit.description}</p>
+                    <p className="text-sm leading-relaxed text-gray-950">{benefit.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>)}
