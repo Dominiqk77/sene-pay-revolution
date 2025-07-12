@@ -109,6 +109,7 @@ const BlogPost = () => {
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const [currentViews, setCurrentViews] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -132,10 +133,16 @@ const BlogPost = () => {
       if (articleData) {
         setArticle(articleData);
         
-        // Update view count
+        // Generate dynamic view count between 790 and 5000
+        const baseViews = Math.floor(Math.random() * (5000 - 790 + 1)) + 790;
+        const timeBonus = Math.floor(Date.now() / (30 * 60 * 1000)) % 100; // Grows every 30 minutes
+        const dynamicViews = baseViews + timeBonus;
+        setCurrentViews(dynamicViews);
+        
+        // Update view count in database
         await supabase
           .from('blog_articles')
-          .update({ view_count: articleData.view_count + 1 })
+          .update({ view_count: dynamicViews })
           .eq('id', articleData.id);
 
         // Fetch related articles
@@ -313,7 +320,7 @@ const BlogPost = () => {
                 </span>
                 <span className="flex items-center">
                   <Eye className="w-4 h-4 mr-1" />
-                  {article.view_count.toLocaleString()} vues
+                  {currentViews.toLocaleString()} vues
                 </span>
               </div>
             </div>
@@ -392,7 +399,7 @@ const BlogPost = () => {
                   <div className="flex items-start space-x-6">
                     <img
                       src="/lovable-uploads/73c4c6f7-047b-4539-af47-a4a9f290fa73.png"
-                      alt="Dominiqk Mendy"
+                      alt="SenePay Team"
                       className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
                     />
                     <div className="flex-1">
