@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send notification email to SenePay team
     const adminEmailResponse = await resend.emails.send({
       from: "SenePay Contact <contact@senepay.sn>",
-      to: ["contact@senepay.sn"],
+      to: ["dominiqk29@gmail.com"],
       subject: `[SenePay Contact] ${formData.subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
