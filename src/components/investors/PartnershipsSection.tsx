@@ -133,7 +133,7 @@ const PartnershipsSection = () => {
                     </div>
                     
                     <div>
-                      <div className="text-white font-semibold text-sm mb-1">Impact:</div>
+                      <div className="text-black font-semibold text-sm mb-1">Impact:</div>
                       <div className="text-gray-300 text-sm">{partnership.impact}</div>
                     </div>
                   </div>
