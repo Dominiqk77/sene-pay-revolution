@@ -215,7 +215,7 @@ const TeamSection = () => {
                   <CardContent className="p-6">
                     <strength.icon className={`w-12 h-12 ${strength.color} mx-auto mb-4`} />
                     <h4 className="text-lg font-bold text-white mb-3">{strength.title}</h4>
-                    <p className="text-gray-300 text-sm leading-relaxed">{strength.description}</p>
+                    <p className="text-sm leading-relaxed text-zinc-950">{strength.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>)}
