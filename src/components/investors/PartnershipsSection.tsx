@@ -249,7 +249,7 @@ const PartnershipsSection = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-senepay-gold mb-1">14M+</div>
-                  <div className="text-gray-300 text-sm">Utilisateurs Accessibles</div>
+                  <div className="text-black-900 text-senepay-dark ">Utilisateurs Accessibles</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-senepay-green mb-1">95%</div>
