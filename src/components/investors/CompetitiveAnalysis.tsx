@@ -254,7 +254,7 @@ const CompetitiveAnalysis = () => {
                 <Card className="bg-gradient-to-br from-white/5 to-white/10 border-white/10 backdrop-blur-sm h-full">
                   <CardContent className="p-6 text-center">
                     <advantage.icon className={`w-12 h-12 ${advantage.color} mx-auto mb-4`} />
-                    <h4 className="text-lg font-bold mb-3 text-white">{advantage.title}</h4>
+                    <h4 className="text-lg font-bold mb-3 text-slate-950">{advantage.title}</h4>
                     <p className="text-sm leading-relaxed text-gray-950">{advantage.description}</p>
                   </CardContent>
                 </Card>
