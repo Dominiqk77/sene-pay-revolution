@@ -35,7 +35,7 @@ const BackToTop = () => {
       onClick={scrollToTop}
       size="sm"
       className={cn(
-        'fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full p-0 shadow-lg transition-all duration-300 ease-in-out',
+        'fixed bottom-24 right-6 z-50 h-12 w-12 rounded-full p-0 shadow-lg transition-all duration-300 ease-in-out',
         'bg-gradient-senepay hover:shadow-xl hover:scale-110',
         'border border-white/20 backdrop-blur-sm',
         isVisible 
