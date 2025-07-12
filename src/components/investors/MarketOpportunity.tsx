@@ -262,7 +262,7 @@ const MarketOpportunity = () => {
           <Card className="bg-gradient-to-br from-senepay-orange/20 to-senepay-gold/20 border-senepay-orange/30">
             <CardContent className="p-6 text-center">
               <Globe className="w-12 h-12 text-senepay-orange mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">25K+</h3>
+              <h3 className="text-2xl font-bold mb-2 text-amber-600">25K+</h3>
               <p className="text-slate-950">e-commerces potentiels dans la zone CEDEAO d'ici 2026</p>
             </CardContent>
           </Card>
