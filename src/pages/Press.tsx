@@ -120,13 +120,13 @@ const Press = () => {
       name: "Fatou Diop",
       role: "Directrice Communication",
       email: "press@senepay.com",
-      phone: "+221 77 123 45 67"
+      phone: "+221 77 656 40 42"
     },
     {
       name: "Amadou Sy",
       role: "CEO & Co-fondateur",
       email: "ceo@senepay.com",
-      phone: "+221 77 987 65 43"
+      phone: "+221 77 462 75 03"
     }
   ];
 
