@@ -1,8 +1,11 @@
 
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { Mail, Phone, MapPin, Clock, MessageSquare, Users } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import InitializeKnowledgeBase from "@/components/InitializeKnowledgeBase";
 
 const Contact = () => {
   return (
@@ -205,6 +208,15 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Knowledge Base Initialization - Development Only */}
+        <section className="py-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-muted/50 rounded-lg p-6">
+              <InitializeKnowledgeBase />
             </div>
           </div>
         </section>
