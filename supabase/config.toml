@@ -19,3 +19,9 @@ enable_anonymous_sign_ins = false
 
 [functions.send-contact-email]
 verify_jwt = false
+
+[functions.senepay-ai-chat]
+verify_jwt = false
+
+[functions.init-knowledge-base]
+verify_jwt = false
