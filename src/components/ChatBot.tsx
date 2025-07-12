@@ -227,10 +227,10 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 bg-primary hover:bg-primary/90"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 bg-gradient-senepay hover:scale-110 border border-white/20"
         title="Ouvrir le chat IA (Ctrl+Shift+C)"
       >
-        <MessageCircle className="h-6 w-6" />
+        <MessageCircle className="h-6 w-6 text-white" />
       </Button>
     );
   }
@@ -240,18 +240,18 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
       isMinimized ? 'w-80 h-12' : 'w-96 h-[600px]'
     }`}>
       {/* Chat Header */}
-      <div className="bg-primary text-primary-foreground p-4 rounded-t-lg flex items-center justify-between">
+      <div className="bg-gradient-senepay text-white p-4 rounded-t-lg flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MessageCircle className="h-5 w-5" />
-          <h3 className="font-semibold">Assistant SenePay</h3>
-          <Badge variant="secondary" className="text-xs">IA</Badge>
+          <h3 className="font-semibold">Assistant SenePay 🇸🇳</h3>
+          <Badge variant="secondary" className="text-xs bg-white/20 text-white border-white/30">IA</Badge>
         </div>
         <div className="flex items-center gap-1">
           <Button
             size="sm"
             variant="ghost"
             onClick={() => setIsMinimized(!isMinimized)}
-            className="h-8 w-8 p-0 text-primary-foreground hover:bg-primary-foreground/20"
+            className="h-8 w-8 p-0 text-white hover:bg-white/20"
           >
             {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
           </Button>
@@ -259,7 +259,7 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
             size="sm"
             variant="ghost"
             onClick={() => setIsOpen(false)}
-            className="h-8 w-8 p-0 text-primary-foreground hover:bg-primary-foreground/20"
+            className="h-8 w-8 p-0 text-white hover:bg-white/20"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -276,7 +276,7 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
                   <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] p-3 rounded-lg ${
                       message.type === 'user' 
-                        ? 'bg-primary text-primary-foreground ml-12' 
+                        ? 'bg-gradient-senepay text-white ml-12' 
                         : 'bg-muted mr-12'
                     }`}>
                       <div className="text-sm whitespace-pre-wrap">{message.content}</div>
@@ -325,9 +325,9 @@ export default function ChatBot({ trigger, context = {} }: ChatBotProps) {
                   <div className="flex justify-start">
                     <div className="bg-muted p-3 rounded-lg mr-12">
                       <div className="flex items-center gap-1">
-                        <div className="animate-bounce w-2 h-2 bg-primary rounded-full"></div>
-                        <div className="animate-bounce w-2 h-2 bg-primary rounded-full" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="animate-bounce w-2 h-2 bg-primary rounded-full" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="animate-bounce w-2 h-2 bg-senepay-orange rounded-full"></div>
+                        <div className="animate-bounce w-2 h-2 bg-senepay-orange rounded-full" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="animate-bounce w-2 h-2 bg-senepay-orange rounded-full" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
                   </div>
