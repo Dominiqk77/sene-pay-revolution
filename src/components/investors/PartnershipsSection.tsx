@@ -128,7 +128,7 @@ const PartnershipsSection = () => {
                   
                   <div className="space-y-3">
                     <div>
-                      <div className="text-white font-semibold text-sm mb-1">Partenaires:</div>
+                      <div className="text-black font-semibold text-sm mb-1">Partenaires:</div>
                       {partnership.partners.map((partner, idx) => <div key={idx} className="text-blue-900 text-blue-900 ">• {partner}</div>)}
                     </div>
                     
