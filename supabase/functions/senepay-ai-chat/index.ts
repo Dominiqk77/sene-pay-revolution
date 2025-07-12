@@ -8,7 +8,8 @@ const corsHeaders = {
 };
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
+const groqApiKey = Deno.env.get('GROQ_API_KEY');
+const huggingFaceApiKey = Deno.env.get('HUGGINGFACE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -145,12 +146,21 @@ async function searchKnowledgeBase(supabase: any, message: string, intent: strin
 }
 
 async function generateEnhancedAIResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
-  // Try Perplexity first for real-time, intelligent responses
-  if (perplexityApiKey) {
+  // Try Groq first for ultra-fast, free AI responses
+  if (groqApiKey) {
     try {
-      return await generatePerplexityResponse(message, userProfile, knowledge, context, intent);
+      return await generateGroqResponse(message, userProfile, knowledge, context, intent);
     } catch (error) {
-      console.error('Perplexity API error, falling back to OpenAI:', error);
+      console.error('Groq API error, falling back to Hugging Face:', error);
+    }
+  }
+
+  // Try Hugging Face as second option (also free)
+  if (huggingFaceApiKey) {
+    try {
+      return await generateHuggingFaceResponse(message, userProfile, knowledge, context, intent);
+    } catch (error) {
+      console.error('Hugging Face API error, falling back to OpenAI:', error);
     }
   }
 
@@ -167,56 +177,58 @@ async function generateEnhancedAIResponse(message: string, userProfile: any, kno
   return getIntelligentStaticResponse(message, userProfile, intent, knowledge);
 }
 
-async function generatePerplexityResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
+async function generateGroqResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
+  const systemPrompt = buildEnhancedSystemPrompt(userProfile, knowledge, intent);
   const contextualPrompt = buildEnhancedPrompt(message, userProfile, knowledge, intent);
 
-  const response = await fetch('https://api.perplexity.ai/chat/completions', {
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${perplexityApiKey}`,
+      'Authorization': `Bearer ${groqApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'llama-3.1-sonar-large-128k-online',
+      model: 'llama-3.1-70b-versatile', // Modèle gratuit ultra-rapide
       messages: [
-        {
-          role: 'system',
-          content: `Tu es l'assistant IA expert de SenePay, la plateforme de paiement mobile #1 au Sénégal. 
-
-PROFIL UTILISATEUR: ${JSON.stringify(userProfile)}
-CONTEXTE: ${JSON.stringify(context)}
-INTENTION: ${intent}
-
-INSTRUCTIONS CRITIQUES:
-- Réponds UNIQUEMENT en français
-- Sois précis, technique et actionnable
-- Utilise les données SenePay réelles
-- Génère du code si demandé
-- Fournis des liens et ressources
-- Adapte ton ton selon l'expérience utilisateur
-- Focus sur l'écosystème de paiement sénégalais/africain
-
-CONNAISSANCES SENEPAY:
-${knowledge.map(k => k.content).join('\n\n')}`
-        },
-        {
-          role: 'user',
-          content: contextualPrompt
-        }
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: contextualPrompt }
       ],
       temperature: 0.3,
-      top_p: 0.9,
       max_tokens: 1000,
-      return_images: false,
-      return_related_questions: false,
-      search_recency_filter: 'month',
-      frequency_penalty: 1,
-      presence_penalty: 0
+      top_p: 0.9,
+      stream: false
     }),
   });
 
   const data = await response.json();
   return data.choices[0].message.content;
+}
+
+async function generateHuggingFaceResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
+  const systemPrompt = buildEnhancedSystemPrompt(userProfile, knowledge, intent);
+  const contextualPrompt = buildEnhancedPrompt(message, userProfile, knowledge, intent);
+
+  const fullPrompt = `${systemPrompt}\n\nUtilisateur: ${contextualPrompt}\n\nAssistant:`;
+
+  const response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-large', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${huggingFaceApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      inputs: fullPrompt,
+      parameters: {
+        max_new_tokens: 800,
+        temperature: 0.4,
+        top_p: 0.9,
+        return_full_text: false
+      }
+    }),
+  });
+
+  const data = await response.json();
+  return data[0]?.generated_text || getIntelligentStaticResponse(message, userProfile, intent, knowledge);
 }
 
 async function generateEnhancedOpenAIResponse(message: string, userProfile: any, knowledge: any[], context: any, intent: string) {
