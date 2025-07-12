@@ -137,8 +137,9 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          {/* ChatBot maintenant dans le contexte Router */}
+          <ChatBot />
         </BrowserRouter>
-        <ChatBot />
       </AuthProvider>
     </TooltipProvider>
   </HelmetProvider>
