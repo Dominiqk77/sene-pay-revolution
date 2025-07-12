@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -14,6 +14,11 @@ import CompetitiveAnalysis from '@/components/investors/CompetitiveAnalysis';
 import PartnershipsSection from '@/components/investors/PartnershipsSection';
 
 const Investors = () => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-senepay-dark via-gray-900 to-black">
       <Header />
