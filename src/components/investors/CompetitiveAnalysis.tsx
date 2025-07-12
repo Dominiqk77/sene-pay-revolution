@@ -280,7 +280,7 @@ const CompetitiveAnalysis = () => {
               <h3 className="text-2xl font-bold mb-4 text-gray-950">
                 Position Concurrentielle Unique
               </h3>
-              <p className="text-gray-300 text-lg leading-relaxed mb-6">
+              <p className="text-lg leading-relaxed mb-6 text-gray-950">
                 SenePay est le <span className="text-senepay-gold font-semibold">seul acteur</span> à combiner 
                 une connaissance approfondie du marché sénégalais, une technologie de pointe, 
                 et un modèle économique optimisé pour l'Afrique de l'Ouest.
