@@ -129,10 +129,38 @@ const InvestorForm = () => {
   };
 
   const handleDownload = (docTitle: string) => {
-    console.log(`Downloading: ${docTitle}`);
+    let downloadUrl = '';
+    let fileName = '';
+    
+    switch (docTitle) {
+      case 'Pitch Deck Complet':
+        downloadUrl = 'https://www.genspark.ai/aidrive/preview/sen_services_project/senepay_pitch_deck_series_a_20250625200942.pdf';
+        fileName = 'SenePay_Pitch_Deck_Series_A.pdf';
+        break;
+      case 'Projections Financières':
+        downloadUrl = 'https://www.genspark.ai/aidrive/preview/sen_services_project/senepay_modele_financier_projections.pdf';
+        fileName = 'SenePay_Modele_Financier_Projections.pdf';
+        break;
+      default:
+        toast({
+          title: "Document non disponible",
+          description: `${docTitle} sera disponible prochainement.`,
+        });
+        return;
+    }
+    
+    // Téléchargement automatique
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = fileName;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
     toast({
       title: "Téléchargement en cours",
-      description: `${docTitle} sera téléchargé sous peu.`,
+      description: `${docTitle} téléchargé avec succès.`,
     });
   };
 
