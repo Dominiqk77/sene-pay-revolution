@@ -385,7 +385,7 @@ const InvestorForm = () => {
             <Card className="bg-gradient-to-br from-senepay-gold/10 to-senepay-orange/10 border-senepay-gold/30">
               <CardContent className="p-6 text-center">
                 <h3 className="text-xl font-bold mb-3 text-zinc-950">Contact Direct</h3>
-                <p className="text-gray-300 mb-4">
+                <p className="mb-4 text-gray-950">
                   Pour les investisseurs qualifiés, contactez directement notre équipe :
                 </p>
                 <div className="space-y-2 text-sm">
