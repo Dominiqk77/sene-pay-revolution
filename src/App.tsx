@@ -46,6 +46,8 @@ import SubscriptionsSolution from "./pages/SubscriptionsSolution";
 // Resources Pages
 import Guides from "./pages/Guides";
 import BlogTech from "./pages/BlogTech";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import StatusPage from "./pages/StatusPage";
 import Changelog from "./pages/Changelog";
 
@@ -129,6 +131,8 @@ const App = () => (
             {/* Resources Pages */}
             <Route path="/guides" element={<Guides />} />
             <Route path="/blog-tech" element={<BlogTech />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/status-page" element={<StatusPage />} />
             <Route path="/changelog" element={<Changelog />} />
 

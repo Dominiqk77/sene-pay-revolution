@@ -48,6 +48,9 @@ const Footer = () => {
       name: "Guides",
       href: "/guides"
     }, {
+      name: "Blog",
+      href: "/blog"
+    }, {
       name: "Blog Tech",
       href: "/blog-tech"
     }, {

@@ -105,6 +105,90 @@ export type Database = {
           },
         ]
       }
+      blog_articles: {
+        Row: {
+          ai_generated: boolean | null
+          author_avatar: string | null
+          author_name: string | null
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          featured_image_url: string | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          keywords: string[] | null
+          like_count: number | null
+          meta_description: string | null
+          meta_title: string | null
+          monetization_cta: Json | null
+          published_at: string | null
+          reading_time: number | null
+          seo_score: number | null
+          share_count: number | null
+          slug: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          author_avatar?: string | null
+          author_name?: string | null
+          category: string
+          content: string
+          created_at?: string
+          excerpt: string
+          featured_image_url?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          keywords?: string[] | null
+          like_count?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          monetization_cta?: Json | null
+          published_at?: string | null
+          reading_time?: number | null
+          seo_score?: number | null
+          share_count?: number | null
+          slug: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          ai_generated?: boolean | null
+          author_avatar?: string | null
+          author_name?: string | null
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          featured_image_url?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          keywords?: string[] | null
+          like_count?: number | null
+          meta_description?: string | null
+          meta_title?: string | null
+          monetization_cta?: Json | null
+          published_at?: string | null
+          reading_time?: number | null
+          seo_score?: number | null
+          share_count?: number | null
+          slug?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
       chat_conversations: {
         Row: {
           context: Json | null

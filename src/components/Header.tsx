@@ -37,6 +37,7 @@ const Header = () => {
     { name: "Solutions", href: "/#solutions" },
     { name: "Tarifs", href: "/#pricing" },
     { name: "Développeurs", href: "/documentation" },
+    { name: "Blog", href: "/blog" },
     { name: "Investisseurs", href: "/investors" },
     { name: "À propos", href: "/about" },
     { name: "Contact", href: "/contact" }
