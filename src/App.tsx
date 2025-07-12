@@ -11,6 +11,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import BackToTop from "@/components/BackToTop";
 import CookieConsent from "@/components/CookieConsent";
 import WelcomePopup from "@/components/WelcomePopup";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -58,6 +59,7 @@ import PaiementMobileSenegal from "./pages/PaiementMobileSenegal";
 import ApiOrangeMoneySenegal from "./pages/ApiOrangeMoneySenegal";
 import ApiWaveSenegal from "./pages/ApiWaveSenegal";
 import ApiFreeMoneySenegal from "./pages/ApiFreeMoneySenegal";
+import CartesBancairesSenegal from "./pages/CartesBancairesSenegal";
 import PasgarellePaiementSenegal from "./pages/PasgarellePaiementSenegal";
 
 const queryClient = new QueryClient();
@@ -140,11 +142,13 @@ const App = () => (
             <Route path="/api-orange-money-senegal" element={<ApiOrangeMoneySenegal />} />
             <Route path="/api-wave-senegal" element={<ApiWaveSenegal />} />
             <Route path="/api-free-money-senegal" element={<ApiFreeMoneySenegal />} />
+            <Route path="/cartes-bancaires-senegal" element={<CartesBancairesSenegal />} />
             <Route path="/passerelle-paiement-senegal" element={<PasgarellePaiementSenegal />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
           {/* Global Components */}
+          <GoogleAnalytics />
           <ChatBot />
           <BackToTop />
           <CookieConsent />
