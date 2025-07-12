@@ -54,7 +54,7 @@ const Header = () => {
       {/* Preload du logo pour chargement instantané */}
       <link 
         rel="preload" 
-        href="/lovable-uploads/73c4c6f7-047b-4539-af47-a4a9f290fa73.png"
+        href="/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png" 
         as="image"
         type="image/png"
       />
@@ -67,7 +67,7 @@ const Header = () => {
               <div className="flex items-center space-x-2 transition-all duration-700 hover:scale-105 cursor-pointer group">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 relative overflow-hidden rounded-xl transform transition-all duration-700 group-hover:rotate-6 group-hover:shadow-xl">
                   <img 
-                    src="/lovable-uploads/73c4c6f7-047b-4539-af47-a4a9f290fa73.png"
+                    src="/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png"
                     alt="SenePay Logo"
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                     loading="eager"
