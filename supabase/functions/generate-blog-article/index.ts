@@ -148,39 +148,48 @@ Rédigez l'article de référence FinTech qui va révolutionner la perception de
   return data.choices[0].message.content;
 };
 
-const getRandomImage = async (): Promise<string> => {
-  // POLITIQUE ULTRA-STRICTE: UNIQUEMENT des visages africains ou des images sans personne
-  const strictAfricanOnlyImages = [
-    // Professionnels africains vérifiés (100% visages africains authentiques)
-    'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1200&h=630&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=630&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1580894908361-967195033215?w=1200&h=630&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=1200&h=630&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&h=630&q=80&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1600298881974-6be191ceeda1?w=1200&h=630&q=80&auto=format&fit=crop',
-    
-    // Images technologie FinTech SANS AUCUNE PERSONNE (garantie zéro visage)
-    'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&h=630&q=80&auto=format&fit=crop', // Mobile payment
-    'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1200&h=630&q=80&auto=format&fit=crop', // Fintech concept
-    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=630&q=80&auto=format&fit=crop', // Digital technology
-    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&q=80&auto=format&fit=crop', // Mobile banking
-    'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1200&h=630&q=80&auto=format&fit=crop', // Abstract tech
-    'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=1200&h=630&q=80&auto=format&fit=crop', // Digital abstract
-    
-    // Paysages et culture africaine SANS PERSONNE (100% garanti)
-    'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1200&h=630&q=80&auto=format&fit=crop', // African sunset
-    'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1200&h=630&q=80&auto=format&fit=crop', // African cityscape
-    'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200&h=630&q=80&auto=format&fit=crop', // Modern African city
-    'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=1200&h=630&q=80&auto=format&fit=crop', // African architecture
-    'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=1200&h=630&q=80&auto=format&fit=crop', // African patterns
-    
-    // Technologies mobile et cartes bancaires (objets uniquement)
-    'https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=1200&h=630&q=80&auto=format&fit=crop', // Credit cards
-    'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=1200&h=630&q=80&auto=format&fit=crop', // Mobile payment tech
-    'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=630&q=80&auto=format&fit=crop', // Digital wallet
-  ];
+const getRandomImage = async (category: string = 'general'): Promise<string> => {
+  // Collection d'images africaines locales pour SenePay FinTech
+  const africanFintechImages = {
+    'fintech': [
+      '/src/assets/blog/african-fintech-mobile-money.jpg',
+      '/src/assets/blog/mobile-banking-tech.jpg',
+      '/src/assets/blog/african-tech-innovation.jpg'
+    ],
+    'ecommerce': [
+      '/src/assets/blog/african-ecommerce-fintech.jpg',
+      '/src/assets/blog/african-fintech-mobile-money.jpg',
+      '/src/assets/blog/mobile-banking-tech.jpg'
+    ],
+    'innovation': [
+      '/src/assets/blog/african-tech-innovation.jpg',
+      '/src/assets/blog/african-fintech-mobile-money.jpg',
+      '/src/assets/blog/pan-african-fintech.jpg'
+    ],
+    'panafricain': [
+      '/src/assets/blog/pan-african-fintech.jpg',
+      '/src/assets/blog/african-ecommerce-fintech.jpg',
+      '/src/assets/blog/senegal-economic-fintech.jpg'
+    ],
+    'economie': [
+      '/src/assets/blog/senegal-economic-fintech.jpg',
+      '/src/assets/blog/pan-african-fintech.jpg',
+      '/src/assets/blog/african-ecommerce-fintech.jpg'
+    ],
+    'general': [
+      '/src/assets/blog/african-fintech-mobile-money.jpg',
+      '/src/assets/blog/african-ecommerce-fintech.jpg',
+      '/src/assets/blog/african-tech-innovation.jpg',
+      '/src/assets/blog/pan-african-fintech.jpg',
+      '/src/assets/blog/senegal-economic-fintech.jpg',
+      '/src/assets/blog/mobile-banking-tech.jpg'
+    ]
+  };
+
+  // Sélectionner les images selon la catégorie, avec fallback sur 'general'
+  const categoryImages = africanFintechImages[category as keyof typeof africanFintechImages] || africanFintechImages.general;
   
-  return strictAfricanOnlyImages[Math.floor(Math.random() * strictAfricanOnlyImages.length)];
+  return categoryImages[Math.floor(Math.random() * categoryImages.length)];
 };
 
 const calculateReadingTime = (content: string): number => {
@@ -233,8 +242,8 @@ serve(async (req) => {
     const excerpt = content.split('\n\n')[1]?.substring(0, 200) + '...' || 
                    'Découvrez les dernières innovations FinTech qui transforment l\'écosystème des paiements digitaux au Sénégal et en Afrique.';
 
-    // Get random image
-    const featuredImage = await getRandomImage();
+    // Get random image based on category
+    const featuredImage = await getRandomImage(randomCategory);
 
     // Calculate reading time
     const readingTime = calculateReadingTime(content);
