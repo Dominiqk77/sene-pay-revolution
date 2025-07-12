@@ -304,7 +304,7 @@ const FundingRequest = () => {
       }}>
           <Card className="bg-gradient-to-br from-senepay-gold/10 via-senepay-orange/10 to-senepay-green/10 border-senepay-gold/30 max-w-4xl mx-auto">
             <CardContent className="p-8">
-              <h3 className="text-3xl font-bold text-white mb-4">
+              <h3 className="text-3xl font-bold mb-4 text-orange-500">
                 Rejoignez la Révolution
               </h3>
               <p className="text-lg leading-relaxed mb-8 text-zinc-950">
