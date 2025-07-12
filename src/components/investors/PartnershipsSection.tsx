@@ -120,7 +120,7 @@ const PartnershipsSection = () => {
                 <CardContent className="p-6">
                   <div className="text-center mb-4">
                     <partnership.icon className="w-8 h-8 text-senepay-gold mx-auto mb-3" />
-                    <h3 className="text-lg font-bold text-white mb-2">{partnership.category}</h3>
+                    <h3 className="text-lg font-bold mb-2 text-blue-800">{partnership.category}</h3>
                     <Badge className={`${partnership.status === 'Actif' ? 'bg-senepay-green/20 text-senepay-green border-senepay-green/30' : 'bg-senepay-orange/20 text-senepay-orange border-senepay-orange/30'}`}>
                       {partnership.status}
                     </Badge>
