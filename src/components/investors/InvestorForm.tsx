@@ -390,7 +390,7 @@ const InvestorForm = () => {
                 </p>
                 <div className="space-y-2 text-sm">
                   <div className="text-senepay-gold">investors@senepay.com</div>
-                  <div className="text-senepay-green">+221 77 123 45 67</div>
+                  <div className="text-senepay-green">+221 77 656 40 42 - 77 462 75 03</div>
                 </div>
                 <Button className="mt-4 bg-senepay-gold hover:bg-senepay-orange text-white">
                   <Calendar className="w-4 h-4 mr-2" />
