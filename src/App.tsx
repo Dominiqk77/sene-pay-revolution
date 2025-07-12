@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import ChatBot from "@/components/ChatBot";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -64,7 +65,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <AuthProvider>
-          <BrowserRouter>
+        <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
