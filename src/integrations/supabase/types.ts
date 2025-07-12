@@ -58,6 +58,53 @@ export type Database = {
           },
         ]
       }
+      automated_actions: {
+        Row: {
+          action_data: Json
+          action_type: string
+          created_at: string
+          executed_at: string | null
+          id: string
+          lead_id: string
+          result_data: Json | null
+          scheduled_at: string
+          status: string
+          trigger_condition: string
+        }
+        Insert: {
+          action_data?: Json
+          action_type: string
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          lead_id: string
+          result_data?: Json | null
+          scheduled_at: string
+          status?: string
+          trigger_condition: string
+        }
+        Update: {
+          action_data?: Json
+          action_type?: string
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          lead_id?: string
+          result_data?: Json | null
+          scheduled_at?: string
+          status?: string
+          trigger_condition?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automated_actions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_conversations: {
         Row: {
           context: Json | null
@@ -162,6 +209,179 @@ export type Database = {
         }
         Relationships: []
       }
+      contextual_offers: {
+        Row: {
+          call_to_action: string
+          conversion_rate: number
+          created_at: string
+          current_uses: number
+          discount_amount: number | null
+          discount_percentage: number | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          offer_name: string
+          offer_text: string
+          offer_type: string
+          target_intent: string
+          target_profile: string
+          updated_at: string
+          validity_hours: number
+        }
+        Insert: {
+          call_to_action: string
+          conversion_rate?: number
+          created_at?: string
+          current_uses?: number
+          discount_amount?: number | null
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          offer_name: string
+          offer_text: string
+          offer_type: string
+          target_intent: string
+          target_profile: string
+          updated_at?: string
+          validity_hours?: number
+        }
+        Update: {
+          call_to_action?: string
+          conversion_rate?: number
+          created_at?: string
+          current_uses?: number
+          discount_amount?: number | null
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          offer_name?: string
+          offer_text?: string
+          offer_type?: string
+          target_intent?: string
+          target_profile?: string
+          updated_at?: string
+          validity_hours?: number
+        }
+        Relationships: []
+      }
+      conversion_tracking: {
+        Row: {
+          attribution_data: Json | null
+          conversion_date: string
+          conversion_event: string
+          conversion_value: number | null
+          created_at: string
+          funnel_stage: string
+          id: string
+          lead_id: string
+          session_id: string
+        }
+        Insert: {
+          attribution_data?: Json | null
+          conversion_date?: string
+          conversion_event: string
+          conversion_value?: number | null
+          created_at?: string
+          funnel_stage: string
+          id?: string
+          lead_id: string
+          session_id: string
+        }
+        Update: {
+          attribution_data?: Json | null
+          conversion_date?: string
+          conversion_event?: string
+          conversion_value?: number | null
+          created_at?: string
+          funnel_stage?: string
+          id?: string
+          lead_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversion_tracking_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          budget_range: string | null
+          company_name: string | null
+          conversion_probability: number
+          created_at: string
+          email: string | null
+          estimated_revenue: number
+          id: string
+          intent: string
+          interaction_count: number
+          last_interaction_at: string
+          lead_score: number
+          lead_source: string
+          metadata: Json | null
+          pain_points: string[] | null
+          phone: string | null
+          profile_type: string
+          qualification_status: string
+          session_id: string
+          timeline: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          company_name?: string | null
+          conversion_probability?: number
+          created_at?: string
+          email?: string | null
+          estimated_revenue?: number
+          id?: string
+          intent?: string
+          interaction_count?: number
+          last_interaction_at?: string
+          lead_score?: number
+          lead_source?: string
+          metadata?: Json | null
+          pain_points?: string[] | null
+          phone?: string | null
+          profile_type?: string
+          qualification_status?: string
+          session_id: string
+          timeline?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          company_name?: string | null
+          conversion_probability?: number
+          created_at?: string
+          email?: string | null
+          estimated_revenue?: number
+          id?: string
+          intent?: string
+          interaction_count?: number
+          last_interaction_at?: string
+          lead_score?: number
+          lead_source?: string
+          metadata?: Json | null
+          pain_points?: string[] | null
+          phone?: string | null
+          profile_type?: string
+          qualification_status?: string
+          session_id?: string
+          timeline?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       merchant_accounts: {
         Row: {
           api_key: string | null
@@ -215,6 +435,59 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      nurturing_sequences: {
+        Row: {
+          completion_rate: number
+          created_at: string
+          current_step: number
+          engagement_score: number
+          id: string
+          lead_id: string
+          next_action_at: string
+          sequence_data: Json | null
+          sequence_type: string
+          status: string
+          total_steps: number
+          updated_at: string
+        }
+        Insert: {
+          completion_rate?: number
+          created_at?: string
+          current_step?: number
+          engagement_score?: number
+          id?: string
+          lead_id: string
+          next_action_at: string
+          sequence_data?: Json | null
+          sequence_type: string
+          status?: string
+          total_steps: number
+          updated_at?: string
+        }
+        Update: {
+          completion_rate?: number
+          created_at?: string
+          current_step?: number
+          engagement_score?: number
+          id?: string
+          lead_id?: string
+          next_action_at?: string
+          sequence_data?: Json | null
+          sequence_type?: string
+          status?: string
+          total_steps?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nurturing_sequences_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payment_methods: {
         Row: {
