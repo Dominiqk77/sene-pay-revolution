@@ -78,9 +78,12 @@ const Header = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </div>
-                <span className="text-xl sm:text-2xl font-bold tracking-tight transition-all duration-700 group-hover:tracking-wide navbar-gradient-text">
-                  SenePay
-                </span>
+                <div className="flex items-center space-x-1">
+                  <span className="text-xl sm:text-2xl font-bold tracking-tight transition-all duration-700 group-hover:tracking-wide navbar-gradient-text">
+                    SenePay
+                  </span>
+                  <span className="text-lg">🇸🇳</span>
+                </div>
               </div>
             </Link>
 

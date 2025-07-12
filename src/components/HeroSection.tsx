@@ -16,11 +16,11 @@ const HeroSection = () => {
           <div className="space-y-6 sm:space-y-8 animate-fade-in text-center lg:text-left">
             <div className="space-y-4">
               <div className="inline-flex items-center px-3 sm:px-4 py-2 rounded-full bg-gradient-senepay text-xs sm:text-sm font-medium">
-                🚀 La révolution des paiements en Afrique
+                🇸🇳 🚀 La révolution des paiements en Afrique de l'Ouest
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
-                <span className="gradient-text">SenePay</span>
+                <span className="gradient-text">SenePay</span> <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">🇸🇳</span>
                 <br />
                 <span className="text-white">Passerelle de</span>
                 <br />
@@ -67,7 +67,7 @@ const HeroSection = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-senepay-gold" />
-                <span className="text-xs sm:text-sm text-gray-400">8 pays CEDEAO</span>
+                <span className="text-xs sm:text-sm text-gray-400">8 pays CEDEAO 🇸🇳</span>
               </div>
             </div>
           </div>

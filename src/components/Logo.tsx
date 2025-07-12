@@ -64,14 +64,19 @@ const Logo: React.FC<LogoProps> = ({
 
       {/* Texte du logo */}
       {showText && (
-        <span className={cn(
-          textSizeClasses[size],
-          textColorClasses[variant],
-          'font-bold tracking-tight',
-          interactive && 'transition-all duration-500 group-hover:tracking-wide'
-        )}>
-          SenePay
-        </span>
+        <div className="flex items-center space-x-1">
+          <span className={cn(
+            textSizeClasses[size],
+            textColorClasses[variant],
+            'font-bold tracking-tight',
+            interactive && 'transition-all duration-500 group-hover:tracking-wide'
+          )}>
+            SenePay
+          </span>
+          <span className={cn(
+            size === 'xl' ? 'text-4xl' : size === 'lg' ? 'text-2xl' : size === 'md' ? 'text-lg' : 'text-base'
+          )}>🇸🇳</span>
+        </div>
       )}
     </div>
   );

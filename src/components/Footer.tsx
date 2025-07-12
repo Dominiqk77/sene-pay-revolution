@@ -111,7 +111,7 @@ const Footer = () => {
               <Logo size="md" variant="white" interactive={true} />
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              La passerelle de paiement révolutionnaire qui connecte l'Afrique de l'Ouest 
+              🇸🇳 La passerelle de paiement révolutionnaire qui connecte l'Afrique de l'Ouest 
               à l'économie numérique mondiale.
             </p>
             
@@ -164,7 +164,7 @@ const Footer = () => {
             <div className="text-gray-400 text-sm">Uptime garanti</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold gradient-text mb-2">8</div>
+            <div className="text-3xl font-bold gradient-text mb-2">8 🇸🇳</div>
             <div className="text-gray-400 text-sm">Pays CEDEAO</div>
           </div>
         </div>
@@ -227,7 +227,7 @@ const Footer = () => {
         <div className="mt-12 text-center">
           <div className="bg-gradient-senepay rounded-2xl p-6 inline-block">
             <p className="text-lg font-semibold mb-2">
-              🚀 Prêt à révolutionner vos paiements ?
+              🇸🇳 🚀 Prêt à révolutionner vos paiements ?
             </p>
             <p className="text-sm opacity-90">
               Rejoignez la révolution fintech ouest-africaine dès aujourd'hui
