@@ -214,7 +214,7 @@ const TeamSection = () => {
                 <Card className="bg-gradient-to-br from-white/5 to-white/10 border-white/10 backdrop-blur-sm h-full">
                   <CardContent className="p-6">
                     <strength.icon className={`w-12 h-12 ${strength.color} mx-auto mb-4`} />
-                    <h4 className="text-lg font-bold text-white mb-3">{strength.title}</h4>
+                    <h4 className="text-lg font-bold mb-3 text-blue-600">{strength.title}</h4>
                     <p className="text-sm leading-relaxed text-zinc-950">{strength.description}</p>
                   </CardContent>
                 </Card>
