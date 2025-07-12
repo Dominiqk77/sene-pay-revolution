@@ -253,7 +253,7 @@ const PartnershipsSection = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-senepay-green mb-1">95%</div>
-                  <div className="text-gray-300 text-sm">Couverture Paiements</div>
+                  <div className="text-black-300 text-senepay-dark ">Couverture Paiements</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-senepay-orange mb-1">8</div>
