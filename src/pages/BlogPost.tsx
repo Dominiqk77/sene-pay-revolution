@@ -335,6 +335,63 @@ const BlogPost = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="grid lg:grid-cols-12 gap-8">
+              {/* Left Sidebar - Lead Generation */}
+              <div className="lg:col-span-2">
+                <div className="space-y-6 sticky top-32">
+                  {/* Webinaire Gratuit */}
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-5 rounded-xl border border-blue-200">
+                    <div className="text-center">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                        🎯
+                      </div>
+                      <h4 className="font-bold text-sm mb-2">Webinaire Live</h4>
+                      <p className="text-xs text-gray-600 mb-3">
+                        "FinTech Africa 2025: Opportunités"
+                      </p>
+                      <p className="text-xs font-bold text-blue-600 mb-3">
+                        🔴 LIVE Mercredi 20h
+                      </p>
+                      <Button className="w-full bg-blue-600 text-white text-xs py-2">
+                        Réserver ma Place
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Étude Exclusive */}
+                  <div className="bg-gradient-to-br from-orange-50 to-red-50 p-5 rounded-xl border border-orange-200">
+                    <div className="text-center">
+                      <div className="w-10 h-10 bg-orange-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                        📊
+                      </div>
+                      <h4 className="font-bold text-sm mb-2">Étude Exclusive</h4>
+                      <p className="text-xs text-gray-600 mb-3">
+                        "État du Mobile Money Sénégal 2025"
+                      </p>
+                      <Button className="w-full bg-orange-600 text-white text-xs py-2">
+                        Télécharger Gratuit
+                      </Button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        📈 +500 experts l'ont déjà
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Social Proof En Temps Réel */}
+                  <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                    <div className="text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
+                        <span className="text-xs font-medium">En direct</span>
+                      </div>
+                      <p className="text-xs text-gray-600">
+                        <span className="font-bold text-green-600">23 personnes</span><br/>
+                        lisent cet article maintenant
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Social Share Sidebar */}
               <div className="lg:col-span-1">
                 <div className="sticky top-32 flex lg:flex-col gap-3">
@@ -384,14 +441,49 @@ const BlogPost = () => {
               </div>
 
               {/* Article Content */}
-              <div className="lg:col-span-8">
+              <div className="lg:col-span-6">
+                {/* Progress Bar */}
+                <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+                  <div className="h-full bg-gradient-to-r from-senepay-orange to-senepay-gold transition-all duration-300" style={{width: '45%'}}></div>
+                </div>
                 <BlogContent content={article.content} />
+                
+                {/* Bannière Intermédiaire */}
+                <div className="my-12 p-6 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl text-white text-center">
+                  <h3 className="text-xl font-bold mb-2">🚀 Calculateur ROI SenePay</h3>
+                  <p className="text-sm opacity-90 mb-4">
+                    Découvrez combien vous pourriez économiser avec SenePay
+                  </p>
+                  <Button className="bg-white text-indigo-600 hover:bg-gray-100 font-medium">
+                    Calculer mes Économies
+                  </Button>
+                </div>
+                
+                {/* Témoignage Client */}
+                <div className="my-12 p-6 bg-green-50 border-l-4 border-green-500 rounded-r-xl">
+                  <div className="flex items-start space-x-4">
+                    <img 
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=60&h=60"
+                      alt="Amadou Diop"
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="text-gray-800 italic mb-2">
+                        "Depuis que j'utilise SenePay, mes revenus ont augmenté de 40%. 
+                        L'intégration a été d'une simplicité déconcertante !"
+                      </p>
+                      <p className="text-sm font-medium text-green-700">
+                        - Amadou Diop, CEO TechStore Dakar
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 
                 {/* Author Bio Section */}
                 <div className="mt-16 p-8 bg-gradient-to-br from-senepay-orange/5 to-senepay-gold/5 rounded-2xl border-l-4 border-senepay-orange">
                   <div className="flex items-start space-x-6">
                     <img
-                      src="/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png"
+                      src="/lovable-uploads/88dbce95-d909-4dce-83ae-d7b6b87eedfd.png"
                       alt="Dominiqk Mendy"
                       className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
                     />
@@ -443,8 +535,129 @@ const BlogPost = () => {
                 )}
               </div>
 
-              {/* Right Sidebar */}
+              {/* Right Sidebar - Monetization */}
               <div className="lg:col-span-3">
+                <div className="space-y-8">
+                  {/* Newsletter Premium */}
+                  <div className="bg-gradient-to-br from-senepay-orange/10 to-senepay-gold/10 p-6 rounded-xl border border-senepay-orange/20 sticky top-32">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-senepay-orange to-senepay-gold rounded-full mx-auto mb-4 flex items-center justify-center">
+                        📧
+                      </div>
+                      <h3 className="font-bold text-lg mb-2">Newsletter Premium</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Recevez les insights exclusifs FinTech chaque semaine 
+                      </p>
+                      <div className="space-y-3">
+                        <input 
+                          type="email" 
+                          placeholder="votre@email.com"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-senepay-orange"
+                        />
+                        <Button className="w-full bg-gradient-to-r from-senepay-orange to-senepay-gold text-white text-sm">
+                          S'abonner Gratuitement
+                        </Button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        ✅ +2,500 experts nous font confiance
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Guide Gratuit */}
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        📚
+                      </div>
+                      <h3 className="font-bold text-lg mb-2">Guide Gratuit</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        "Intégrer les Paiements Mobile au Sénégal"
+                      </p>
+                      <Button className="w-full bg-blue-600 text-white text-sm hover:bg-blue-700">
+                        Télécharger PDF
+                      </Button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        ⭐ 4.9/5 - 1,200+ téléchargements
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Consultation Gratuite */}
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        💬
+                      </div>
+                      <h3 className="font-bold text-lg mb-2">Consultation Gratuite</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        30 min avec Dominiqk Mendy
+                      </p>
+                      <Button className="w-full bg-green-600 text-white text-sm hover:bg-green-700">
+                        Réserver Créneaux
+                      </Button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        🔥 Plus que 3 créneaux cette semaine
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Formation Payante */}
+                  <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-200">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-purple-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        🎓
+                      </div>
+                      <h3 className="font-bold text-lg mb-2">Formation Premium</h3>
+                      <p className="text-sm text-gray-600 mb-2">
+                        "Créer sa FinTech en Afrique"
+                      </p>
+                      <div className="text-lg font-bold text-purple-600 mb-4">
+                        <span className="text-sm line-through text-gray-400">299€</span> 199€
+                      </div>
+                      <Button className="w-full bg-purple-600 text-white text-sm hover:bg-purple-700">
+                        Accéder à la Formation
+                      </Button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        ⏰ Offre limitée - 72h restantes
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Publicité Native */}
+                  <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <div className="text-center">
+                      <p className="text-xs text-gray-400 mb-2">SPONSORISÉ</p>
+                      <img 
+                        src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=200&h=100"
+                        alt="Fintech Tools"
+                        className="w-full h-20 object-cover rounded-lg mb-3"
+                      />
+                      <h3 className="font-bold text-sm mb-2">Outils FinTech Essentiels</h3>
+                      <p className="text-xs text-gray-600 mb-3">
+                        Les meilleurs outils pour entrepreneurs africains
+                      </p>
+                      <Button variant="outline" className="w-full text-xs">
+                        Découvrir
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Articles Populaires */}
+                  <div className="bg-white p-6 rounded-xl border border-gray-200">
+                    <h3 className="font-bold text-lg mb-4">📈 Articles Populaires</h3>
+                    <div className="space-y-3">
+                      {['Wave vs Orange Money: Comparatif 2025', 'IA et FinTech: L\'Avenir du Sénégal', 'Startup FinTech: Guide Complet'].map((title, index) => (
+                        <div key={index} className="pb-3 border-b border-gray-100 last:border-b-0">
+                          <h4 className="text-sm font-medium text-gray-900 hover:text-senepay-orange cursor-pointer transition-colors">
+                            {title}
+                          </h4>
+                          <p className="text-xs text-gray-500 mt-1">{1200 + index * 300} vues</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
                 <div className="sticky top-32 space-y-8">
                   {/* Newsletter */}
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100">
