@@ -7,8 +7,14 @@ import { Badge } from '@/components/ui/badge';
 
 const InvestorHero = () => {
   const handleDownloadPitchDeck = () => {
-    // Logic to download pitch deck
-    console.log('Downloading pitch deck...');
+    // Téléchargement automatique du pitch deck
+    const link = document.createElement('a');
+    link.href = 'https://www.genspark.ai/aidrive/preview/sen_services_project/senepay_pitch_deck_series_a_20250625200942.pdf';
+    link.download = 'SenePay_Pitch_Deck_Series_A.pdf';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const scrollToOpportunity = () => {
