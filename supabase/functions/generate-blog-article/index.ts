@@ -91,20 +91,24 @@ STRUCTURE OBLIGATOIRE :
 9. Call-to-action conversion
 10. Conclusion patriotique inspirante
 
-INSTRUCTIONS SEO :
+INSTRUCTIONS SEO ET STYLE :
 - Utilisez les mots-clés : ${articleTemplates[category as keyof typeof articleTemplates]?.keywords.join(', ')}
 - Intégrez naturellement "SenePay" 8-12 fois
 - Incluez des statistiques précises sénégalaises
-- Ajoutez des émojis pour l'engagement
-- Structurez avec des H2/H3 optimisés
+- Ajoutez des émojis pour l'engagement 🚀💰🌍🇸🇳
+- IMPORTANT : N'utilisez PAS de ## ou ### ou ** dans le contenu
+- Écrivez les titres en texte normal qui seront stylés avec des gradients
 - Créez des paragraphes courts (2-3 lignes max)
+- Mettez en avant les mots-clés importants en MAJUSCULES ocasionnellement
 
 STYLE RÉDACTIONNEL :
-- Ton patriotique et panafricain inspirant
+- Ton patriotique et panafricain inspirant 🌍🇸🇳
 - Expertise technique accessible
-- Storytelling émotionnel
-- Données chiffrées crédibles
-- Exemples concrets sénégalais
+- Storytelling émotionnel avec impact humain
+- Données chiffrées crédibles du Sénégal
+- Exemples concrets sénégalais et ouest-africains
+- Célébrez la diaspora et l'unité africaine
+- Mentionnez l'héritage de résistance et d'innovation africaine
 
 MONÉTISATION :
 - Intégrez 3-4 CTA vers SenePay naturellement
@@ -140,11 +144,33 @@ Rédigez un article de référence qui va dominer Google et convertir massivemen
 };
 
 const getRandomImage = async (): Promise<string> => {
-  const topics = ['fintech', 'africa', 'mobile-payment', 'technology', 'senegal', 'innovation', 'digital-finance'];
-  const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+  // Specific African-focused search terms for people and faces
+  const africanSearchTerms = [
+    'african-business-people',
+    'senegalese-entrepreneurs', 
+    'african-technology-workers',
+    'black-professionals-africa',
+    'african-women-business',
+    'african-men-technology',
+    'senegal-business-meeting',
+    'african-startup-founders',
+    'black-african-professionals',
+    'african-fintech-workers'
+  ];
   
-  // Using Unsplash for high-quality, free images
-  return `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`;
+  const randomTerm = africanSearchTerms[Math.floor(Math.random() * africanSearchTerms.length)];
+  
+  // Using Unsplash with specific queries for African faces/people
+  const unsplashUrls = [
+    `https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1200&h=630&q=80&auto=format&fit=crop`, // African business
+    `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=630&q=80&auto=format&fit=crop`, // African entrepreneur
+    `https://images.unsplash.com/photo-1522075469751-3847036cea64?w=1200&h=630&q=80&auto=format&fit=crop`, // African tech worker
+    `https://images.unsplash.com/photo-1580894908361-967195033215?w=1200&h=630&q=80&auto=format&fit=crop`, // African woman professional
+    `https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=1200&h=630&q=80&auto=format&fit=crop`, // African man business
+    `https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&h=630&q=80&auto=format&fit=crop`, // African startup
+  ];
+  
+  return unsplashUrls[Math.floor(Math.random() * unsplashUrls.length)];
 };
 
 const calculateReadingTime = (content: string): number => {
@@ -228,7 +254,7 @@ serve(async (req) => {
         meta_title: metaTitle,
         meta_description: metaDescription,
         reading_time: readingTime,
-        author_name: 'SenePay Team',
+        author_name: 'Dominiqk Mendy - Expert en Transformation Digitale',
         author_avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
         is_featured: Math.random() > 0.7, // 30% chance to be featured
         seo_score: Math.floor(Math.random() * 20) + 80, // Score between 80-100

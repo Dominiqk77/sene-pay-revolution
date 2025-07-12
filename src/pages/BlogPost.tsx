@@ -9,6 +9,38 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 
+// Component to render enhanced blog content with gradients and colors
+const BlogContent = ({ content }: { content: string }) => {
+  const parseContent = (text: string) => {
+    return text
+      // Replace ## titles with gradient headings
+      .replace(/## (.+?)(?=\n|$)/g, '<h2 class="text-3xl font-bold bg-gradient-to-r from-senepay-orange to-senepay-gold bg-clip-text text-transparent my-8">$1</h2>')
+      // Replace ### subtitles with colored headings
+      .replace(/### (.+?)(?=\n|$)/g, '<h3 class="text-2xl font-semibold text-senepay-orange my-6">$1</h3>')
+      // Replace **bold** with colored strong text
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-senepay-gold">$1</strong>')
+      // Enhanced paragraph formatting
+      .replace(/\n\n/g, '</p><p class="text-gray-700 leading-relaxed mb-6">')
+      // Add African flag emojis and patriotic elements
+      .replace(/Sénégal|sénégal/g, 'Sénégal 🇸🇳')
+      .replace(/Afrique|afrique/g, 'Afrique 🌍')
+      // Highlight key terms with colors
+      .replace(/\b(SenePay|Orange Money|Wave|Free Money)\b/g, '<span class="font-semibold text-senepay-orange bg-senepay-orange/10 px-2 py-1 rounded">$1</span>')
+      .replace(/\b(FinTech|Innovation|Digital|API)\b/g, '<span class="font-medium text-senepay-gold">$1</span>')
+      // Convert newlines to proper paragraphs
+      .replace(/\n/g, '<br>');
+  };
+
+  return (
+    <div 
+      className="blog-content space-y-6"
+      dangerouslySetInnerHTML={{ 
+        __html: `<p class="text-gray-700 leading-relaxed mb-6">${parseContent(content)}</p>` 
+      }}
+    />
+  );
+};
+
 interface BlogArticle {
   id: string;
   title: string;
@@ -314,10 +346,35 @@ const BlogPost = () => {
 
               {/* Article Content */}
               <div className="lg:col-span-8">
-                <div 
-                  className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-senepay-orange prose-strong:text-gray-900 prose-code:text-senepay-orange prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded"
-                  dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br>') }}
-                />
+                <BlogContent content={article.content} />
+                
+                {/* Author Bio Section */}
+                <div className="mt-16 p-8 bg-gradient-to-br from-senepay-orange/5 to-senepay-gold/5 rounded-2xl border-l-4 border-senepay-orange">
+                  <div className="flex items-start space-x-6">
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face"
+                      alt="Dominiqk Mendy"
+                      className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+                    />
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold bg-gradient-to-r from-senepay-orange to-senepay-gold bg-clip-text text-transparent mb-2">
+                        Dominiqk Mendy
+                      </h3>
+                      <p className="text-lg font-semibold text-gray-800 mb-3">
+                        Expert en Transformation Digitale | Consultant International en Innovation Numérique
+                      </p>
+                      <p className="text-gray-600 leading-relaxed">
+                        Pionnier de la révolution FinTech en Afrique de l'Ouest, Dominiqk accompagne les entreprises 
+                        dans leur transformation digitale depuis plus de 10 ans. Créateur de SenePay, il œuvre pour 
+                        l'inclusion financière et la souveraineté numérique africaine.
+                      </p>
+                      <div className="flex items-center mt-4 space-x-4">
+                        <Badge className="bg-senepay-orange text-white">🚀 Fondateur SenePay</Badge>
+                        <Badge className="bg-senepay-gold text-white">🌍 Vision Panafricaine</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Tags */}
                 <div className="mt-12 pt-8 border-t border-gray-200">
