@@ -69,8 +69,8 @@ const ApiFreeMoneySenegal = () => {
                 "url": "https://senepay.sn/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png"
               }
             },
-            "datePublished": "2024-12-07",
-            "dateModified": "2024-12-07"
+            "datePublished": "2025-01-07",
+            "dateModified": "2025-01-07"
           })}
         </script>
       </Helmet>

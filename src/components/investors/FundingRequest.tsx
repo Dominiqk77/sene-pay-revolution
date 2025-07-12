@@ -10,14 +10,14 @@ const FundingRequest = () => {
     amount: '$2.5M',
     status: 'En cours',
     investors: 'Business Angels + VC',
-    timeline: 'Q1 2024',
+    timeline: 'Q1 2025',
     color: 'border-senepay-gold/50 bg-senepay-gold/10'
   }, {
     round: 'Série B',
     amount: '$8M',
     status: 'Planifiée',
     investors: 'VCs Internationaux',
-    timeline: 'Q4 2024',
+    timeline: 'Q4 2025',
     color: 'border-senepay-orange/50 bg-senepay-orange/10'
   }, {
     round: 'Série C',
@@ -57,17 +57,17 @@ const FundingRequest = () => {
     color: 'text-blue-400'
   }];
   const milestones = [{
-    timeline: 'Q1 2024',
+    timeline: 'Q1 2025',
     title: 'Product Market Fit',
     targets: ['500 marchands actifs', '$5M volume mensuel', 'Break-even opérationnel'],
     status: 'current'
   }, {
-    timeline: 'Q2 2024',
+    timeline: 'Q2 2025',
     title: 'Expansion Régionale',
     targets: ['Lancement Mali', '1,500 marchands', '$15M volume mensuel'],
     status: 'upcoming'
   }, {
-    timeline: 'Q4 2024',
+    timeline: 'Q4 2025',
     title: 'Leadership CEDEAO',
     targets: ['4 pays couverts', '5,000 marchands', '$50M volume mensuel'],
     status: 'planned'

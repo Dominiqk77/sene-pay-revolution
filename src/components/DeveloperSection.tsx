@@ -144,7 +144,7 @@ const payment = await senepay.payments.create({
     phone: '+221771234567'
   },
   metadata: {
-    order_id: 'CMD-2024-001',
+    order_id: 'CMD-2025-001',
     customer_name: 'Amadou Diallo'
   }
 });
@@ -173,7 +173,7 @@ $payment = $senepay->payments->create([
         'phone' => '+221771234567'
     ],
     'metadata' => [
-        'order_id' => 'CMD-2024-001'
+        'order_id' => 'CMD-2025-001'
     ]
 ]);
 
@@ -198,7 +198,7 @@ payment = senepay.payments.create({
         'phone': '+221771234567'
     },
     'metadata': {
-        'order_id': 'CMD-2024-001'
+        'order_id': 'CMD-2025-001'
     }
 })
 

@@ -37,13 +37,13 @@ const StatusPage = () => {
     {
       title: "Délai de Paiement",
       status: "resolved",
-      date: "2024-01-25",
+      date: "2025-01-25",
       description: "Les paiements ont subi un délai de 5 minutes."
     },
     {
       title: "Erreur API",
       status: "investigating",
-      date: "2024-01-24",
+      date: "2025-01-24",
       description: "Nous enquêtons sur une erreur API intermittente."
     }
   ];

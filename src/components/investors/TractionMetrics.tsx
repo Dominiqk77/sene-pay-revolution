@@ -7,32 +7,32 @@ import { Badge } from '@/components/ui/badge';
 const TractionMetrics = () => {
   // Revenue growth data
   const revenueData = [{
-    month: 'Jan 2024',
+    month: 'Jan 2025',
     mrr: 2.5,
     arr: 30,
     transactions: 450
   }, {
-    month: 'Fév 2024',
+    month: 'Fév 2025',
     mrr: 4.2,
     arr: 50,
     transactions: 680
   }, {
-    month: 'Mar 2024',
+    month: 'Mar 2025',
     mrr: 7.8,
     arr: 94,
     transactions: 1200
   }, {
-    month: 'Avr 2024',
+    month: 'Avr 2025',
     mrr: 12.5,
     arr: 150,
     transactions: 1850
   }, {
-    month: 'Mai 2024',
+    month: 'Mai 2025',
     mrr: 18.3,
     arr: 220,
     transactions: 2400
   }, {
-    month: 'Jun 2024',
+    month: 'Jun 2025',
     mrr: 28.7,
     arr: 344,
     transactions: 3200
@@ -40,22 +40,22 @@ const TractionMetrics = () => {
 
   // User acquisition data
   const userGrowthData = [{
-    month: 'Q1 2024',
+    month: 'Q1 2025',
     merchants: 45,
     volume: 125000,
     retention: 92
   }, {
-    month: 'Q2 2024',
+    month: 'Q2 2025',
     merchants: 128,
     volume: 340000,
     retention: 94
   }, {
-    month: 'Q3 2024',
+    month: 'Q3 2025',
     merchants: 285,
     volume: 750000,
     retention: 96
   }, {
-    month: 'Q4 2024',
+    month: 'Q4 2025',
     merchants: 520,
     volume: 1200000,
     retention: 97

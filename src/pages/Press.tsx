@@ -101,7 +101,7 @@ const Press = () => {
     {
       number: "$50M",
       label: "Volume Traité",
-      description: "Transactions traitées en 2024"
+      description: "Transactions traitées en 2025"
     },
     {
       number: "8",

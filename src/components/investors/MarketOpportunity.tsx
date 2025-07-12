@@ -24,7 +24,7 @@ const MarketOpportunity = () => {
 
   // Growth projection data
   const growthData = [{
-    year: '2024',
+    year: '2025',
     senepay: 0.5,
     market: 180,
     penetration: 0.3

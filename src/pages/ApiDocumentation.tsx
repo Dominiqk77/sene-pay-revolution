@@ -54,10 +54,10 @@ const ApiDocumentation = () => {
     "customer": {
       "email": "client@boutique.sn",
       "phone": "+221771234567"
-    },
-    "metadata": {
-      "order_id": "CMD-2024-001"
-    }
+  },
+  "metadata": {
+    "order_id": "CMD-2025-001"
+  }
   }'`;
 
   return (

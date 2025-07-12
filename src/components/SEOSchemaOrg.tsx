@@ -41,7 +41,7 @@ const SEOSchemaOrg: React.FC<SEOSchemaOrgProps> = ({
     "logo": "https://senepay.sn/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png",
     "image": "https://senepay.sn/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png",
     "description": "Passerelle de paiement mobile #1 au Sénégal. API ultra-puissante pour intégrer Orange Money, Wave, Free Money et cartes bancaires.",
-    "foundingDate": "2024",
+    "foundingDate": "2025",
     "slogan": "La passerelle de paiement qui révolutionne l'e-commerce sénégalais",
     "address": {
       "@type": "PostalAddress",
@@ -157,8 +157,8 @@ const SEOSchemaOrg: React.FC<SEOSchemaOrgProps> = ({
       "publisher": {
         "@id": "https://senepay.sn/#organization"
       },
-      "datePublished": "2024-12-07",
-      "dateModified": "2024-12-07"
+      "datePublished": "2025-01-07",
+      "dateModified": "2025-01-07"
     };
     baseSchema["@graph"].push(articleSchema);
   }

@@ -13,7 +13,7 @@ const BlogTech = () => {
   const articles = [
     {
       title: "Les Tendances Tech qui Redéfinissent le Paiement en Ligne",
-      date: "15 Mars 2024",
+      date: "15 Mars 2025",
       author: "Fatou Diop",
       category: "Technologie",
       excerpt: "Découvrez comment l'IA, la blockchain et les nouvelles réglementations façonnent l'avenir des transactions numériques.",
@@ -22,7 +22,7 @@ const BlogTech = () => {
     },
     {
       title: "Comment Sécuriser Votre Boutique en Ligne Contre les Fraudes",
-      date: "22 Février 2024",
+      date: "22 Février 2025",
       author: "Mamadou Mbaye",
       category: "Sécurité",
       excerpt: "Protégez vos clients et votre entreprise en adoptant les meilleures pratiques de sécurité et les outils de prévention de la fraude.",
@@ -31,7 +31,7 @@ const BlogTech = () => {
     },
     {
       title: "L'Impact du Mobile Payment sur le Commerce en Afrique",
-      date: "10 Janvier 2024",
+      date: "10 Janvier 2025",
       author: "Aissatou Diallo",
       category: "Commerce Mobile",
       excerpt: "Analysez l'essor des paiements mobiles et leur influence croissante sur les habitudes d'achat des consommateurs africains.",

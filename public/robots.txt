@@ -1,6 +1,6 @@
 # Robots.txt optimisé pour SenePay - API Paiement Mobile Sénégal #1
 # Générateur: SenePay SEO Team
-# Dernière mise à jour: 2024-12-07
+# Dernière mise à jour: 2025-01-07
 
 # Accès prioritaire pour les moteurs de recherche principaux
 User-agent: Googlebot

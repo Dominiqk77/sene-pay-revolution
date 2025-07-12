@@ -58,19 +58,19 @@ const PartnershipsSection = () => {
     partner: 'Ministère du Numérique',
     type: 'Gouvernement',
     objective: 'Initiative Sénégal Digital 2025',
-    timeline: 'Q1 2024',
+    timeline: 'Q1 2025',
     impact: 'Support institutionnel & subventions'
   }, {
     partner: 'CEDEAO',
     type: 'Organisation Régionale',
     objective: 'Harmonisation paiements CEDEAO',
-    timeline: 'Q2 2024',
+    timeline: 'Q2 2025',
     impact: 'Expansion 8 pays facilité'
   }, {
     partner: 'Mastercard',
     type: 'Réseau International',
     objective: 'Programme Mastercard Start Path',
-    timeline: 'Q3 2024',
+    timeline: 'Q3 2025',
     impact: 'Accès global & expertise'
   }];
   return <section className="py-20 bg-gradient-to-br from-gray-900 to-black">

@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 const FinancialProjections = () => {
   // 5-year financial projections
   const financialData = [{
-    year: '2024',
+    year: '2025',
     revenue: 0.5,
     gross_profit: 0.42,
     net_profit: -0.18,
