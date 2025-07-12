@@ -8,6 +8,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import ChatBot from "@/components/ChatBot";
 import ScrollToTop from "@/components/ScrollToTop";
+import BackToTop from "@/components/BackToTop";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -141,6 +142,7 @@ const App = () => (
           </Routes>
           {/* ChatBot maintenant dans le contexte Router */}
           <ChatBot />
+          <BackToTop />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
