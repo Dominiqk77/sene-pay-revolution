@@ -241,7 +241,7 @@ const PartnershipsSection = () => {
               <h3 className="text-2xl font-bold mb-4 text-zinc-950">
                 Écosystème de Partenariats Unique
               </h3>
-              <p className="text-gray-300 text-lg leading-relaxed mb-6">
+              <p className="text-lg leading-relaxed mb-6 text-slate-950">
                 Nos partenariats stratégiques nous donnent accès à <span className="text-senepay-gold font-semibold">95% du marché</span> des 
                 paiements mobiles, une conformité réglementaire complète, et une infrastructure 
                 technologique de classe mondiale.
