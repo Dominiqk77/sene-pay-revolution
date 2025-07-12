@@ -254,7 +254,7 @@ const MarketOpportunity = () => {
           <Card className="bg-gradient-to-br from-senepay-green/20 to-senepay-orange/20 border-senepay-green/30">
             <CardContent className="p-6 text-center">
               <TrendingUp className="w-12 h-12 text-senepay-green mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">45%</h3>
+              <h3 className="text-2xl font-bold mb-2 text-green-950">45%</h3>
               <p className="text-white">de croissance annuelle du marché e-commerce ouest-africain</p>
             </CardContent>
           </Card>
