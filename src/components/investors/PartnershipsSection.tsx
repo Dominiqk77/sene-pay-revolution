@@ -257,7 +257,7 @@ const PartnershipsSection = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-senepay-orange mb-1">8</div>
-                  <div className="text-gray-300 text-sm">Pays d'Expansion</div>
+                  <div className="text-black-300 text-senepay-dark ">Pays d'Expansion</div>
                 </div>
               </div>
             </CardContent>
