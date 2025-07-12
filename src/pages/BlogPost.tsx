@@ -391,7 +391,7 @@ const BlogPost = () => {
                 <div className="mt-16 p-8 bg-gradient-to-br from-senepay-orange/5 to-senepay-gold/5 rounded-2xl border-l-4 border-senepay-orange">
                   <div className="flex items-start space-x-6">
                     <img
-                      src="/lovable-uploads/569b505b-54ae-41ef-b693-b571bf20d5e7.png"
+                      src="/lovable-uploads/73c4c6f7-047b-4539-af47-a4a9f290fa73.png"
                       alt="Dominiqk Mendy"
                       className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
                     />
